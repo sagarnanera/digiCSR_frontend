@@ -41,7 +41,19 @@ function NgoAndComSignup() {
       setLoading(false);
       return;
     }
-
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      // Display an error message or handle the email validation error
+      toast({
+        title: "Please Enter a valid email",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
     try {
       const config = {
         headers: {

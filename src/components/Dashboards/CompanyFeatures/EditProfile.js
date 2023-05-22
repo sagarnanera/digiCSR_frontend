@@ -47,7 +47,7 @@ const EditProfile = () => {
   const [personEmail, setPersonEmail] = useState();
   const [personPhone, setPersonPhone] = useState();
   const [personDesignation, setPersonDesignation] = useState();
-  // const [certificate, setCertificate] = useState();
+  const [certificate, setCertificate] = useState();
   const [Sector, setSector] = useState([]);
   const [taxEligibility, setTaxEligibility] = useState([]);
   const [states, setStates] = useState([]);
@@ -64,7 +64,10 @@ const EditProfile = () => {
 
     getStates();
   }, []);
-
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setCertificate(file);
+  };
   const handleStateChange = async (stateId) => {
     const fetchedCities = await fetchCities(stateId);
     setCities(fetchedCities);
@@ -81,7 +84,11 @@ const EditProfile = () => {
       !Sector.length ||
       !taxEligibility.length ||
       !pincode ||
-      !cities.length
+      !cities.length ||
+      (establishmentyear && establishmentyear.length !== 4) ||
+      (personPhone && personPhone.length !== 10) ||
+      !(pincode && pincode.length <= 10 && pincode.length >= 5) ||
+      !(certificate && certificate.type === "application/pdf")
     ) {
       // Display an error message or handle the validation error
       toast({
@@ -244,6 +251,8 @@ const EditProfile = () => {
                       placeholder="Enter Pincode"
                       value={pincode || null}
                       onChange={(e) => setPincode(e.target.value)}
+                      minLength={5}
+                      maxLength={10}
                     />
                   </FormControl>
                 </Box>
@@ -374,9 +383,14 @@ const EditProfile = () => {
           </Box>
           <br />
           <Box flex={5} w="90%">
-            <FormControl id="certificate" isRequired={true}>
+            <FormControl id="certificate" isRequired>
               <FormLabel>Company Registration Certificate</FormLabel>
-              <Input type="file" p={1.5} accept="pdf/*" />
+              <Input
+                type="file"
+                p={1.5}
+                accept="application/pdf"
+                onChange={handleFileChange}
+              />
             </FormControl>
           </Box>
           <br />
