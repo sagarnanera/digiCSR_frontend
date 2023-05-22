@@ -8,7 +8,8 @@ const CompanyNavigation = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/", {replace: true});
+    localStorage.removeItem("CompanyAuthToken");
+    navigate("/", { replace: true });   
   };
 
   return (

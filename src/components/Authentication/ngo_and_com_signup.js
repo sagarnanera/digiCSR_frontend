@@ -27,6 +27,8 @@ function NgoAndComSignup() {
   const toast = useToast();
 
   const handleSendOtp = async () => {
+    setShowOtpInput(false);
+    setOtp();
     setLoading(true);
     if (!cin || !email) {
       toast({
@@ -96,53 +98,55 @@ function NgoAndComSignup() {
 
   const submitHandler = async () => {
     if (selectedOption === "Company") {
-      navigate("/Company/editprofile", { replace: true });
-    }
-    setLoading(true);
-    if (!cin || !email || !otp) {
-      toast({
-        title: "Please Fill all the Fields",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
-
-      const response = await fetch("http://localhost:4000/company/verify", {
-        method: "POST",
-        headers: config.headers,
-        body: JSON.stringify({
-          cin,
-          email,
-          otp,
-        }),
-      });
-
-      if (response.ok) {
+      setLoading(true);
+      if (!cin || !email || !otp) {
         toast({
-          title: "Registration Successful",
-          status: "success",
+          title: "Please Fill all the Fields",
+          status: "warning",
           duration: 5000,
           isClosable: true,
           position: "bottom",
         });
         setLoading(false);
-      } else if (response.status === 400) {
-        const errorData = await response.json();
-        setErrorMessage(errorData.message);
+        return;
+      }
+
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+
+        const response = await fetch("http://localhost:4000/company/verify", {
+          method: "POST",
+          headers: config.headers,
+          body: JSON.stringify({
+            cin,
+            email,
+            otp,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          toast({
+            title: "Registration Successful",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          localStorage.setItem("CompanyAuthToken", JSON.stringify(data));
+          setLoading(false);
+          navigate("/Company/editprofile", { replace: true });
+        } else {
+          throw new Error("Failed to verify. Please try again later.");
+        }
+      } catch (error) {
         toast({
-          title: "Bad Request",
-          description: errorMessage,
+          title: "Error Occurred!",
+          description: error.message,
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -150,20 +154,7 @@ function NgoAndComSignup() {
         });
         setLoading(false);
         return; // Prevent further execution
-      } else {
-        throw new Error("Failed to verify. Please try again later.");
       }
-    } catch (error) {
-      toast({
-        title: "Error Occurred!",
-        description: error.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setLoading(false);
-      return; // Prevent further execution
     }
   };
 
@@ -226,6 +217,7 @@ function NgoAndComSignup() {
           Sign Up
         </Button>
       )}
+      {showOtpInput && <Button onClick={handleSendOtp}>Send OTP Again</Button>}
     </VStack>
   );
 }

@@ -24,6 +24,7 @@ import {
   Button,
   Stack,
   Select,
+  useToast,
 } from "@chakra-ui/react";
 // import CompanyNavigation from "../companyNavigation";
 import { sectorOptions } from "../../sectorData";
@@ -38,9 +39,21 @@ import { useNavigate } from "react-router-dom";
 
 const EditProfile = () => {
   const navigate = useNavigate();
-  const [checkedItems, setCheckedItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
+  const [companyName, setCompanyName] = useState("");
+  const [establishmentyear, setEstablishmentYear] = useState();
+  const [personName, setPersonName] = useState();
+  const [personEmail, setPersonEmail] = useState();
+  const [personPhone, setPersonPhone] = useState();
+  const [personDesignation, setPersonDesignation] = useState();
+  // const [certificate, setCertificate] = useState();
+  const [Sector, setSector] = useState([]);
+  const [taxEligibility, setTaxEligibility] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
+  const [pincode, setPincode] = useState();
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
@@ -58,21 +71,63 @@ const EditProfile = () => {
   };
 
   const submitHandler = async () => {
+    if (
+      !companyName ||
+      !establishmentyear ||
+      !personName ||
+      !personEmail ||
+      !personPhone ||
+      !personDesignation ||
+      !Sector.length ||
+      !taxEligibility.length ||
+      !pincode ||
+      !cities.length
+    ) {
+      // Display an error message or handle the validation error
+      toast({
+        title: "Please Fill all the Fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(personEmail)) {
+      // Display an error message or handle the email validation error
+      toast({
+        title: "Please Enter a valid email",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
     navigate("/Company", { replace: true });
+
+    // Proceed with navigation if all fields are filled
   };
 
   const handleAllChecked = (e) => {
     const allChecked = e.target.checked;
     if (allChecked) {
       const allSectors = sectorOptions.map((option) => option.value);
-      setCheckedItems(allSectors);
+      setSector(allSectors);
     } else {
-      setCheckedItems([]);
+      setSector([]);
     }
   };
 
   const handleSectorChange = (selectedItems) => {
-    setCheckedItems(selectedItems);
+    setSector(selectedItems);
+  };
+
+  const handleTaxEligibilityChange = (selectedValues) => {
+    setTaxEligibility(selectedValues);
   };
 
   const handleToggleDropdown = () => {
@@ -112,14 +167,25 @@ const EditProfile = () => {
             <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
               <FormControl id="companyname" isRequired={true}>
                 <FormLabel>Company Name</FormLabel>
-                <Input type="text" placeholder="Enter Company's Full Name" />
+                <Input
+                  type="text"
+                  placeholder="Enter Company's Full Name"
+                  value={companyName || ""}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                />
               </FormControl>
             </Box>
             <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
               <FormControl id="year" isRequired={true}>
                 <FormLabel>Year of Establishment</FormLabel>
                 <NumberInput>
-                  <NumberInputField placeholder="yyyy" />
+                  <NumberInputField
+                    placeholder="yyyy"
+                    value={establishmentyear || null}
+                    onChange={(e) => setEstablishmentYear(e.target.value)}
+                    maxLength={4}
+                    minLength={4}
+                  />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
                     <NumberDecrementStepper />
@@ -173,7 +239,12 @@ const EditProfile = () => {
                 <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
                   <FormControl id="pincode" isRequired={true}>
                     <FormLabel>Pincode</FormLabel>
-                    <Input type="number" placeholder="Enter Pincode" />
+                    <Input
+                      type="number"
+                      placeholder="Enter Pincode"
+                      value={pincode || null}
+                      onChange={(e) => setPincode(e.target.value)}
+                    />
                   </FormControl>
                 </Box>
               </Flex>
@@ -194,6 +265,8 @@ const EditProfile = () => {
                     <Input
                       type="text"
                       placeholder="Enter Name of Communication Person"
+                      value={personName || ""}
+                      onChange={(e) => setPersonName(e.target.value)}
                     />
                   </FormControl>
                 </Box>
@@ -211,6 +284,8 @@ const EditProfile = () => {
                       <Input
                         type="email"
                         placeholder="Enter email of Communication Person"
+                        value={personEmail || ""}
+                        onChange={(e) => setPersonEmail(e.target.value)}
                       />
                     </InputGroup>
                   </FormControl>
@@ -222,7 +297,14 @@ const EditProfile = () => {
                       <InputLeftElement>
                         <PhoneIcon color="gray.300" />
                       </InputLeftElement>
-                      <Input type="tel" placeholder="Phone number" />
+                      <Input
+                        type="tel"
+                        placeholder="Phone number"
+                        value={personPhone || null}
+                        onChange={(e) => setPersonPhone(e.target.value)}
+                        minLength={10}
+                        maxLength={10}
+                      />
                     </InputGroup>
                   </FormControl>
                 </Box>
@@ -244,6 +326,8 @@ const EditProfile = () => {
                 <Input
                   type="text"
                   placeholder="Enter Degignation of Communication Person"
+                  value={personDesignation || ""}
+                  onChange={(e) => setPersonDesignation(e.target.value)}
                 />
               </FormControl>
             </Box>
@@ -253,7 +337,7 @@ const EditProfile = () => {
             <FormControl isRequired={true}>
               <FormLabel>Sectors to provide CSR</FormLabel>
               <Checkbox
-                isChecked={checkedItems.length === sectorOptions.length}
+                isChecked={Sector.length === sectorOptions.length}
                 onChange={handleAllChecked}
                 w="100%"
               >
@@ -275,7 +359,7 @@ const EditProfile = () => {
                 <MenuList maxH="200px" overflowY="auto">
                   <CheckboxGroup
                     colorScheme="teal"
-                    value={checkedItems}
+                    value={Sector || []}
                     onChange={handleSectorChange}
                   >
                     {sectorOptions.map((option) => (
@@ -299,7 +383,11 @@ const EditProfile = () => {
           <Box flex={5} w="90%">
             <FormControl id="taxeligibility" isRequired={true}>
               <FormLabel>Tax Compliance Eligibility</FormLabel>
-              <CheckboxGroup colorScheme="teal">
+              <CheckboxGroup
+                colorScheme="teal"
+                value={taxEligibility}
+                onChange={handleTaxEligibilityChange}
+              >
                 <Stack spacing={[1, 3]} direction={["column", "row"]}>
                   <Checkbox value="80G">80 G (for 50% tax benefits)</Checkbox>
                   <Checkbox value="35AC">
@@ -323,6 +411,7 @@ const EditProfile = () => {
             variant="solid"
             w={"10vw"}
             onClick={submitHandler}
+            isLoading={loading}
           >
             Save
           </Button>
