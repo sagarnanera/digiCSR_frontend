@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import jwt from "jsonwebtoken";
 import {
   Box,
   Container,
@@ -53,13 +54,19 @@ const EditProfile = () => {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [pincode, setPincode] = useState();
-
+  const [userId, setUserId] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     const getStates = async () => {
       const fetchedStates = await fetchStates();
       setStates(fetchedStates);
+      //taking jwt to get userid of logged in user from localstorage
+      const token = localStorage.getItem("token");
+      const decodedToken = jwt.decode(token);
+      const userId = decodedToken.userId;
+      // Set the user's ID in the state variable
+      setUserId(userId);
     };
 
     getStates();
@@ -73,7 +80,9 @@ const EditProfile = () => {
     setCities(fetchedCities);
   };
 
-  const submitHandler = async () => {
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
     if (
       !companyName ||
       !establishmentyear ||
@@ -115,8 +124,41 @@ const EditProfile = () => {
       return;
     }
     navigate("/Company", { replace: true });
+    try {
+      const url = `http://localhost:4000/company/add-profile/${userId}`; 
 
-    // Proceed with navigation if all fields are filled
+      const formDataToSend = new FormData();
+      formDataToSend.append("company_name", companyName);
+      formDataToSend.append("city", cities);
+      formDataToSend.append("state", states);
+      formDataToSend.append("pincode", pincode);
+      formDataToSend.append("establishment_year", establishmentyear);
+      formDataToSend.append("cp_name", personName);
+      formDataToSend.append("cp_email", personEmail);
+      formDataToSend.append("cp_designation", personDesignation);
+      formDataToSend.append("cp_phone", personPhone);
+      formDataToSend.append("registration_certificate", certificate);
+      Sector.forEach((sector, index) => {
+        formDataToSend.append(`sectors[${index}]`, sector);
+      });
+
+      taxEligibility.forEach((eligibility, index) => {
+        formDataToSend.append(`taxEligibility[${index}]`, eligibility);
+      });
+      const response = await fetch(url, {
+        method: "POST",
+        body: formDataToSend,
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log(data); // Process the successful response data
+      } else {
+        console.log(data.message); // Handle the error message
+      }
+    } catch (error) {
+      console.error(error);
+      // Handle the error case
+    }
   };
 
   const handleAllChecked = (e) => {
