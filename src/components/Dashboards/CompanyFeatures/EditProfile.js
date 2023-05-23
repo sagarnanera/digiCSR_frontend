@@ -155,7 +155,7 @@ const EditProfile = () => {
       const response = await fetch(url, {
         method: "POST",
         headers: config.headers,
-        body: formDataToSend,
+        body: formDataToSend
       });
       if (response.ok) {
         toast({
@@ -171,6 +171,7 @@ const EditProfile = () => {
         throw new Error("Failed to create Profile. Please try again.");
       }
     } catch (error) {
+      console.log(error.message);
       toast({
         title: "Error Occurred!",
         description: error.message,
