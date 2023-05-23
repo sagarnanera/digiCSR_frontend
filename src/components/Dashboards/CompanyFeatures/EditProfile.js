@@ -63,15 +63,17 @@ const EditProfile = () => {
       const fetchedStates = await fetchStates();
       setStates(fetchedStates);
     };
+
+    getStates();
+  }, []);
+  if (localStorage.getItem("CompanyAuthToken")) {
     // Retrieve the user's ID from localStorage
     const token = localStorage.getItem("CompanyAuthToken");
     const decodedToken = jwt_decode(token);
     const userId = decodedToken._id;
     // Set the user's ID in the state variable
     setUserId(userId);
-    getStates();
-  }, []);
-
+  }
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setCertificate(file);
@@ -141,8 +143,6 @@ const EditProfile = () => {
       Sector.forEach((sector, index) => {
         formDataToSend.append(`sectors[${index}]`, sector);
       });
-
-      // Append each element of the 'taxEligibility' array individually to FormDataToSend
       taxEligibility.forEach((eligibility, index) => {
         formDataToSend.append(`taxEligibility[${index}]`, eligibility);
       });
@@ -155,7 +155,7 @@ const EditProfile = () => {
       const response = await fetch(url, {
         method: "POST",
         headers: config.headers,
-        body: formDataToSend
+        body: formDataToSend,
       });
       if (response.ok) {
         toast({
