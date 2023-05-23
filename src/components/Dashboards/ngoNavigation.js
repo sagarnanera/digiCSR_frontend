@@ -8,6 +8,7 @@ const CompanyNavigation = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
+    // localStorage.removeItem("CompanyAuthToken");
     navigate("/", { replace: true });
   };
 
@@ -18,17 +19,17 @@ const CompanyNavigation = () => {
         <ul className={classes.nav}>
           <li>
             <Link
-              to="/Company"
-              className={location.pathname === "/Company" ? classes.active : ""}
+              to="/Ngo"
+              className={location.pathname === "/Ngo" ? classes.active : ""}
             >
               Home
             </Link>
           </li>
           <li>
             <Link
-              to="/Company/RaiseRPF"
+              to="/Ngo/RPFs"
               className={
-                location.pathname === "/Company/RaiseRPF" ? classes.active : ""
+                location.pathname === "/Ngo/RPFs" ? classes.active : ""
               }
             >
               Raise RPFs
@@ -36,9 +37,9 @@ const CompanyNavigation = () => {
           </li>
           <li>
             <Link
-              to="/Company/TrackRPF"
+              to="/Ngo/postblogs"
               className={
-                location.pathname === "/Company/TrackRPF" ? classes.active : ""
+                location.pathname === "/Ngo/postblogs" ? classes.active : ""
               }
             >
               Track RPFs
@@ -46,11 +47,9 @@ const CompanyNavigation = () => {
           </li>
           <li>
             <Link
-              to="/Company/FundingStats"
+              to="/Ngo/acceptedrfps"
               className={
-                location.pathname === "/Company/FundingStats"
-                  ? classes.active
-                  : ""
+                location.pathname === "/Ngo/acceptedrfps" ? classes.active : ""
               }
             >
               Stats
@@ -58,11 +57,9 @@ const CompanyNavigation = () => {
           </li>
           <li>
             <Link
-              to="/Company/NGOReviews"
+              to="/Ngo/media"
               className={
-                location.pathname === "/Company/NGOReviews"
-                  ? classes.active
-                  : ""
+                location.pathname === "/Ngo/media" ? classes.active : ""
               }
             >
               NGO Reviews
@@ -76,7 +73,7 @@ const CompanyNavigation = () => {
                 src="https://bit.ly/broken-link"
               />
               <MenuList>
-                <Link to="/Company/profile">
+                <Link to="/Ngo/profile">
                   <MenuItem>Show Company Profile</MenuItem>
                 </Link>
                 <MenuItem onClick={handleClick}>Logout</MenuItem>
