@@ -63,17 +63,15 @@ const EditProfile = () => {
       const fetchedStates = await fetchStates();
       setStates(fetchedStates);
     };
-
-    getStates();
-  }, []);
-  if (localStorage.getItem("CompanyAuthToken")) {
     // Retrieve the user's ID from localStorage
     const token = localStorage.getItem("CompanyAuthToken");
     const decodedToken = jwt_decode(token);
     const userId = decodedToken._id;
     // Set the user's ID in the state variable
     setUserId(userId);
-  }
+    getStates();
+  }, []);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setCertificate(file);
@@ -127,7 +125,7 @@ const EditProfile = () => {
       return;
     }
     try {
-      const url = `http://localhost:4000/company/add-profile/${userId}`; // Replace with your API endpoint URL
+      const url = `http://localhost:4000/company/add-profile/646c6b18c0f086e1c553840b`; // Replace with your API endpoint URL
 
       const formDataToSend = new FormData();
       formDataToSend.append("company_name", companyName);
@@ -143,6 +141,8 @@ const EditProfile = () => {
       Sector.forEach((sector, index) => {
         formDataToSend.append(`sectors[${index}]`, sector);
       });
+
+      // Append each element of the 'taxEligibility' array individually to FormDataToSend
       taxEligibility.forEach((eligibility, index) => {
         formDataToSend.append(`taxEligibility[${index}]`, eligibility);
       });
@@ -155,8 +155,8 @@ const EditProfile = () => {
       const response = await fetch(url, {
         method: "POST",
         headers: config.headers,
-        body: formDataToSend,
-      });
+        body: formDataToSend
+      })
       if (response.ok) {
         toast({
           title: "Registration Successful",
