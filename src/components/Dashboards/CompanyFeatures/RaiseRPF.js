@@ -5,15 +5,18 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 const theme = createTheme({
   typography: {
     body1: {
-      fontSize: "1rem",
+      // fontSize: "1rem",
+      // align = "center",
+      // display:"flex",
+      // justifyContent="center"
       // Other CSS properties
     },
   },
 });
 const RaiseRPF = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <div style={{ top: "20px", margin: "80px 15px 15px 15px" }}>
+    <ThemeProvider theme={theme} >
+      <div style={{ top: "20px", margin: "80px 15px 15px 15px",align: "center"}}>
         <Typography
           gutterBottom
           varient="h5"
