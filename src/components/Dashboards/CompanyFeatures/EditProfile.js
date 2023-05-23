@@ -66,9 +66,8 @@ const EditProfile = () => {
     // Retrieve the user's ID from localStorage
     const token = localStorage.getItem("CompanyAuthToken");
     const decodedToken = jwt_decode(token);
-    const userId = decodedToken._id;
     // Set the user's ID in the state variable
-    setUserId(userId);
+    setUserId(decodedToken._id);
     getStates();
   }, []);
 
@@ -84,82 +83,75 @@ const EditProfile = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    // if (
-    //   !companyName ||
-    //   !establishmentyear ||
-    //   !personName ||
-    //   !personEmail ||
-    //   !personPhone ||
-    //   !personDesignation ||
-    //   !Sector.length ||
-    //   !taxEligibility.length ||
-    //   !pincode ||
-    //   !cities.length ||
-    //   (establishmentyear && establishmentyear.length !== 4) ||
-    //   (personPhone && personPhone.length !== 10) ||
-    //   !(pincode && pincode.length <= 10 && pincode.length >= 5) ||
-    //   !(certificate && certificate.type === "application/pdf")
-    // ) {
-    //   // Display an error message or handle the validation error
-    //   toast({
-    //     title: "Please Fill all the Fields",
-    //     status: "warning",
-    //     duration: 5000,
-    //     isClosable: true,
-    //     position: "bottom",
-    //   });
-    //   setLoading(false);
-    //   return;
-    // }
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // if (!emailRegex.test(personEmail)) {
-    //   // Display an error message or handle the email validation error
-    //   toast({
-    //     title: "Please Enter a valid email",
-    //     status: "warning",
-    //     duration: 5000,
-    //     isClosable: true,
-    //     position: "bottom",
-    //   });
-    //   setLoading(false);
-    //   return;
-    // }
+    if (
+      !companyName ||
+      !establishmentyear ||
+      !personName ||
+      !personEmail ||
+      !personPhone ||
+      !personDesignation ||
+      !Sector.length ||
+      !taxEligibility.length ||
+      !pincode ||
+      !cities.length ||
+      (establishmentyear && establishmentyear.length !== 4) ||
+      (personPhone && personPhone.length !== 10) ||
+      !(pincode && pincode.length <= 10 && pincode.length >= 5) ||
+      !(certificate && certificate.type === "application/pdf")
+    ) {
+      // Display an error message or handle the validation error
+      toast({
+        title: "Please Fill all the Fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(personEmail)) {
+      // Display an error message or handle the email validation error
+      toast({
+        title: "Please Enter a valid email",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
     try {
       const url = `http://localhost:4000/company/add-profile/${userId}`; // Replace with your API endpoint URL
 
-      const formDataToSend = new FormData();
-      formDataToSend.append("company_name", companyName);
-      formDataToSend.append("city", cities);
-      formDataToSend.append("state", states);
-      formDataToSend.append("pincode", pincode);
-      formDataToSend.append("establishment_year", establishmentyear);
-      formDataToSend.append("cp_name", personName);
-      formDataToSend.append("cp_email", personEmail);
-      formDataToSend.append("cp_designation", personDesignation);
-      formDataToSend.append("cp_phone", personPhone);
-      formDataToSend.append("registration_certificate", certificate);
-      Sector.forEach((sector, index) => {
-        formDataToSend.append(`sectors[${index}]`, sector);
-      });
-
-      // Append each element of the 'taxEligibility' array individually to FormDataToSend
-      taxEligibility.forEach((eligibility, index) => {
-        formDataToSend.append(`taxEligibility[${index}]`, eligibility);
-      });
-
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
+      const payload = {
+        company_name: companyName,
+        city: "hyd",
+        state: "ap",
+        pincode: pincode,
+        establishment_year: establishmentyear,
+        cp_name: personName,
+        cp_email: personEmail,
+        cp_designation: personDesignation,
+        cp_phone: personPhone,
+        registration_certificate: certificate,
+        sectors: Sector,
+        taxEligibility: taxEligibility,
       };
+
+      const formData = new FormData();
+      formData.append("registration_certificate", certificate);
+      formData.append("data", JSON.stringify(payload));
+
       const response = await fetch(url, {
         method: "POST",
-        headers: config.headers,
-        body: formDataToSend
-      })
+        body: formData,
+      });
       if (response.ok) {
         toast({
-          title: "Registration Successful",
+          title: "Profile Edited Successfully",
           status: "success",
           duration: 5000,
           isClosable: true,
@@ -168,10 +160,11 @@ const EditProfile = () => {
         setLoading(false);
         navigate("/Company", { replace: true });
       } else {
+        console.warn(payload);
         throw new Error("Failed to create Profile. Please try again.");
       }
     } catch (error) {
-      // console.log(error.message);
+      console.log(error.message);
       toast({
         title: "Error Occurred!",
         description: error.message,
