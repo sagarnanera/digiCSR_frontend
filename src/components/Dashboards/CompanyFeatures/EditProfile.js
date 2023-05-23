@@ -361,7 +361,7 @@ const EditProfile = () => {
                   onClick={handleToggleDropdown}
                   display="flex"
                   justifyContent="flex-start"
-                  isopen={isDropdownOpen} // Manually control the isOpen state
+                  isopen={isDropdownOpen.toString()} // Manually control the isOpen state
                 >
                   Select Sector
                 </MenuButton>

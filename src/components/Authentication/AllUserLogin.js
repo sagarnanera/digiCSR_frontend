@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Button,
   FormControl,
@@ -8,12 +8,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { PinInput, PinInputField } from "@chakra-ui/react";
-// import { SelectedOptionContext } from "../chooseUserComponent";
-// import { useNavigate } from "react-router-dom";
+import { SelectedOptionContext } from "../chooseUserComponent";
+import { useNavigate } from "react-router-dom";
 
 function AllUserLogin() {
-  // const selectedOption = useContext(SelectedOptionContext);
-  // const navigate = useNavigate();
+  const selectedOption = useContext(SelectedOptionContext);
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState();
   const [showOtpInput, setShowOtpInput] = useState(false);
@@ -52,18 +52,16 @@ function AllUserLogin() {
       setLoading(false);
       return;
     }
+    const data = { email: email };
 
     try {
       const response = await fetch("http://localhost:4000/company/login", {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email: email,
-        }),
+        body: JSON.stringify(data),
       });
-
 
       if (response.ok) {
         toast({
@@ -103,13 +101,72 @@ function AllUserLogin() {
     }
   };
 
-
   const handleOtpChange = (value) => {
     setOtp(value);
   };
 
   const submitHandler = async () => {
-    // Handle the form submission
+    if (selectedOption === "Company") {
+      setLoading(true);
+      if (!email || email.trim() === "" || !otp) {
+        toast({
+          title: "Please Fill all the Fields",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+
+        const response = await fetch(
+          "http://localhost:4000/company/login/verify",
+          {
+            method: "POST",
+            headers: config.headers,
+            body: JSON.stringify({
+              email,
+              otp,
+            }),
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          toast({
+            title: "Login Successful",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          localStorage.setItem("CompanyAuthToken", JSON.stringify(data));
+          setLoading(false);
+          navigate("/Company/editprofile", { replace: true });
+        } else {
+          throw new Error("Failed to verify. Please try again later.");
+        }
+      } catch (error) {
+        toast({
+          title: "Error Occurred!",
+          description: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+        return; // Prevent further execution
+      }
+    }
   };
 
   return (
