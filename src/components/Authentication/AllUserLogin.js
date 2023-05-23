@@ -150,7 +150,7 @@ function AllUserLogin() {
           });
           localStorage.setItem("CompanyAuthToken", JSON.stringify(data));
           setLoading(false);
-          navigate("/Company/editprofile", { replace: true });
+          navigate("/Company", { replace: true });
         } else {
           throw new Error("Failed to verify. Please try again later.");
         }

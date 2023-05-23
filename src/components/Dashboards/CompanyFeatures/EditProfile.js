@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import jwt from "jsonwebtoken";
+import jwt_decode from "jwt-decode";
 import {
   Box,
   Container,
@@ -48,29 +48,30 @@ const EditProfile = () => {
   const [personEmail, setPersonEmail] = useState();
   const [personPhone, setPersonPhone] = useState();
   const [personDesignation, setPersonDesignation] = useState();
+  const [userId, setUserId] = useState("");
   const [certificate, setCertificate] = useState();
   const [Sector, setSector] = useState([]);
   const [taxEligibility, setTaxEligibility] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [pincode, setPincode] = useState();
-  const [userId, setUserId] = useState("");
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     const getStates = async () => {
       const fetchedStates = await fetchStates();
       setStates(fetchedStates);
-      //taking jwt to get userid of logged in user from localstorage
-      const token = localStorage.getItem("token");
-      const decodedToken = jwt.decode(token);
-      const userId = decodedToken.userId;
-      // Set the user's ID in the state variable
-      setUserId(userId);
     };
-
+    // Retrieve the user's ID from localStorage
+    const token = localStorage.getItem("CompanyAuthToken");
+    const decodedToken = jwt_decode(token);
+    const userId = decodedToken._id;
+    // Set the user's ID in the state variable
+    setUserId(userId);
     getStates();
   }, []);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setCertificate(file);
@@ -123,9 +124,8 @@ const EditProfile = () => {
       setLoading(false);
       return;
     }
-    navigate("/Company", { replace: true });
     try {
-      const url = `http://localhost:4000/company/add-profile/${userId}`; 
+      const url = `http://localhost:4000/company/add-profile/${userId}`; // Replace with your API endpoint URL
 
       const formDataToSend = new FormData();
       formDataToSend.append("company_name", companyName);
@@ -142,22 +142,45 @@ const EditProfile = () => {
         formDataToSend.append(`sectors[${index}]`, sector);
       });
 
+      // Append each element of the 'taxEligibility' array individually to FormDataToSend
       taxEligibility.forEach((eligibility, index) => {
         formDataToSend.append(`taxEligibility[${index}]`, eligibility);
       });
+
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
       const response = await fetch(url, {
         method: "POST",
+        headers: config.headers,
         body: formDataToSend,
       });
-      const data = await response.json();
       if (response.ok) {
-        console.log(data); // Process the successful response data
+        toast({
+          title: "Registration Successful",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+        navigate("/Company", { replace: true });
       } else {
-        console.log(data.message); // Handle the error message
+        throw new Error("Failed to create Profile. Please try again.");
       }
     } catch (error) {
-      console.error(error);
-      // Handle the error case
+      toast({
+        title: "Error Occurred!",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return; // Prevent further execution
     }
   };
 

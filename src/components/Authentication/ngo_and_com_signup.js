@@ -153,7 +153,7 @@ function NgoAndComSignup() {
           setLoading(false);
           navigate("/Company/editprofile", { replace: true });
         } else {
-          throw new Error("Failed to verify. Please try again later.");
+          throw new Error("Failed to verify. Please try again.");
         }
       } catch (error) {
         toast({
