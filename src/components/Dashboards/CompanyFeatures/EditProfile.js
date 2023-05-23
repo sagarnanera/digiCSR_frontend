@@ -84,48 +84,48 @@ const EditProfile = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    if (
-      !companyName ||
-      !establishmentyear ||
-      !personName ||
-      !personEmail ||
-      !personPhone ||
-      !personDesignation ||
-      !Sector.length ||
-      !taxEligibility.length ||
-      !pincode ||
-      !cities.length ||
-      (establishmentyear && establishmentyear.length !== 4) ||
-      (personPhone && personPhone.length !== 10) ||
-      !(pincode && pincode.length <= 10 && pincode.length >= 5) ||
-      !(certificate && certificate.type === "application/pdf")
-    ) {
-      // Display an error message or handle the validation error
-      toast({
-        title: "Please Fill all the Fields",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setLoading(false);
-      return;
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(personEmail)) {
-      // Display an error message or handle the email validation error
-      toast({
-        title: "Please Enter a valid email",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setLoading(false);
-      return;
-    }
+    // if (
+    //   !companyName ||
+    //   !establishmentyear ||
+    //   !personName ||
+    //   !personEmail ||
+    //   !personPhone ||
+    //   !personDesignation ||
+    //   !Sector.length ||
+    //   !taxEligibility.length ||
+    //   !pincode ||
+    //   !cities.length ||
+    //   (establishmentyear && establishmentyear.length !== 4) ||
+    //   (personPhone && personPhone.length !== 10) ||
+    //   !(pincode && pincode.length <= 10 && pincode.length >= 5) ||
+    //   !(certificate && certificate.type === "application/pdf")
+    // ) {
+    //   // Display an error message or handle the validation error
+    //   toast({
+    //     title: "Please Fill all the Fields",
+    //     status: "warning",
+    //     duration: 5000,
+    //     isClosable: true,
+    //     position: "bottom",
+    //   });
+    //   setLoading(false);
+    //   return;
+    // }
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // if (!emailRegex.test(personEmail)) {
+    //   // Display an error message or handle the email validation error
+    //   toast({
+    //     title: "Please Enter a valid email",
+    //     status: "warning",
+    //     duration: 5000,
+    //     isClosable: true,
+    //     position: "bottom",
+    //   });
+    //   setLoading(false);
+    //   return;
+    // }
     try {
-      const url = `http://localhost:4000/company/add-profile/646c6b18c0f086e1c553840b`; // Replace with your API endpoint URL
+      const url = `http://localhost:4000/company/add-profile/${userId}`; // Replace with your API endpoint URL
 
       const formDataToSend = new FormData();
       formDataToSend.append("company_name", companyName);
@@ -171,7 +171,7 @@ const EditProfile = () => {
         throw new Error("Failed to create Profile. Please try again.");
       }
     } catch (error) {
-      console.log(error.message);
+      // console.log(error.message);
       toast({
         title: "Error Occurred!",
         description: error.message,
