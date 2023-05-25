@@ -10,7 +10,6 @@ const fetchStates = async () => {
     return [];
   }
 };
-const statesData = fetchStates();
 
 const fetchCities = async (stateId) => {
   try {
@@ -24,5 +23,16 @@ const fetchCities = async (stateId) => {
     return [];
   }
 };
-
-export { fetchStates, fetchCities, statesData};
+const fetchStateName = async (geonameId) => {
+  try {
+    const response = await fetch(
+      `http://api.geonames.org/getJSON?geonameId=${geonameId}&username=darsh_0611`
+    );
+    const data = await response.json();
+    return data.name;
+  } catch (error) {
+    console.error("Error fetching city name:", error);
+    return null;
+  }
+};
+export { fetchStates, fetchCities, fetchStateName};

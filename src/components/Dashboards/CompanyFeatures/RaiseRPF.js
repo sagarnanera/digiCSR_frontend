@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -22,23 +23,21 @@ import {
   Tooltip,
   useToast,
 } from "@chakra-ui/react";
-import jwt_decode from "jwt-decode";
-import React, { useEffect, useState } from "react";
-import { sectorOptions } from "../../sectorData";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import { fetchStates } from "../../geoData";
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
+import { sectorOptions } from "../../sectorData";
 import CompanyNavigation from "../companyNavigation";
+import jwt_decode from "jwt-decode";
 
 function RaiseRFP() {
   const navigate = useNavigate();
-  const [title, setTitle] = useState();
-  const [AmountRfp, setAmountRfp] = useState();
-  const [Sector, setSector] = useState([]);
-  const [timeline, setTimeline] = useState();
+  const [title, setTitle] = useState("");
+  const [amountRfp, setAmountRfp] = useState("");
+  const [sector, setSector] = useState([]);
+  const [timeline, setTimeline] = useState("");
   const [states, setStates] = useState([]);
   const [selectedStates, setSelectedStates] = useState([]);
-  const [companyName, setCompanyName] = useState("");
   const [isSectorDropdownOpen, setIsSectorDropdownOpen] = useState(false);
   const [isTextAreaVisible, setIsTextAreaVisible] = useState(false);
   const [isSectorTextAreaVisible, setIsSectorTextAreaVisible] = useState(false);
@@ -46,17 +45,18 @@ function RaiseRFP() {
   const [selectedStatesText, setSelectedStatesText] = useState("");
   const [selectedSectorText, setSelectedSectorText] = useState("");
   const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
+  const [company, setCompany] = useState("");
   const toast = useToast();
 
   useEffect(() => {
-    const getStates = async () => {
+    const getStatesAndCompanyId = async () => {
       const fetchedStates = await fetchStates();
       setStates(fetchedStates);
+      const token = localStorage.getItem("CompanyAuthToken");
+      const decodedToken = await jwt_decode(token);
+      setCompany(decodedToken._id);
     };
-    const token = localStorage.getItem("CompanyAuthToken");
-    const decodedToken = jwt_decode(token);
-    setCompanyName(decodedToken.company_name);
-    getStates();
+    getStatesAndCompanyId();
   }, []);
 
   useEffect(() => {
@@ -64,8 +64,8 @@ function RaiseRFP() {
   }, [selectedStates]);
 
   useEffect(() => {
-    setSelectedSectorText(Sector.join(", "));
-  }, [Sector]);
+    setSelectedSectorText(sector.join(", "));
+  }, [sector]);
 
   const handleStateChange = (selectedItems) => {
     setSelectedStates(selectedItems);
@@ -96,18 +96,17 @@ function RaiseRFP() {
   };
 
   const submitHandler = async () => {
-    console.log(selectedStates, states, Sector);
     setLoading(true);
     if (
       !title ||
-      !AmountRfp ||
-      !Sector ||
+      !amountRfp ||
+      sector.length === 0 ||
       !timeline ||
       !selectedStates ||
-      !(timeline > 12)
+      Number(timeline) <= 12
     ) {
       toast({
-        title: "Please Fill all the Fields properly",
+        title: "Please fill all the fields properly",
         status: "warning",
         duration: 5000,
         isClosable: true,
@@ -129,17 +128,17 @@ function RaiseRFP() {
         headers: config.headers,
         body: JSON.stringify({
           title,
-          AmountRfp,
-          Sector,
+          amount: amountRfp,
+          sectors: sector,
           timeline,
-          selectedStates,
-          companyName,
+          states: selectedStates,
+          company,
         }),
       });
 
       if (response.ok) {
         toast({
-          title: "Rfp Raised Successfully",
+          title: "RFP Raised Successfully",
           status: "success",
           duration: 5000,
           isClosable: true,
@@ -148,7 +147,8 @@ function RaiseRFP() {
         navigate("/Company/TrackRPF", { replace: true });
         setLoading(false);
       } else {
-        throw new Error("Failed to rfp request. Please try again.");
+        console.warn(response);
+        throw new Error("Failed to raise RFP request. Please try again.");
       }
     } catch (error) {
       toast({
@@ -160,7 +160,7 @@ function RaiseRFP() {
         position: "bottom",
       });
       setLoading(false);
-      return; // Prevent further execution
+      return;
     }
   };
 
@@ -170,7 +170,7 @@ function RaiseRFP() {
       <Container maxW="xl">
         <Box
           d="flex"
-          textAlign={"center"}
+          textAlign="center"
           p={3}
           bg="white"
           w="100%"
@@ -183,29 +183,28 @@ function RaiseRFP() {
           </Text>
         </Box>
         <Box p={4} bg="white" w="100%" borderRadius="lg" borderWidth="1px">
-          <VStack spacing={"5px"}>
+          <VStack spacing={5}>
             <FormControl id="RFPTitle" isRequired>
               <FormLabel>RFP Title</FormLabel>
               <Input
-                placeholder={"Enter Title for RFP"}
-                value={title || ""}
+                placeholder="Enter Title for RFP"
+                value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
             </FormControl>
-            {/* ---------------------------------------------------------- */}
             <FormControl id="AmountRfp" isRequired>
               <FormLabel>Amount of RFP</FormLabel>
               <Input
-                type={"number"}
-                placeholder={"Amount of RFP"}
-                value={AmountRfp || null}
+                type="number"
+                placeholder="Amount of RFP"
+                value={amountRfp}
                 onChange={(e) => setAmountRfp(e.target.value)}
               />
             </FormControl>
-            <FormControl isRequired={true}>
+            <FormControl isRequired>
               <FormLabel>Sectors to provide CSR</FormLabel>
               <Checkbox
-                isChecked={Sector.length === sectorOptions.length}
+                isChecked={sector.length === sectorOptions.length}
                 onChange={handleAllChecked}
                 w="100%"
               >
@@ -215,7 +214,7 @@ function RaiseRFP() {
                 <Menu closeOnSelect={false}>
                   <MenuButton
                     as={Button}
-                    w={"100%"}
+                    w="100%"
                     rightIcon={
                       isSectorDropdownOpen ? (
                         <ChevronUpIcon />
@@ -226,14 +225,14 @@ function RaiseRFP() {
                     onClick={handleToggleSectorDropdown}
                     display="flex"
                     justifyContent="flex-start"
-                    isopen={isSectorDropdownOpen.toString()} // Manually control the isOpen state
+                    isOpen={isSectorDropdownOpen.toString()}
                   >
                     Select Sector
                   </MenuButton>
                   <MenuList maxH="200px" overflowY="auto">
                     <CheckboxGroup
                       colorScheme="teal"
-                      value={Sector || []}
+                      value={sector}
                       onChange={handleSectorChange}
                     >
                       {sectorOptions.map((option) => (
@@ -250,30 +249,30 @@ function RaiseRFP() {
             </FormControl>
             {isSectorTextAreaVisible && (
               <Tooltip
-                label={Sector.join(", ")}
-                isDisabled={Sector.length <= 5}
+                label={sector.join(", ")}
+                isDisabled={sector.length <= 5}
               >
                 <Textarea
                   placeholder="Selected Sectors"
                   isReadOnly
                   rows={2}
-                  height={"fit-content"}
+                  height="fit-content"
                   textOverflow="ellipsis"
-                  resize={"none"}
+                  resize="none"
                 >
-                  {Sector.length <= 5
+                  {sector.length <= 5
                     ? selectedSectorText
-                    : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`}
+                    : `${sector.slice(0, 5)},..+${sector.length - 5} more`}
                 </Textarea>
               </Tooltip>
             )}
-            <FormControl id="timeline" isRequired={true}>
+            <FormControl id="timeline" isRequired>
               <FormLabel>Timeline for money utilization</FormLabel>
               <NumberInput>
                 <NumberInputField
                   placeholder="mm (least value should be of 12 months)"
                   minLength={2}
-                  value={timeline || 12}
+                  value={timeline}
                   onChange={(e) => setTimeline(e.target.value)}
                 />
                 <NumberInputStepper>
@@ -282,13 +281,13 @@ function RaiseRFP() {
                 </NumberInputStepper>
               </NumberInput>
             </FormControl>
-            <FormControl isRequired={true}>
+            <FormControl isRequired>
               <FormLabel>States</FormLabel>
               <Box>
                 <Menu closeOnSelect={false}>
                   <MenuButton
                     as={Button}
-                    w={"100%"}
+                    w="100%"
                     rightIcon={
                       isStateDropdownOpen ? (
                         <ChevronUpIcon />
@@ -299,7 +298,7 @@ function RaiseRFP() {
                     onClick={handleToggleStateDropdown}
                     display="flex"
                     justifyContent="flex-start"
-                    isopen={isStateDropdownOpen.toString()} // Manually control the isOpen state
+                    isOpen={isStateDropdownOpen.toString()}
                   >
                     Select State
                   </MenuButton>
@@ -331,9 +330,9 @@ function RaiseRFP() {
                   placeholder="Selected States"
                   isReadOnly
                   rows={2}
-                  height={"fit-content"}
+                  height="fit-content"
                   textOverflow="ellipsis"
-                  resize={"none"}
+                  resize="none"
                 >
                   {selectedStates.length <= 6
                     ? selectedStatesText
@@ -345,10 +344,10 @@ function RaiseRFP() {
             )}
             <Button
               colorScheme="blue"
-              w={"100%"}
+              w="100%"
               onClick={submitHandler}
               style={{ marginTop: 15 }}
-              isLoading = {loading}
+              isLoading={loading}
             >
               Raise Request
             </Button>

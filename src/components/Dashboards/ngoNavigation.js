@@ -3,12 +3,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Avatar, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import classes from "../../CSS/ComCss.module.css";
 
-const CompanyNavigation = () => {
+const NgoNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const handleClick = () => {
-    // localStorage.removeItem("CompanyAuthToken");
+    localStorage.removeItem("NgoAuthToken");
     navigate("/", { replace: true });
   };
 
@@ -32,7 +32,7 @@ const CompanyNavigation = () => {
                 location.pathname === "/Ngo/RPFs" ? classes.active : ""
               }
             >
-              Raise RPFs
+              RPF Requests
             </Link>
           </li>
           <li>
@@ -42,17 +42,17 @@ const CompanyNavigation = () => {
                 location.pathname === "/Ngo/postblogs" ? classes.active : ""
               }
             >
-              Track RPFs
+              Post Success
             </Link>
           </li>
           <li>
             <Link
               to="/Ngo/acceptedrfps"
               className={
-                location.pathname === "/Ngo/acceptedrfps" ? classes.active : ""
+                location.pathname === "/Ngo/acceptedrpfs" ? classes.active : ""
               }
             >
-              Stats
+              Accepted RPFs
             </Link>
           </li>
           <li>
@@ -62,7 +62,7 @@ const CompanyNavigation = () => {
                 location.pathname === "/Ngo/media" ? classes.active : ""
               }
             >
-              NGO Reviews
+              Media Section
             </Link>
           </li>
           <li>
@@ -86,4 +86,4 @@ const CompanyNavigation = () => {
   );
 };
 
-export default CompanyNavigation;
+export default NgoNavigation;

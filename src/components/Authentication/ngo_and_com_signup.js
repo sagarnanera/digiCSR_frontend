@@ -54,40 +54,52 @@ function NgoAndComSignup() {
       setLoading(false);
       return;
     }
-    try {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
+    if (selectedOption === "Company") {
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
 
-      const response = await fetch("http://localhost:4000/company/signup", {
-        method: "POST",
-        headers: config.headers,
-        body: JSON.stringify({
-          cin,
-          email,
-        }),
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Otp Sent Successfully",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "bottom",
+        const response = await fetch("http://localhost:4000/company/signup", {
+          method: "POST",
+          headers: config.headers,
+          body: JSON.stringify({
+            csr :cin,
+            email :email,
+          }),
         });
-        setLoading(false);
-        setShowOtpInput(true);
-        setShowOtpButton(false);
-        setShowSignupButton(true);
-      } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.message);
+
+        if (response.ok) {
+          toast({
+            title: "Otp Sent Successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          setLoading(false);
+          setShowOtpInput(true);
+          setShowOtpButton(false);
+          setShowSignupButton(true);
+        } else {
+          const errorData = await response.json();
+          setErrorMessage(errorData.message);
+          toast({
+            title: "Error Occurred!",
+            description: errorMessage,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          setLoading(false);
+        }
+      } catch (error) {
         toast({
           title: "Error Occurred!",
-          description: errorMessage,
+          description: "Failed to send OTP. Please try again later.",
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -95,16 +107,59 @@ function NgoAndComSignup() {
         });
         setLoading(false);
       }
-    } catch (error) {
-      toast({
-        title: "Error Occurred!",
-        description: "Failed to send OTP. Please try again later.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setLoading(false);
+    } else if (selectedOption === "Ngo") {
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+
+        const response = await fetch("http://localhost:4000/ngo/signup", {
+          method: "POST",
+          headers: config.headers,
+          body: JSON.stringify({
+            cin,
+            email,
+          }),
+        });
+
+        if (response.ok) {
+          toast({
+            title: "Otp Sent Successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          setLoading(false);
+          setShowOtpInput(true);
+          setShowOtpButton(false);
+          setShowSignupButton(true);
+        } else {
+          const errorData = await response.json();
+          setErrorMessage(errorData.message);
+          toast({
+            title: "Error Occurred!",
+            description: errorMessage,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          setLoading(false);
+        }
+      } catch (error) {
+        toast({
+          title: "Error Occurred!",
+          description: "Failed to send OTP. Please try again later.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+      }
     }
   };
 
@@ -166,6 +221,64 @@ function NgoAndComSignup() {
         });
         setLoading(false);
         return; // Prevent further execution
+      }
+    } else if (selectedOption === "Ngo") {
+      setLoading(true);
+      if (!cin || !email || !otp) {
+        toast({
+          title: "Please Fill all the Fields",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+
+        const response = await fetch("http://localhost:4000/ngo/verify", {
+          method: "POST",
+          headers: config.headers,
+          body: JSON.stringify({
+            cin,
+            email,
+            otp,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          toast({
+            title: "Registration Successful",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          localStorage.setItem("CompanyAuthToken", JSON.stringify(data));
+          setLoading(false);
+          navigate("/Ngo/editprofile", { replace: true });
+        } else {
+          throw new Error("Failed to verify. Please try again.");
+        }
+      } catch (error) {
+        toast({
+          title: "Error Occurred!",
+          description: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+        return;
       }
     }
   };

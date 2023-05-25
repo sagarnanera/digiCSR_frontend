@@ -26,10 +26,12 @@ import {
   Stack,
   Select,
   useToast,
+  Tooltip,
+  Textarea,
 } from "@chakra-ui/react";
 // import CompanyNavigation from "../companyNavigation";
 import { sectorOptions } from "../../sectorData";
-import { fetchStates, fetchCities } from "../../geoData";
+import { fetchStates, fetchCities, fetchStateName } from "../../geoData";
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -53,9 +55,12 @@ const EditProfile = () => {
   const [Sector, setSector] = useState([]);
   const [taxEligibility, setTaxEligibility] = useState([]);
   const [states, setStates] = useState([]);
+  const [selectedstates, setselectedStates] = useState([]);
   const [cities, setCities] = useState([]);
+  const [selectedcities, setselectedCities] = useState([]);
   const [pincode, setPincode] = useState();
-
+  const [selectedSectorText, setSelectedSectorText] = useState("");
+  const [isSectorTextAreaVisible, setIsSectorTextAreaVisible] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
@@ -76,9 +81,43 @@ const EditProfile = () => {
     setCertificate(file);
   };
   const handleStateChange = async (stateId) => {
+    // console.log(states);
     const fetchedCities = await fetchCities(stateId);
+    const fetchedstateName = await fetchStateName(stateId);
+    setselectedStates(fetchedstateName);
     setCities(fetchedCities);
   };
+  const handlecityChange = async (cityId) => {
+    setselectedCities(cityId);
+  };
+
+  const handleAllChecked = (e) => {
+    const allChecked = e.target.checked;
+    if (allChecked) {
+      const allSectors = sectorOptions.map((option) => option.label);
+      setSector(allSectors);
+    } else {
+      setSector([]);
+    }
+  };
+  useEffect(() => {
+    setSelectedSectorText(Sector.join(", "));
+  }, [Sector]);
+
+  const handleSectorChange = (selectedItems) => {
+    setSector(selectedItems);
+    // console.log(selectedcities);
+  };
+
+  const handleTaxEligibilityChange = (selectedValues) => {
+    setTaxEligibility(selectedValues);
+  };
+
+  const handleToggleDropdown = () => {
+    setIsDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
+    setIsSectorTextAreaVisible(!isSectorTextAreaVisible);
+  };
+
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -93,7 +132,8 @@ const EditProfile = () => {
       !Sector.length ||
       !taxEligibility.length ||
       !pincode ||
-      !cities.length ||
+      !selectedstates ||
+      !selectedcities ||
       (establishmentyear && establishmentyear.length !== 4) ||
       (personPhone && personPhone.length !== 10) ||
       !(pincode && pincode.length <= 10 && pincode.length >= 5) ||
@@ -126,29 +166,27 @@ const EditProfile = () => {
     try {
       const url = `http://localhost:4000/company/add-profile/${userId}`; // Replace with your API endpoint URL
 
-      const payload = {
-        company_name: companyName,
-        city: "hyd",
-        state: "ap",
-        pincode: pincode,
-        establishment_year: establishmentyear,
-        cp_name: personName,
-        cp_email: personEmail,
-        cp_designation: personDesignation,
-        cp_phone: personPhone,
-        registration_certificate: certificate,
-        sectors: Sector,
-        taxEligibility: taxEligibility,
-      };
-
-      const formData = new FormData();
-      formData.append("registration_certificate", certificate);
-      formData.append("data", JSON.stringify(payload));
-
       const response = await fetch(url, {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          company_name: companyName,
+          pincode: pincode,
+          establishment_year: establishmentyear,
+          cp_name: personName,
+          cp_email: personEmail,
+          cp_designation: personDesignation,
+          cp_phone: personPhone,
+          tax_comp: taxEligibility,
+          sectors: Sector,
+          registration_certificate: certificate,
+          city: selectedcities,
+          state: selectedstates,
+        }),
       });
+      const data = await response.json();
       if (response.ok) {
         toast({
           title: "Profile Edited Successfully",
@@ -158,9 +196,10 @@ const EditProfile = () => {
           position: "bottom",
         });
         setLoading(false);
+        console.log(data);
         navigate("/Company", { replace: true });
       } else {
-        console.warn(payload);
+        console.warn(data);
         throw new Error("Failed to create Profile. Please try again.");
       }
     } catch (error) {
@@ -176,28 +215,6 @@ const EditProfile = () => {
       setLoading(false);
       return; // Prevent further execution
     }
-  };
-
-  const handleAllChecked = (e) => {
-    const allChecked = e.target.checked;
-    if (allChecked) {
-      const allSectors = sectorOptions.map((option) => option.value);
-      setSector(allSectors);
-    } else {
-      setSector([]);
-    }
-  };
-
-  const handleSectorChange = (selectedItems) => {
-    setSector(selectedItems);
-  };
-
-  const handleTaxEligibilityChange = (selectedValues) => {
-    setTaxEligibility(selectedValues);
-  };
-
-  const handleToggleDropdown = () => {
-    setIsDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
   };
 
   return (
@@ -292,10 +309,13 @@ const EditProfile = () => {
                 >
                   <FormControl>
                     <FormLabel htmlFor="city">City:</FormLabel>
-                    <Select id="city">
+                    <Select
+                      id="city"
+                      onChange={(e) => handlecityChange(e.target.value)}
+                    >
                       <option value="">Select a city</option>
                       {cities.map((city) => (
-                        <option key={city.geonameId} value={city.geonameId}>
+                        <option key={city.geonameId} value={city.name}>
                           {city.name}
                         </option>
                       ))}
@@ -402,7 +422,7 @@ const EditProfile = () => {
           </Flex>
           <br />
           <Box flex={5} w="90%">
-            <FormControl isRequired={true}>
+            <FormControl isRequired>
               <FormLabel>Sectors to provide CSR</FormLabel>
               <Checkbox
                 isChecked={Sector.length === sectorOptions.length}
@@ -411,34 +431,58 @@ const EditProfile = () => {
               >
                 All Sectors
               </Checkbox>
-              <Menu closeOnSelect={false}>
-                <MenuButton
-                  as={Button}
-                  rightIcon={
-                    isDropdownOpen ? <ChevronUpIcon /> : <ChevronDownIcon />
-                  }
-                  onClick={handleToggleDropdown}
-                  display="flex"
-                  justifyContent="flex-start"
-                  isopen={isDropdownOpen.toString()} // Manually control the isOpen state
-                >
-                  Select Sector
-                </MenuButton>
-                <MenuList maxH="200px" overflowY="auto">
-                  <CheckboxGroup
-                    colorScheme="teal"
-                    value={Sector || []}
-                    onChange={handleSectorChange}
+              <Box>
+                <Menu closeOnSelect={false}>
+                  <MenuButton
+                    as={Button}
+                    w="100%"
+                    rightIcon={
+                      isDropdownOpen ? <ChevronUpIcon /> : <ChevronDownIcon />
+                    }
+                    onClick={handleToggleDropdown}
+                    display="flex"
+                    justifyContent="flex-start"
+                    isOpen={isDropdownOpen.toString()}
                   >
-                    {sectorOptions.map((option) => (
-                      <MenuItem key={option.value}>
-                        <Checkbox value={option.value}>{option.label}</Checkbox>
-                      </MenuItem>
-                    ))}
-                  </CheckboxGroup>
-                </MenuList>
-              </Menu>
+                    Select Sector
+                  </MenuButton>
+                  <MenuList maxH="200px" overflowY="auto">
+                    <CheckboxGroup
+                      colorScheme="teal"
+                      value={Sector}
+                      onChange={handleSectorChange}
+                    >
+                      {sectorOptions.map((option) => (
+                        <MenuItem key={option.value}>
+                          <Checkbox id={option.id} value={option.label}>
+                            {option.label}
+                          </Checkbox>
+                        </MenuItem>
+                      ))}
+                    </CheckboxGroup>
+                  </MenuList>
+                </Menu>
+              </Box>
             </FormControl>
+            {isSectorTextAreaVisible && (
+              <Tooltip
+                label={Sector.join(", ")}
+                isDisabled={Sector.length <= 5}
+              >
+                <Textarea
+                  placeholder="Selected Sectors"
+                  isReadOnly
+                  rows={2}
+                  height="fit-content"
+                  textOverflow="ellipsis"
+                  resize="none"
+                >
+                  {Sector.length <= 5
+                    ? selectedSectorText
+                    : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`}
+                </Textarea>
+              </Tooltip>
+            )}
           </Box>
           <br />
           <Box flex={5} w="90%">
