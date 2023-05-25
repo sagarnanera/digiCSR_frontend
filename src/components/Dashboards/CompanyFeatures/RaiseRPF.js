@@ -22,6 +22,7 @@ import {
   Tooltip,
   useToast,
 } from "@chakra-ui/react";
+import jwt_decode from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import { sectorOptions } from "../../sectorData";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +38,7 @@ function RaiseRFP() {
   const [timeline, setTimeline] = useState();
   const [states, setStates] = useState([]);
   const [selectedStates, setSelectedStates] = useState([]);
+  const [companyName, setCompanyName] = useState("");
   const [isSectorDropdownOpen, setIsSectorDropdownOpen] = useState(false);
   const [isTextAreaVisible, setIsTextAreaVisible] = useState(false);
   const [isSectorTextAreaVisible, setIsSectorTextAreaVisible] = useState(false);
@@ -51,6 +53,9 @@ function RaiseRFP() {
       const fetchedStates = await fetchStates();
       setStates(fetchedStates);
     };
+    const token = localStorage.getItem("CompanyAuthToken");
+    const decodedToken = jwt_decode(token);
+    setCompanyName(decodedToken.company_name);
     getStates();
   }, []);
 
@@ -128,12 +133,13 @@ function RaiseRFP() {
           Sector,
           timeline,
           selectedStates,
+          companyName,
         }),
       });
 
       if (response.ok) {
         toast({
-          title: "RFp Raised Successfully",
+          title: "Rfp Raised Successfully",
           status: "success",
           duration: 5000,
           isClosable: true,
