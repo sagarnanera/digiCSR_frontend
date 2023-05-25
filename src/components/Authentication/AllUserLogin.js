@@ -27,7 +27,6 @@ function AllUserLogin() {
     setShowOtpInput(false);
     setOtp();
     setLoading(true);
-
     if (!email || email.trim() === "") {
       toast({
         title: "Please fill in all the fields",
@@ -217,6 +216,7 @@ function AllUserLogin() {
           Login
         </Button>
       )}
+      {showOtpInput && <Button onClick={handleSendOtp}>Send OTP Again</Button>}
     </VStack>
   );
 }

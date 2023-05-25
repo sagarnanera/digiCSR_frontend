@@ -20,6 +20,7 @@ import {
   Textarea,
   VStack,
   Tooltip,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { sectorOptions } from "../../sectorData";
@@ -39,9 +40,11 @@ function RaiseRFP() {
   const [isSectorDropdownOpen, setIsSectorDropdownOpen] = useState(false);
   const [isTextAreaVisible, setIsTextAreaVisible] = useState(false);
   const [isSectorTextAreaVisible, setIsSectorTextAreaVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selectedStatesText, setSelectedStatesText] = useState("");
   const [selectedSectorText, setSelectedSectorText] = useState("");
   const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     const getStates = async () => {
@@ -89,7 +92,70 @@ function RaiseRFP() {
 
   const submitHandler = async () => {
     console.log(selectedStates, states, Sector);
-    navigate("/Company/TrackRPF", { replace: true });
+    setLoading(true);
+    if (
+      !title ||
+      !AmountRfp ||
+      !Sector ||
+      !timeline ||
+      !selectedStates ||
+      !(timeline > 12)
+    ) {
+      toast({
+        title: "Please Fill all the Fields properly",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const response = await fetch("http://localhost:4000/add-rfp", {
+        method: "POST",
+        headers: config.headers,
+        body: JSON.stringify({
+          title,
+          AmountRfp,
+          Sector,
+          timeline,
+          selectedStates,
+        }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "RFp Raised Successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        navigate("/Company/TrackRPF", { replace: true });
+        setLoading(false);
+      } else {
+        throw new Error("Failed to rfp request. Please try again.");
+      }
+    } catch (error) {
+      toast({
+        title: "Error Occurred!",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return; // Prevent further execution
+    }
   };
 
   return (
@@ -276,6 +342,7 @@ function RaiseRFP() {
               w={"100%"}
               onClick={submitHandler}
               style={{ marginTop: 15 }}
+              isLoading = {loading}
             >
               Raise Request
             </Button>
