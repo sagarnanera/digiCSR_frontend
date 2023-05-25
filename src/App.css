@@ -21,3 +21,8 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.textarea {
+  height: fit-content !important;
+  min-height: fit-content !important;
+}
