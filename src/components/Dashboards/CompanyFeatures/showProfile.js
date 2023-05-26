@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import CompanyNavigation from "../companyNavigation";
-import { Button, Box, Heading, Text, useToast } from "@chakra-ui/react";
+import { Button, Box, Heading, Text, IconButton, useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { CloseIcon } from "@chakra-ui/icons";
 import jwt_decode from "jwt-decode";
 
 const ShowProfile = () => {
@@ -9,7 +10,7 @@ const ShowProfile = () => {
   const [profileData, setProfileData] = useState(null);
   const [companyId, setCompanyId] = useState("");
   const toast = useToast();
-
+  const [showCertificate, setShowCertificate] = useState(false);
   useEffect(() => {
     const token = localStorage.getItem("CompanyAuthToken");
     const decodedToken = jwt_decode(token);
@@ -29,14 +30,7 @@ const ShowProfile = () => {
         throw new Error("Failed to Get Profile.please Reload");
       }
     } catch (error) {
-      toast({
-        title: "Error Occurred!",
-        description: error.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
+      console.log(error.message);
     }
   };
 
@@ -51,18 +45,8 @@ const ShowProfile = () => {
       );
       if (response.ok) {
         const blob = await response.blob();
-        // Use the blob as needed, such as downloading the file
         const url = URL.createObjectURL(blob);
-
-        // Create a temporary link element
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "certificate.pdf"; // Set the desired filename for the download
-        link.click();
-
-        // Clean up the URL and remove the link element
-        URL.revokeObjectURL(url);
-        link.remove();
+        setShowCertificate(url);
       } else {
         const data = await response.json();
         console.log(data.message);
@@ -78,6 +62,9 @@ const ShowProfile = () => {
         position: "bottom",
       });
     }
+  };
+  const handleCloseCertificate = () => {
+    setShowCertificate(false);
   };
 
   const submitHandler = async () => {
@@ -154,11 +141,35 @@ const ShowProfile = () => {
               <Button
                 colorScheme="blue"
                 w={"20vw"}
+                mt={4}
+                onClick={fetchCertificate}
+              >
+                Show Certificate
+              </Button>
+              {showCertificate && (
+                <Box mt={0}>
+                  <IconButton
+                    icon={<CloseIcon />}
+                    colorScheme="red"
+                    mt={2}
+                    onClick={handleCloseCertificate}
+                  />
+                  <embed
+                    src={showCertificate}
+                    type="application/pdf"
+                    width="100%"
+                    height="500px"
+                  />
+                </Box>
+              )}
+              {/* <Button
+                colorScheme="blue"
+                w={"20vw"}
                 mt={6}
                 onClick={fetchCertificate}
               >
                 Download Certificate
-              </Button>
+              </Button> */}
             </Box>
           </>
         ) : (
