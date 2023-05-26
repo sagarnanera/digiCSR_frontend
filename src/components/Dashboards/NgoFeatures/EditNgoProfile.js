@@ -346,6 +346,7 @@ const EditNgoProfile = () => {
                           <Stack direction="row">
                             <Radio value="Male">Male</Radio>
                             <Radio value="Female">Female</Radio>
+                            <Radio value="Others">Others</Radio>
                           </Stack>
                         </RadioGroup>
                       </FormControl>
