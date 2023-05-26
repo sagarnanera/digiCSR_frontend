@@ -45,6 +45,8 @@ const EditProfile = () => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const [companyName, setCompanyName] = useState("");
+  const [CompanySummary, setCompanySummary] = useState("");
+  const [rows, setRows] = useState(1);
   const [establishmentyear, setEstablishmentYear] = useState();
   const [personName, setPersonName] = useState();
   const [personEmail, setPersonEmail] = useState();
@@ -117,7 +119,20 @@ const EditProfile = () => {
     setIsDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
     setIsSectorTextAreaVisible(!isSectorTextAreaVisible);
   };
-
+  const handleChange = (event) => {
+    setCompanySummary(event.target.value);
+    const textareaLineHeight = 24; // Set the line height of the textarea
+    const previousRows = event.target.rows;
+    event.target.rows = 1; // Reset the rows to 1 to calculate the new height
+    const currentRows = Math.ceil(
+      event.target.scrollHeight / textareaLineHeight
+    );
+    if (currentRows === previousRows) {
+      event.target.rows = currentRows;
+    } else {
+      setRows(currentRows);
+    }
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -125,6 +140,7 @@ const EditProfile = () => {
     if (
       !companyName ||
       !establishmentyear ||
+      !CompanySummary ||
       !personName ||
       !personEmail ||
       !personPhone ||
@@ -173,6 +189,7 @@ const EditProfile = () => {
         },
         body: JSON.stringify({
           company_name: companyName,
+          summary: CompanySummary,
           pincode: pincode,
           establishment_year: establishmentyear,
           cp_name: personName,
@@ -276,6 +293,25 @@ const EditProfile = () => {
                 </NumberInput>
               </FormControl>
             </Box>
+          </Flex>
+          <br />
+          <Flex
+            flexWrap="wrap"
+            justifyContent={{ base: "center", md: "flex-start" }}
+            flex={5}
+            w="90%"
+          >
+            <FormControl id="Ngo" isRequired={true}>
+              <FormLabel>Ngo Summary</FormLabel>
+
+              <Textarea
+                value={CompanySummary}
+                rows={rows}
+                onChange={handleChange}
+                placeholder="Enter text..."
+                resize="none"
+              ></Textarea>
+            </FormControl>
           </Flex>
           <br />
           <Box flex={5} w="90%">
@@ -472,7 +508,8 @@ const EditProfile = () => {
                 <Textarea
                   placeholder="Selected Sectors"
                   isReadOnly
-                  rows={2}
+                  rows={rows}
+                  onChange={handleChange}
                   height="fit-content"
                   textOverflow="ellipsis"
                   resize="none"

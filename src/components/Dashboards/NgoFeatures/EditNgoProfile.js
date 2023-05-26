@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import jwt_decode from "jwt-decode";
+import jwt_decode from "jwt-decode";
 import {
   Box,
   Container,
@@ -25,6 +25,7 @@ import {
   Tooltip,
   WrapItem,
   Wrap,
+  useToast,
 } from "@chakra-ui/react";
 import {
   ChevronDownIcon,
@@ -44,6 +45,8 @@ const EditNgoProfile = () => {
   const [rows, setRows] = useState(1);
   const [states, setStates] = useState([]);
   const [sector, setSector] = useState([]);
+  const [CSRBudget, setCSRBudget] = useState();
+  const [userId, setUserId] = useState("");
   const [selectedStates, setSelectedStates] = useState([]);
   const [isSectorDropdownOpen, setIsSectorDropdownOpen] = useState(false);
   const [isTextAreaVisible, setIsTextAreaVisible] = useState(false);
@@ -51,6 +54,9 @@ const EditNgoProfile = () => {
   const [selectedStatesText, setSelectedStatesText] = useState("");
   const [selectedSectorText, setSelectedSectorText] = useState("");
   const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [memberloading, setmemberLoading] = useState(false);
+  const toast = useToast();
 
   const [boardMembers, setBoardMembers] = useState([]);
 
@@ -85,6 +91,24 @@ const EditNgoProfile = () => {
   };
 
   const handleSaveMember = (index) => {
+    const member = boardMembers[index];
+    if (
+      member.name.trim() === "" ||
+      member.gender.trim() === "" ||
+      member.dinNumber.trim() === "" ||
+      member.phoneNo.trim() === "" ||
+      member.designation.trim() === ""
+    ) {
+      toast({
+        title: "Please Fill all the Fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
     setBoardMembers((prevBoardMembers) => {
       const updatedMembers = [...prevBoardMembers];
       updatedMembers[index].isEditing = false; // Set isEditing to false to show the text form
@@ -112,6 +136,10 @@ const EditNgoProfile = () => {
       const fetchedStates = await fetchStates();
       setStates(fetchedStates);
     };
+    const token = localStorage.getItem("NgoAuthToken");
+    const decodedToken = jwt_decode(token);
+    // Set the user's ID in the state variable
+    setUserId(decodedToken._id);
     getStatesAndCompanyId();
   }, []);
 
@@ -151,6 +179,72 @@ const EditNgoProfile = () => {
     setIsTextAreaVisible(!isTextAreaVisible);
   };
 
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    if (
+      !NgoName ||
+      !NgoSummary ||
+      !sector ||
+      !selectedStates ||
+      boardMembers.length === 0
+    ) {
+      toast({
+        title: "Please Fill all the Fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setmemberLoading(false);
+      return;
+    }
+    try {
+      const url = `http://localhost:4000/NGO/add-profile/${userId}`; // Replace with your API endpoint URL
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          NGO_name: NgoName,
+          summary: NgoSummary,
+          board_members: boardMembers,
+          csr_budget: CSRBudget,
+          operation_area: selectedStates,
+          sectors: sector,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast({
+          title: "Profile Edited Successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+        console.log(data);
+        // navigate("/Company", { replace: true });
+      } else {
+        console.warn(data);
+        throw new Error("Failed to create Profile. Please try again.");
+      }
+    } catch (error) {
+      console.log(error.message);
+      toast({
+        title: "Error Occurred!",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return; // Prevent further execution
+    }
+  };
   return (
     <Container centerContent>
       <Box
@@ -315,7 +409,7 @@ const EditNgoProfile = () => {
                     </>
                   ) : (
                     <Box>
-                      <Wrap align="center" justify="center" spacing={3} mb={4}>
+                      <Wrap align="center" justify="center" spacing={3} mb={-2}>
                         <WrapItem>
                           <Text>
                             <strong>Name:</strong> {member.name}
@@ -341,15 +435,17 @@ const EditNgoProfile = () => {
                             <strong>Designation:</strong> {member.designation}
                           </Text>
                         </WrapItem>
+                        <WrapItem>
+                          <Button
+                            colorScheme="teal"
+                            size="sm"
+                            ml={4}
+                            onClick={() => handleEditMember(index)}
+                          >
+                            <EditIcon mr={1} /> Edit
+                          </Button>
+                        </WrapItem>
                       </Wrap>
-                      <Button
-                        colorScheme="teal"
-                        size="sm"
-                        ml={4}
-                        onClick={() => handleEditMember(index)}
-                      >
-                        <EditIcon mr={1} /> Edit
-                      </Button>
                     </Box>
                   )}
                 </Box>
@@ -374,7 +470,14 @@ const EditNgoProfile = () => {
             >
               <FormControl id="AmountRfp" isRequired>
                 <FormLabel>CSR Budget of this year</FormLabel>
-                <Input type="number" placeholder="CSR Budget" />
+                <Input
+                  type="number"
+                  placeholder="CSR Budget"
+                  value={CSRBudget}
+                  onChange={(e) => {
+                    setCSRBudget(e.target.value);
+                  }}
+                />
               </FormControl>
             </Box>
           </Flex>
@@ -524,7 +627,7 @@ const EditNgoProfile = () => {
             colorScheme="teal"
             variant="solid"
             w={"10vw"}
-            // onClick={submitHandler}
+            onClick={submitHandler}
             // isLoading={loading}
           >
             Save
