@@ -43,7 +43,7 @@ const ChooseUserComponent = () => {
             <div>
               {selectedOption === "Company" && <CompanyAuth />}
               {selectedOption === "Benificiary" && <BenificiaryAuth />}
-              {selectedOption === "NGO" && <NgoAuth />}
+              {selectedOption === "Ngo" && <NgoAuth />}
             </div>
           ) : (
             <VStack>
@@ -52,7 +52,7 @@ const ChooseUserComponent = () => {
                 <Select value={selectedOption} onChange={handleOptionChange}>
                   <option value="">Select an option</option>
                   <option value="Company">Company</option>
-                  <option value="NGO">NGO</option>
+                  <option value="Ngo">NGO</option>
                   <option value="Benificiary">
                     Benificiary or Common User
                   </option>

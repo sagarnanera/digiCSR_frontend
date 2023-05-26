@@ -1,6 +1,5 @@
 import React from "react";
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
-// import Login from "../components/Authentication/Login";
 import NgoAndComSignup from "../../components/Authentication/ngo_and_com_signup";
 import AllUserLogin from "../../components/Authentication/AllUserLogin";
 

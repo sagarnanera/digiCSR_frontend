@@ -47,7 +47,7 @@ const NgoNavigation = () => {
           </li>
           <li>
             <Link
-              to="/Ngo/acceptedrfps"
+              to="/Ngo/acceptedrpfs"
               className={
                 location.pathname === "/Ngo/acceptedrpfs" ? classes.active : ""
               }

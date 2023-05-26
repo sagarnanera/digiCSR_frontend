@@ -66,8 +66,8 @@ function NgoAndComSignup() {
           method: "POST",
           headers: config.headers,
           body: JSON.stringify({
-            csr :cin,
-            email :email,
+            cin,
+            email,
           }),
         });
 
@@ -119,8 +119,8 @@ function NgoAndComSignup() {
           method: "POST",
           headers: config.headers,
           body: JSON.stringify({
-            cin,
-            email,
+            csr: cin,
+            email: email,
           }),
         });
 
@@ -247,9 +247,9 @@ function NgoAndComSignup() {
           method: "POST",
           headers: config.headers,
           body: JSON.stringify({
-            cin,
-            email,
-            otp,
+            csr: cin,
+            email: email,
+            otp: otp,
           }),
         });
 
@@ -262,7 +262,7 @@ function NgoAndComSignup() {
             isClosable: true,
             position: "bottom",
           });
-          localStorage.setItem("CompanyAuthToken", JSON.stringify(data));
+          localStorage.setItem("NgoAuthToken", JSON.stringify(data));
           setLoading(false);
           navigate("/Ngo/editprofile", { replace: true });
         } else {

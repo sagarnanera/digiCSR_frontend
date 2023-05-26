@@ -1,8 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import "./App.css";
-import ChooseUserComponent, {
-  SelectedOptionContext,
-} from "./components/chooseUserComponent";
+import ChooseUserComponent from "./components/chooseUserComponent";
 import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import CompanyDashboard from "./pages/Dashboards/CompanyDashboard";
 import TrackRPF from "./components/Dashboards/CompanyFeatures/TrackRPF";
@@ -20,27 +18,22 @@ import ShowNgoProfile from "./components/Dashboards/NgoFeatures/ShowNgoProfile";
 import EditNgoProfile from "./components/Dashboards/NgoFeatures/EditNgoProfile";
 
 function App() {
-  const selectedOption = useContext(SelectedOptionContext);
-  let authToken = null;
-  if (selectedOption === "Company") {
-    authToken = localStorage.getItem("CompanyAuthToken");
-  } else if (selectedOption === "Ngo") {
-    authToken = localStorage.getItem("NgoAuthToken");
-  }
-  const isAuthenticated = authToken !== null;
+  const authToken = localStorage.getItem("CompanyAuthToken");
+  const NgoauthToken = localStorage.getItem("NgoAuthToken");
+  const isCompanyAuthenticated = authToken !== null;
+  const isNgoAuthenticated = NgoauthToken !== null;
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isCompanyAuthenticated || !isNgoAuthenticated) {
       navigate("/", { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isCompanyAuthenticated, isNgoAuthenticated, navigate]);
   return (
     <div className="App">
       <Routes>
-
-
-        {isAuthenticated === "Company" ? (
+        {isCompanyAuthenticated ? (
           <>
             <Route path="/" element={<ChooseUserComponent />} />
             <Route path="/Company" element={<CompanyDashboard />} />
@@ -56,9 +49,7 @@ function App() {
             <Route path="/" element={<ChooseUserComponent />} />
           </>
         )}
-
-        
-        {isAuthenticated === "Ngo" ? (
+        {isNgoAuthenticated ? (
           <>
             <Route path="/" element={<ChooseUserComponent />} />
             <Route path="/Ngo" element={<NgoDashboard />} />
@@ -74,7 +65,6 @@ function App() {
             <Route path="/" element={<ChooseUserComponent />} />
           </>
         )}
-        {/* Redirect to home if not authenticated */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
