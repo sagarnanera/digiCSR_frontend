@@ -182,26 +182,24 @@ const EditProfile = () => {
     try {
       const url = `http://localhost:4000/company/add-profile/${userId}`; // Replace with your API endpoint URL
 
+      const formData = new FormData();
+      formData.append("company_name", companyName);
+      formData.append("summary", CompanySummary);
+      formData.append("pincode", pincode);
+      formData.append("establishment_year", establishmentyear);
+      formData.append("cp_name", personName);
+      formData.append("cp_email", personEmail);
+      formData.append("cp_designation", personDesignation);
+      formData.append("cp_phone", personPhone);
+      formData.append("tax_comp", taxEligibility);
+      formData.append("sectors", JSON.stringify(Sector));
+      formData.append("city", selectedcities);
+      formData.append("state", selectedstates);
+      formData.append("registration_certificate", certificate);
+
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          company_name: companyName,
-          summary: CompanySummary,
-          pincode: pincode,
-          establishment_year: establishmentyear,
-          cp_name: personName,
-          cp_email: personEmail,
-          cp_designation: personDesignation,
-          cp_phone: personPhone,
-          tax_comp: taxEligibility,
-          sectors: Sector,
-          registration_certificate: certificate,
-          city: selectedcities,
-          state: selectedstates,
-        }),
+        body: formData,
       });
       const data = await response.json();
       if (response.ok) {
@@ -233,6 +231,7 @@ const EditProfile = () => {
       return; // Prevent further execution
     }
   };
+
 
   return (
     <Container centerContent>
