@@ -35,11 +35,10 @@ import {
 } from "@chakra-ui/icons";
 import { fetchStates } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
-
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const EditNgoProfile = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [NgoName, setNgoName] = useState("");
   const [NgoSummary, setNgoSummary] = useState("");
   const [rows, setRows] = useState(1);
@@ -73,7 +72,6 @@ const EditNgoProfile = () => {
       },
     ]);
   };
-
   const handleMemberChange = (index, field, value) => {
     setBoardMembers((prevBoardMembers) => {
       const updatedMembers = [...prevBoardMembers];
@@ -180,15 +178,8 @@ const EditNgoProfile = () => {
   };
 
   const submitHandler = async (e) => {
-    // console.log(
-    //   NgoName,
-    //   NgoSummary,
-    //   boardMembers,
-    //   CSRBudget,
-    //   selectedStates,
-    //   sector
-    // );
     e.preventDefault();
+
     if (
       !NgoName ||
       !NgoSummary ||
@@ -206,9 +197,25 @@ const EditNgoProfile = () => {
       setmemberLoading(false);
       return;
     }
-    try {
-      const url = `http://localhost:4000/NGO/add-profile/${userId}`; // Replace with your API endpoint URL
 
+    try {
+      const url = `http://localhost:4000/NGO/add-profile/${userId}`;
+
+      const formattedBoardMembers = boardMembers.map((member) => ({
+        bm_name: member.name,
+        bm_gender: member.gender,
+        bm_din: member.dinNumber,
+        bm_phone: member.phoneNo,
+        bm_designation: member.designation,
+      }));
+      console.log(
+        NgoName,
+        NgoSummary,
+        formattedBoardMembers,
+        CSRBudget,
+        selectedStates,
+        sector
+      );
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -217,12 +224,13 @@ const EditNgoProfile = () => {
         body: JSON.stringify({
           NGO_name: NgoName,
           summary: NgoSummary,
-          board_members: boardMembers,
+          board_members: formattedBoardMembers,
           csr_budget: CSRBudget,
           operation_area: selectedStates,
           sectors: sector,
         }),
       });
+
       const data = await response.json();
       if (response.ok) {
         toast({
@@ -234,7 +242,7 @@ const EditNgoProfile = () => {
         });
         setLoading(false);
         console.log(data);
-        // navigate("/Company", { replace: true });
+        navigate("/Ngo", { replace: true });
       } else {
         console.warn(data);
         throw new Error("Failed to create Profile. Please try again.");
@@ -253,6 +261,7 @@ const EditNgoProfile = () => {
       return; // Prevent further execution
     }
   };
+
   return (
     <Container centerContent>
       <Box
@@ -412,6 +421,7 @@ const EditNgoProfile = () => {
                         colorScheme="blue"
                         mt={4}
                         onClick={() => handleSaveMember(index)}
+                        isLoading={memberloading}
                       >
                         Save
                       </Button>
@@ -498,7 +508,7 @@ const EditNgoProfile = () => {
             w="95%"
           >
             <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
-              <FormControl isRequired>
+              <FormControl isRequired={true}>
                 <FormLabel>Area of operation</FormLabel>
                 <Box>
                   <br />
@@ -562,7 +572,7 @@ const EditNgoProfile = () => {
               )}
             </Box>
             <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
-              <FormControl isRequired>
+              <FormControl isRequired={true}>
                 <FormLabel>Development Sector</FormLabel>
                 <Checkbox
                   isChecked={sector.length === sectorOptions.length}
@@ -637,7 +647,7 @@ const EditNgoProfile = () => {
             variant="solid"
             w={"10vw"}
             onClick={submitHandler}
-            // isLoading={loading}
+            isLoading={loading}
           >
             Save
           </Button>
