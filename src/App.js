@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import ChooseUserComponent from "./components/chooseUserComponent";
 import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
@@ -26,17 +26,21 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isCompanyAuthenticated || !isNgoAuthenticated) {
+    if (!isCompanyAuthenticated && !isNgoAuthenticated) {
       navigate("/", { replace: true });
     }
   }, [isCompanyAuthenticated, isNgoAuthenticated, navigate]);
+
   return (
     <div className="App">
       <Routes>
-        {isCompanyAuthenticated ? (
+        <Route path="/" element={<ChooseUserComponent />} />
+        {isCompanyAuthenticated && (
+          <Route path="/Company" element={<CompanyDashboard />} />
+        )}
+        {isNgoAuthenticated && <Route path="/Ngo" element={<NgoDashboard />} />}
+        {isCompanyAuthenticated && (
           <>
-            <Route path="/" element={<ChooseUserComponent />} />
-            <Route path="/Company" element={<CompanyDashboard />} />
             <Route path="/Company/RaiseRPF" element={<RaiseRPF />} />
             <Route path="/Company/TrackRPF" element={<TrackRPF />} />
             <Route path="/Company/FundingStats" element={<FundingStats />} />
@@ -44,25 +48,15 @@ function App() {
             <Route path="/Company/editprofile" element={<EditProfile />} />
             <Route path="/Company/profile" element={<ShowProfile />} />
           </>
-        ) : (
-          <>
-            <Route path="/" element={<ChooseUserComponent />} />
-          </>
         )}
-        {isNgoAuthenticated ? (
+        {isNgoAuthenticated && (
           <>
-            <Route path="/" element={<ChooseUserComponent />} />
-            <Route path="/Ngo" element={<NgoDashboard />} />
             <Route path="/Ngo/RPFs" element={<RPFRequests />} />
             <Route path="/Ngo/postblogs" element={<PostBlogs />} />
             <Route path="/Ngo/acceptedrpfs" element={<AcceptedRPF />} />
             <Route path="/Ngo/media" element={<MediaSection />} />
             <Route path="/Ngo/profile" element={<ShowNgoProfile />} />
             <Route path="/Ngo/editprofile" element={<EditNgoProfile />} />
-          </>
-        ) : (
-          <>
-            <Route path="/" element={<ChooseUserComponent />} />
           </>
         )}
         <Route path="*" element={<Navigate to="/" />} />

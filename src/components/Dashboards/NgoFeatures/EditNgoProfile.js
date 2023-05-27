@@ -112,7 +112,7 @@ const EditNgoProfile = () => {
     setBoardMembers((prevBoardMembers) => {
       const updatedMembers = [...prevBoardMembers];
       updatedMembers[index].isEditing = false; // Set isEditing to false to show the text form
-      console.log(boardMembers);
+      // console.log(boardMembers);
       return updatedMembers;
     });
   };
@@ -180,6 +180,14 @@ const EditNgoProfile = () => {
   };
 
   const submitHandler = async (e) => {
+    // console.log(
+    //   NgoName,
+    //   NgoSummary,
+    //   boardMembers,
+    //   CSRBudget,
+    //   selectedStates,
+    //   sector
+    // );
     e.preventDefault();
     if (
       !NgoName ||
