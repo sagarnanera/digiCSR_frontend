@@ -125,27 +125,16 @@ const RFPRequest = () => {
   };
 
   const handlePrevPage = () => {
-    setCurrentPage((prevPage) => prevPage - 1);
+    if (indexOfLastRow > 0) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    }
   };
 
   const handleNextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
   };
-  // const renderPageNumbers = () => {
-  //   const pageNumbers = [];
-  //   for (let i = 1; i <= pageCount; i++) {
-  //     pageNumbers.push(
-  //       <Button
-  //         key={i}
-  //         onClick={() => setCurrentPage(i)}
-  //         variant={currentPage === i ? "solid" : "outline"}
-  //       >
-  //         {i}
-  //       </Button>
-  //     );
-  //   }
-  //   return pageNumbers;
-  // };
+
+  
   const renderPageNumbers = () => {
     const pageNumbers = [];
     const maxPageIcons = 3; // Maximum number of page icons to display
