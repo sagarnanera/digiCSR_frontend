@@ -256,7 +256,7 @@ function AllUserLogin() {
           });
           localStorage.setItem("NgoAuthToken", JSON.stringify(data));
           setLoading(false);
-          if (allfields) {
+          if (allNgofields) {
             navigate("/Ngo", { replace: true });
           } else {
             toast({
