@@ -14,7 +14,7 @@ const NgoNavigation = () => {
 
   return (
     <header className={classes.header}>
-      <div className={classes.logo}>Company Dashboard</div>
+      <div className={classes.logo}>Ngo Dashboard</div>
       <nav>
         <ul className={classes.nav}>
           <li>

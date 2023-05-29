@@ -10,8 +10,12 @@ import {
 import { PinInput, PinInputField } from "@chakra-ui/react";
 import { SelectedOptionContext } from "../chooseUserComponent";
 import { useNavigate } from "react-router-dom";
+import { allFieldsContext } from "../Dashboards/CompanyFeatures/EditProfile";
+import { allNgoFieldsContext } from "../Dashboards/NgoFeatures/EditNgoProfile";
 
 function AllUserLogin() {
+  const allfields = useContext(allFieldsContext);
+  const allNgofields = useContext(allNgoFieldsContext);
   const selectedOption = useContext(SelectedOptionContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -53,33 +57,45 @@ function AllUserLogin() {
     }
     const data = { email: email };
 
-    try {
-      const response = await fetch("http://localhost:4000/company/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        toast({
-          title: "OTP Sent Successfully",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "bottom",
+    if (selectedOption === "Company") {
+      try {
+        const response = await fetch("http://localhost:4000/company/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
         });
-        setLoading(false);
-        setShowOtpInput(true);
-        setShowOtpButton(false);
-        setShowSignupButton(true);
-      } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.message);
+
+        if (response.ok) {
+          toast({
+            title: "OTP Sent Successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          setLoading(false);
+          setShowOtpInput(true);
+          setShowOtpButton(false);
+          setShowSignupButton(true);
+        } else {
+          const errorData = await response.json();
+          setErrorMessage(errorData.message);
+          toast({
+            title: "Error Occurred!",
+            description: errorMessage,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          setLoading(false);
+        }
+      } catch (error) {
         toast({
           title: "Error Occurred!",
-          description: errorMessage,
+          description: "Failed to send OTP. Please try again.",
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -87,16 +103,52 @@ function AllUserLogin() {
         });
         setLoading(false);
       }
-    } catch (error) {
-      toast({
-        title: "Error Occurred!",
-        description: "Failed to send OTP. Please try again.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setLoading(false);
+    } else if (selectedOption === "Ngo") {
+      try {
+        const response = await fetch("http://localhost:4000/NGO/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          toast({
+            title: "OTP Sent Successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          setLoading(false);
+          setShowOtpInput(true);
+          setShowOtpButton(false);
+          setShowSignupButton(true);
+        } else {
+          const errorData = await response.json();
+          setErrorMessage(errorData.message);
+          toast({
+            title: "Error Occurred!",
+            description: errorMessage,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          setLoading(false);
+        }
+      } catch (error) {
+        toast({
+          title: "Error Occurred!",
+          description: "Failed to send OTP. Please try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+      }
     }
   };
 
@@ -105,20 +157,20 @@ function AllUserLogin() {
   };
 
   const submitHandler = async () => {
-    if (selectedOption === "Company") {
-      setLoading(true);
-      if (!email || email.trim() === "" || !otp) {
-        toast({
-          title: "Please Fill all the Fields",
-          status: "warning",
-          duration: 5000,
-          isClosable: true,
-          position: "bottom",
-        });
-        setLoading(false);
-        return;
-      }
+    setLoading(true);
+    if (!email || email.trim() === "" || !otp) {
+      toast({
+        title: "Please Fill all the Fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
 
+    if (selectedOption === "Company") {
       try {
         const config = {
           headers: {
@@ -149,7 +201,73 @@ function AllUserLogin() {
           });
           localStorage.setItem("CompanyAuthToken", JSON.stringify(data));
           setLoading(false);
-          navigate("/Company", { replace: true });
+          if (allfields) {
+            navigate("/Company", { replace: true });
+          } else {
+            toast({
+              title: "Please Complete the whole profile first.",
+              status: "warning",
+              duration: 5000,
+              isClosable: true,
+              position: "bottom",
+            });
+            navigate("/Company/editprofile", { replace: true });
+          }
+        } else {
+          throw new Error("Failed to verify. Please try again later.");
+        }
+      } catch (error) {
+        toast({
+          title: "Error Occurred!",
+          description: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+        return; // Prevent further execution
+      }
+    } else if (selectedOption === "Ngo") {
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+
+        const response = await fetch("http://localhost:4000/NGO/login/verify", {
+          method: "POST",
+          headers: config.headers,
+          body: JSON.stringify({
+            email,
+            otp,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          toast({
+            title: "Login Successful",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          localStorage.setItem("NgoAuthToken", JSON.stringify(data));
+          setLoading(false);
+          if (allfields) {
+            navigate("/Ngo", { replace: true });
+          } else {
+            toast({
+              title: "Please Complete the whole profile first.",
+              status: "warning",
+              duration: 5000,
+              isClosable: true,
+              position: "bottom",
+            });
+            navigate("/Ngo/editprofile", { replace: true });
+          }
         } else {
           throw new Error("Failed to verify. Please try again later.");
         }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createContext } from "react";
 import jwt_decode from "jwt-decode";
 import {
   Box,
@@ -39,6 +39,7 @@ import {
   PhoneIcon,
 } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
+export const allFieldsContext = createContext();
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -64,6 +65,7 @@ const EditProfile = () => {
   const [selectedSectorText, setSelectedSectorText] = useState("");
   const [isSectorTextAreaVisible, setIsSectorTextAreaVisible] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [allfields, setAllfields] = useState(false);
 
   useEffect(() => {
     const getStates = async () => {
@@ -132,6 +134,7 @@ const EditProfile = () => {
     } else {
       setRows(currentRows);
     }
+    console.log(CompanySummary);
   };
 
   const submitHandler = async (e) => {
@@ -165,6 +168,8 @@ const EditProfile = () => {
       });
       setLoading(false);
       return;
+    } else {
+      setAllfields(true);
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(personEmail)) {
@@ -185,6 +190,8 @@ const EditProfile = () => {
       const formData = new FormData();
       formData.append("company_name", companyName);
       formData.append("summary", CompanySummary);
+      formData.append("city", selectedcities);
+      formData.append("state", selectedstates);
       formData.append("pincode", pincode);
       formData.append("establishment_year", establishmentyear);
       formData.append("cp_name", personName);
@@ -193,8 +200,6 @@ const EditProfile = () => {
       formData.append("cp_phone", personPhone);
       formData.append("tax_comp", taxEligibility);
       formData.append("sectors", JSON.stringify(Sector));
-      formData.append("city", selectedcities);
-      formData.append("state", selectedstates);
       formData.append("registration_certificate", certificate);
 
       const response = await fetch(url, {
@@ -232,345 +237,346 @@ const EditProfile = () => {
     }
   };
 
-
   return (
-    <Container centerContent>
-      <Box
-        d="flex"
-        textAlign="center"
-        p={3}
-        bg="#f2f2f2"
-        w={{ base: "100%", md: "80vw" }}
-        m="50px 0 10px 0"
-        borderRadius="10px"
-      >
-        <Text fontSize="3xl" fontFamily="Work sans">
-          Edit Company Profile
-        </Text>
-      </Box>
-      <Box
-        d="flex"
-        textAlign="center"
-        m="25px 0 10px 0"
-        p={3}
-        bg="#f2f2f2"
-        w={{ base: "100%", md: "80vw" }}
-        borderRadius="10px"
-      >
-        <VStack spacing={4} w="100%">
-          <Flex
-            w="90%"
-            flexWrap="wrap"
-            justifyContent={{ base: "center", md: "flex-start" }}
-          >
-            <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
-              <FormControl id="companyname" isRequired={true}>
-                <FormLabel>Company Name</FormLabel>
-                <Input
-                  type="text"
-                  placeholder="Enter Company's Full Name"
-                  value={companyName || ""}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                />
-              </FormControl>
-            </Box>
-            <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
-              <FormControl id="year" isRequired={true}>
-                <FormLabel>Year of Establishment</FormLabel>
-                <NumberInput>
-                  <NumberInputField
-                    placeholder="yyyy"
-                    value={establishmentyear || null}
-                    onChange={(e) => setEstablishmentYear(e.target.value)}
-                    maxLength={4}
-                    minLength={4}
-                  />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-              </FormControl>
-            </Box>
-          </Flex>
-          <br />
-          <Flex
-            flexWrap="wrap"
-            justifyContent={{ base: "center", md: "flex-start" }}
-            flex={5}
-            w="90%"
-          >
-            <FormControl id="Ngo" isRequired={true}>
-              <FormLabel>Ngo Summary</FormLabel>
-
-              <Textarea
-                value={CompanySummary}
-                rows={rows}
-                onChange={handleChange}
-                placeholder="Enter text..."
-                resize="none"
-              ></Textarea>
-            </FormControl>
-          </Flex>
-          <br />
-          <Box flex={5} w="90%">
-            <FormControl isRequired={true}>
-              <FormLabel>Location of the Company</FormLabel>
-              <Flex
-                w="100%"
-                flexWrap="wrap"
-                justifyContent={{ base: "center", md: "flex-start" }}
-              >
-                <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
-                  <FormControl>
-                    <FormLabel htmlFor="state">State:</FormLabel>
-                    <Select
-                      id="state"
-                      onChange={(e) => handleStateChange(e.target.value)}
-                    >
-                      <option value="">Select a state</option>
-                      {states.map((state) => (
-                        <option key={state.geonameId} value={state.geonameId}>
-                          {state.name}
-                        </option>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Box>
-                <Box
-                  flex={{ base: "100%", md: "5" }}
-                  mr={{ base: 0, md: 10 }}
-                  ml={{ base: 0, md: 10 }}
-                >
-                  <FormControl>
-                    <FormLabel htmlFor="city">City:</FormLabel>
-                    <Select
-                      id="city"
-                      onChange={(e) => handlecityChange(e.target.value)}
-                    >
-                      <option value="">Select a city</option>
-                      {cities.map((city) => (
-                        <option key={city.geonameId} value={city.name}>
-                          {city.name}
-                        </option>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Box>
-                <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
-                  <FormControl id="pincode" isRequired={true}>
-                    <FormLabel>Pincode</FormLabel>
-                    <Input
-                      type="number"
-                      placeholder="Enter Pincode"
-                      value={pincode || null}
-                      onChange={(e) => setPincode(e.target.value)}
-                      minLength={5}
-                      maxLength={10}
-                    />
-                  </FormControl>
-                </Box>
-              </Flex>
-            </FormControl>
-          </Box>
-          <br />
-          <Box flex={5} w="90%">
-            <FormControl isRequired={true}>
-              <FormLabel>Communication Person of the Company</FormLabel>
-              <Flex
-                w="100%"
-                flexWrap="wrap"
-                justifyContent={{ base: "center", md: "flex-start" }}
-              >
-                <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
-                  <FormControl id="name" isRequired={true}>
-                    <FormLabel>Name</FormLabel>
-                    <Input
-                      type="text"
-                      placeholder="Enter Name of Communication Person"
-                      value={personName || ""}
-                      onChange={(e) => setPersonName(e.target.value)}
-                    />
-                  </FormControl>
-                </Box>
-                <Box
-                  flex={{ base: "100%", md: "5" }}
-                  mr={{ base: 0, md: 10 }}
-                  ml={{ base: 0, md: 10 }}
-                >
-                  <FormControl id="email" isRequired={true}>
-                    <FormLabel>Email</FormLabel>
-                    <InputGroup>
-                      <InputLeftElement>
-                        <EmailIcon color="gray.300" />
-                      </InputLeftElement>
-                      <Input
-                        type="email"
-                        placeholder="Enter email of Communication Person"
-                        value={personEmail || ""}
-                        onChange={(e) => setPersonEmail(e.target.value)}
-                      />
-                    </InputGroup>
-                  </FormControl>
-                </Box>
-                <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
-                  <FormControl id="phoneno" isRequired={true}>
-                    <FormLabel>Phone No</FormLabel>
-                    <InputGroup>
-                      <InputLeftElement>
-                        <PhoneIcon color="gray.300" />
-                      </InputLeftElement>
-                      <Input
-                        type="tel"
-                        placeholder="Phone number"
-                        value={personPhone || null}
-                        onChange={(e) => setPersonPhone(e.target.value)}
-                        minLength={10}
-                        maxLength={10}
-                      />
-                    </InputGroup>
-                  </FormControl>
-                </Box>
-              </Flex>
-            </FormControl>
-          </Box>
-          <Flex
-            flexWrap="wrap"
-            justifyContent={{ base: "center", md: "flex-start" }}
-            flex={5}
-            w="90%"
-          >
-            <Box
-              w={{ base: "90%", md: "23.5vw" }}
-              mr={{ base: 0, md: "54.5vw" }}
+    <allFieldsContext.Provider value={allfields}>
+      <Container centerContent>
+        <Box
+          d="flex"
+          textAlign="center"
+          p={3}
+          bg="#f2f2f2"
+          w={{ base: "100%", md: "80vw" }}
+          m="50px 0 10px 0"
+          borderRadius="10px"
+        >
+          <Text fontSize="3xl" fontFamily="Work sans">
+            Edit Company Profile
+          </Text>
+        </Box>
+        <Box
+          d="flex"
+          textAlign="center"
+          m="25px 0 10px 0"
+          p={3}
+          bg="#f2f2f2"
+          w={{ base: "100%", md: "80vw" }}
+          borderRadius="10px"
+        >
+          <VStack spacing={4} w="100%">
+            <Flex
+              w="90%"
+              flexWrap="wrap"
+              justifyContent={{ base: "center", md: "flex-start" }}
             >
-              <FormControl id="designation" isRequired={true}>
-                <FormLabel>Designation of Communication Person</FormLabel>
-                <Input
-                  type="text"
-                  placeholder="Enter Degignation of Communication Person"
-                  value={personDesignation || ""}
-                  onChange={(e) => setPersonDesignation(e.target.value)}
-                />
-              </FormControl>
-            </Box>
-          </Flex>
-          <br />
-          <Box flex={5} w="90%">
-            <FormControl isRequired>
-              <FormLabel>Sectors to provide CSR</FormLabel>
-              <Checkbox
-                isChecked={Sector.length === sectorOptions.length}
-                onChange={handleAllChecked}
-                w="100%"
-              >
-                All Sectors
-              </Checkbox>
-              <Box>
-                <Menu closeOnSelect={false}>
-                  <MenuButton
-                    as={Button}
-                    w="100%"
-                    rightIcon={
-                      isDropdownOpen ? <ChevronUpIcon /> : <ChevronDownIcon />
-                    }
-                    onClick={handleToggleDropdown}
-                    display="flex"
-                    justifyContent="flex-start"
-                    isOpen={isDropdownOpen.toString()}
-                  >
-                    Select Sector
-                  </MenuButton>
-                  <MenuList maxH="200px" overflowY="auto">
-                    <CheckboxGroup
-                      colorScheme="teal"
-                      value={Sector}
-                      onChange={handleSectorChange}
-                    >
-                      {sectorOptions.map((option) => (
-                        <MenuItem key={option.value}>
-                          <Checkbox id={option.id} value={option.label}>
-                            {option.label}
-                          </Checkbox>
-                        </MenuItem>
-                      ))}
-                    </CheckboxGroup>
-                  </MenuList>
-                </Menu>
+              <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+                <FormControl id="companyname" isRequired={true}>
+                  <FormLabel>Company Name</FormLabel>
+                  <Input
+                    type="text"
+                    placeholder="Enter Company's Full Name"
+                    value={companyName || ""}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                  />
+                </FormControl>
               </Box>
-            </FormControl>
-            {isSectorTextAreaVisible && (
-              <Tooltip
-                label={Sector.join(", ")}
-                isDisabled={Sector.length <= 5}
-              >
+              <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
+                <FormControl id="year" isRequired={true}>
+                  <FormLabel>Year of Establishment</FormLabel>
+                  <NumberInput>
+                    <NumberInputField
+                      placeholder="yyyy"
+                      value={establishmentyear || null}
+                      onChange={(e) => setEstablishmentYear(e.target.value)}
+                      maxLength={4}
+                      minLength={4}
+                    />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
+                </FormControl>
+              </Box>
+            </Flex>
+            <br />
+            <Flex
+              flexWrap="wrap"
+              justifyContent={{ base: "center", md: "flex-start" }}
+              flex={5}
+              w="90%"
+            >
+              <FormControl id="Ngo" isRequired={true}>
+                <FormLabel>Ngo Summary</FormLabel>
+
                 <Textarea
-                  placeholder="Selected Sectors"
-                  isReadOnly
+                  value={CompanySummary}
                   rows={rows}
                   onChange={handleChange}
-                  height="fit-content"
-                  textOverflow="ellipsis"
+                  placeholder="Enter text..."
                   resize="none"
+                ></Textarea>
+              </FormControl>
+            </Flex>
+            <br />
+            <Box flex={5} w="90%">
+              <FormControl isRequired={true}>
+                <FormLabel>Location of the Company</FormLabel>
+                <Flex
+                  w="100%"
+                  flexWrap="wrap"
+                  justifyContent={{ base: "center", md: "flex-start" }}
                 >
-                  {Sector.length <= 5
-                    ? selectedSectorText
-                    : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`}
-                </Textarea>
-              </Tooltip>
-            )}
-          </Box>
-          <br />
-          <Box flex={5} w="90%">
-            <FormControl id="certificate" isRequired>
-              <FormLabel>Company Registration Certificate</FormLabel>
-              <Input
-                type="file"
-                p={1.5}
-                accept="application/pdf"
-                onChange={handleFileChange}
-              />
-            </FormControl>
-          </Box>
-          <br />
-          <Box flex={5} w="90%">
-            <FormControl id="taxeligibility" isRequired={true}>
-              <FormLabel>Tax Compliance Eligibility</FormLabel>
-              <CheckboxGroup
-                colorScheme="teal"
-                value={taxEligibility}
-                onChange={handleTaxEligibilityChange}
+                  <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+                    <FormControl>
+                      <FormLabel htmlFor="state">State:</FormLabel>
+                      <Select
+                        id="state"
+                        onChange={(e) => handleStateChange(e.target.value)}
+                      >
+                        <option value="">Select a state</option>
+                        {states.map((state) => (
+                          <option key={state.geonameId} value={state.geonameId}>
+                            {state.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <Box
+                    flex={{ base: "100%", md: "5" }}
+                    mr={{ base: 0, md: 10 }}
+                    ml={{ base: 0, md: 10 }}
+                  >
+                    <FormControl>
+                      <FormLabel htmlFor="city">City:</FormLabel>
+                      <Select
+                        id="city"
+                        onChange={(e) => handlecityChange(e.target.value)}
+                      >
+                        <option value="">Select a city</option>
+                        {cities.map((city) => (
+                          <option key={city.geonameId} value={city.name}>
+                            {city.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
+                    <FormControl id="pincode" isRequired={true}>
+                      <FormLabel>Pincode</FormLabel>
+                      <Input
+                        type="number"
+                        placeholder="Enter Pincode"
+                        value={pincode || null}
+                        onChange={(e) => setPincode(e.target.value)}
+                        minLength={5}
+                        maxLength={10}
+                      />
+                    </FormControl>
+                  </Box>
+                </Flex>
+              </FormControl>
+            </Box>
+            <br />
+            <Box flex={5} w="90%">
+              <FormControl isRequired={true}>
+                <FormLabel>Communication Person of the Company</FormLabel>
+                <Flex
+                  w="100%"
+                  flexWrap="wrap"
+                  justifyContent={{ base: "center", md: "flex-start" }}
+                >
+                  <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+                    <FormControl id="name" isRequired={true}>
+                      <FormLabel>Name</FormLabel>
+                      <Input
+                        type="text"
+                        placeholder="Enter Name of Communication Person"
+                        value={personName || ""}
+                        onChange={(e) => setPersonName(e.target.value)}
+                      />
+                    </FormControl>
+                  </Box>
+                  <Box
+                    flex={{ base: "100%", md: "5" }}
+                    mr={{ base: 0, md: 10 }}
+                    ml={{ base: 0, md: 10 }}
+                  >
+                    <FormControl id="email" isRequired={true}>
+                      <FormLabel>Email</FormLabel>
+                      <InputGroup>
+                        <InputLeftElement>
+                          <EmailIcon color="gray.300" />
+                        </InputLeftElement>
+                        <Input
+                          type="email"
+                          placeholder="Enter email of Communication Person"
+                          value={personEmail || ""}
+                          onChange={(e) => setPersonEmail(e.target.value)}
+                        />
+                      </InputGroup>
+                    </FormControl>
+                  </Box>
+                  <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
+                    <FormControl id="phoneno" isRequired={true}>
+                      <FormLabel>Phone No</FormLabel>
+                      <InputGroup>
+                        <InputLeftElement>
+                          <PhoneIcon color="gray.300" />
+                        </InputLeftElement>
+                        <Input
+                          type="tel"
+                          placeholder="Phone number"
+                          value={personPhone || null}
+                          onChange={(e) => setPersonPhone(e.target.value)}
+                          minLength={10}
+                          maxLength={10}
+                        />
+                      </InputGroup>
+                    </FormControl>
+                  </Box>
+                </Flex>
+              </FormControl>
+            </Box>
+            <Flex
+              flexWrap="wrap"
+              justifyContent={{ base: "center", md: "flex-start" }}
+              flex={5}
+              w="90%"
+            >
+              <Box
+                w={{ base: "90%", md: "23.5vw" }}
+                mr={{ base: 0, md: "54.5vw" }}
               >
-                <Stack spacing={[1, 3]} direction={["column", "row"]}>
-                  <Checkbox value="80G">80 G (for 50% tax benefits)</Checkbox>
-                  <Checkbox value="35AC">
-                    35 AC (for 100% tax benefits)
-                  </Checkbox>
-                  <Checkbox value="12AA">
-                    12 AA (Tax exemption for NGO income)
-                  </Checkbox>
-                  <Checkbox value="FCRA">
-                    FCRA (Eligible for international funding)
-                  </Checkbox>
-                </Stack>
-              </CheckboxGroup>
-            </FormControl>
-          </Box>
-          <br />
-          <br />
-          <br />
-          <Button
-            colorScheme="teal"
-            variant="solid"
-            w={"10vw"}
-            onClick={submitHandler}
-            isLoading={loading}
-          >
-            Save
-          </Button>
-        </VStack>
-      </Box>
-    </Container>
+                <FormControl id="designation" isRequired={true}>
+                  <FormLabel>Designation of Communication Person</FormLabel>
+                  <Input
+                    type="text"
+                    placeholder="Enter Degignation of Communication Person"
+                    value={personDesignation || ""}
+                    onChange={(e) => setPersonDesignation(e.target.value)}
+                  />
+                </FormControl>
+              </Box>
+            </Flex>
+            <br />
+            <Box flex={5} w="90%">
+              <FormControl isRequired>
+                <FormLabel>Sectors to provide CSR</FormLabel>
+                <Checkbox
+                  isChecked={Sector.length === sectorOptions.length}
+                  onChange={handleAllChecked}
+                  w="100%"
+                >
+                  All Sectors
+                </Checkbox>
+                <Box>
+                  <Menu closeOnSelect={false}>
+                    <MenuButton
+                      as={Button}
+                      w="100%"
+                      rightIcon={
+                        isDropdownOpen ? <ChevronUpIcon /> : <ChevronDownIcon />
+                      }
+                      onClick={handleToggleDropdown}
+                      display="flex"
+                      justifyContent="flex-start"
+                      isOpen={isDropdownOpen.toString()}
+                    >
+                      Select Sector
+                    </MenuButton>
+                    <MenuList maxH="200px" overflowY="auto">
+                      <CheckboxGroup
+                        colorScheme="teal"
+                        value={Sector}
+                        onChange={handleSectorChange}
+                      >
+                        {sectorOptions.map((option) => (
+                          <MenuItem key={option.value}>
+                            <Checkbox id={option.id} value={option.label}>
+                              {option.label}
+                            </Checkbox>
+                          </MenuItem>
+                        ))}
+                      </CheckboxGroup>
+                    </MenuList>
+                  </Menu>
+                </Box>
+              </FormControl>
+              {isSectorTextAreaVisible && (
+                <Tooltip
+                  label={Sector.join(", ")}
+                  isDisabled={Sector.length <= 5}
+                >
+                  <Textarea
+                    placeholder="Selected Sectors"
+                    isReadOnly
+                    rows={rows}
+                    onChange={handleChange}
+                    height="fit-content"
+                    textOverflow="ellipsis"
+                    resize="none"
+                  >
+                    {Sector.length <= 5
+                      ? selectedSectorText
+                      : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`}
+                  </Textarea>
+                </Tooltip>
+              )}
+            </Box>
+            <br />
+            <Box flex={5} w="90%">
+              <FormControl id="certificate" isRequired>
+                <FormLabel>Company Registration Certificate</FormLabel>
+                <Input
+                  type="file"
+                  p={1.5}
+                  accept="application/pdf"
+                  onChange={handleFileChange}
+                />
+              </FormControl>
+            </Box>
+            <br />
+            <Box flex={5} w="90%">
+              <FormControl id="taxeligibility" isRequired={true}>
+                <FormLabel>Tax Compliance Eligibility</FormLabel>
+                <CheckboxGroup
+                  colorScheme="teal"
+                  value={taxEligibility}
+                  onChange={handleTaxEligibilityChange}
+                >
+                  <Stack spacing={[1, 3]} direction={["column", "row"]}>
+                    <Checkbox value="80G">80 G (for 50% tax benefits)</Checkbox>
+                    <Checkbox value="35AC">
+                      35 AC (for 100% tax benefits)
+                    </Checkbox>
+                    <Checkbox value="12AA">
+                      12 AA (Tax exemption for NGO income)
+                    </Checkbox>
+                    <Checkbox value="FCRA">
+                      FCRA (Eligible for international funding)
+                    </Checkbox>
+                  </Stack>
+                </CheckboxGroup>
+              </FormControl>
+            </Box>
+            <br />
+            <br />
+            <br />
+            <Button
+              colorScheme="teal"
+              variant="solid"
+              w={"10vw"}
+              onClick={submitHandler}
+              isLoading={loading}
+            >
+              Save
+            </Button>
+          </VStack>
+        </Box>
+      </Container>
+    </allFieldsContext.Provider>
   );
 };
 

@@ -100,6 +100,10 @@ const ShowProfile = () => {
             </Text>
             <Box pl={4} mt={2}>
               <Text fontSize="lg">
+                <strong>Company Info Summary:</strong>{" "}
+                {profileData.profile.summary}
+              </Text>
+              <Text fontSize="lg">
                 <strong>Location:</strong>{" "}
                 {`${profileData.profile.location.city}, ${profileData.profile.location.state}, ${profileData.profile.location.pincode}`}
               </Text>
