@@ -392,7 +392,7 @@ const EditNgoProfile = () => {
                             <InputLeftElement>
                               <PhoneIcon color="gray.300" />
                             </InputLeftElement>
-                            <InputGroup
+                            <Input
                               type="tel"
                               placeholder="Phone number"
                               value={member.phoneNo}
