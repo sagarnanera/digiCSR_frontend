@@ -1,0 +1,74 @@
+.container {
+    margin-top: 10vh;
+    background-color: white;
+    width: 85vw;
+    padding-bottom: 2rem;
+}
+
+.title {
+    margin-top: 2vh;
+    color: black;
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.input-container {
+    display: flex;
+    margin-right: 2.5vw;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.input {
+    width: 120px;
+    margin-right: 1rem;
+}
+
+.label {
+    font-size: 0.8rem;
+}
+
+.table-container {
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 80vw;
+}
+
+.table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.table th,
+.table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 8px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+@media screen and (max-width: 900px) {
+    .table-container {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .table th,
+    .table td {
+        white-space: initial;
+        overflow: visible;
+        text-overflow: clip;
+    }
+}   
