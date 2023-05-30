@@ -306,7 +306,7 @@ const EditProfile = () => {
               w="90%"
             >
               <FormControl id="Ngo" isRequired={true}>
-                <FormLabel>Ngo Summary</FormLabel>
+                <FormLabel>Company Summary</FormLabel>
 
                 <Textarea
                   value={CompanySummary}

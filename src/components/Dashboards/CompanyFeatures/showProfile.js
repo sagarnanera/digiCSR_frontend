@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import CompanyNavigation from "../companyNavigation";
-import { Button, Box, Heading, Text, IconButton, useToast } from "@chakra-ui/react";
+import {
+  Button,
+  Box,
+  Heading,
+  Text,
+  IconButton,
+  useToast,
+  HStack,
+} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { CloseIcon } from "@chakra-ui/icons";
 import jwt_decode from "jwt-decode";
@@ -129,51 +137,45 @@ const ShowProfile = () => {
               <Text fontSize="lg">
                 <strong>Sectors:</strong> {profileData.profile.sectors}
               </Text>
-              <Button
-                colorScheme="teal"
-                w={"20vw"}
-                mt={6}
-                onClick={submitHandler}
-              >
-                Edit Profile
-              </Button>
-              <br />
-              <br />
-              <Text fontSize="lg">
-                <strong>Company Registration Certificate:</strong>
-              </Text>
-              <Button
-                colorScheme="blue"
-                w={"20vw"}
-                mt={4}
-                onClick={fetchCertificate}
-              >
-                Show Certificate
-              </Button>
-              {showCertificate && (
-                <Box mt={0}>
-                  <IconButton
-                    icon={<CloseIcon />}
-                    colorScheme="red"
-                    mt={2}
-                    onClick={handleCloseCertificate}
-                  />
-                  <embed
-                    src={showCertificate}
-                    type="application/pdf"
-                    width="100%"
-                    height="500px"
-                  />
-                </Box>
-              )}
-              {/* <Button
-                colorScheme="blue"
-                w={"20vw"}
-                mt={6}
-                onClick={fetchCertificate}
-              >
-                Download Certificate
-              </Button> */}
+              <HStack>
+                <Text fontSize="lg">
+                  <strong>Company Registration Certificate:</strong>
+                </Text>
+                <Button
+                  colorScheme="blue"
+                  w={"20vw"}
+                  mt={4}
+                  onClick={fetchCertificate}
+                >
+                  Show Certificate
+                </Button>
+                {showCertificate && (
+                  <Box mt={0}>
+                    <IconButton
+                      icon={<CloseIcon />}
+                      colorScheme="red"
+                      mt={2}
+                      onClick={handleCloseCertificate}
+                    />
+                    <embed
+                      src={showCertificate}
+                      type="application/pdf"
+                      width="100%"
+                      height="500px"
+                    />
+                  </Box>
+                )}
+                <br />
+                <br />
+                <Button
+                  colorScheme="teal"
+                  w={"20vw"}
+                  mt={6}
+                  onClick={submitHandler}
+                >
+                  Edit Profile
+                </Button>
+              </HStack>
             </Box>
           </>
         ) : (

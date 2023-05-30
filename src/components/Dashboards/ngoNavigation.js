@@ -74,7 +74,7 @@ const NgoNavigation = () => {
               />
               <MenuList>
                 <Link to="/Ngo/profile">
-                  <MenuItem>Show Company Profile</MenuItem>
+                  <MenuItem>Show Ngo Profile</MenuItem>
                 </Link>
                 <MenuItem onClick={handleClick}>Logout</MenuItem>
               </MenuList>
