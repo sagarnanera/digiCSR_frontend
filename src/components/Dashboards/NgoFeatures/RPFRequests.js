@@ -12,21 +12,15 @@ import {
   Button,
   ButtonGroup,
   Tooltip,
-  Input,
 } from "@chakra-ui/react";
 import { FiEye, FiShare } from "react-icons/fi";
 import NgoNavigation from "../ngoNavigation";
 import { proposals } from "../../rfpData";
 import "../../../CSS/rfpTable.css";
 const RFPRequest = () => {
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const rowsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
 
-  const handleRowsPerPageChange = (event) => {
-    const value = parseInt(event.target.value);
-    setRowsPerPage(value);
-    setCurrentPage(1);
-  };
   const pageCount = Math.ceil(proposals.length / rowsPerPage);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -37,7 +31,7 @@ const RFPRequest = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:4000/rfps?page=${currentPage}&limit=${rowsPerPage}`
+          `http://localhost:4000/rfps?page=${currentPage}`
         );
         const data = await response.json();
         if (data === []) {
@@ -50,14 +44,27 @@ const RFPRequest = () => {
     };
 
     fetchData();
-  }, [currentPage, rowsPerPage]);
+  }, [currentPage]);
+  // const handleRowsPerPageChange = (event) => {
+  //   const value = parseInt(event.target.value);
+  //   setRowsPerPage(value);
+  //   setCurrentPage(1);
+  // };
 
   const handlePrevPage = () => {
-    setCurrentPage((prevPage) => prevPage - 1);
+    if (currentPage === 1) {
+      return;
+    } else {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   const handleNextPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
+    if (currentRows.length < 10) {
+      return;
+    } else {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const renderPageNumbers = () => {
@@ -150,7 +157,7 @@ const RFPRequest = () => {
       <NgoNavigation />
       <div className="container">
         <h1 className="title">List of Request for Proposals</h1>
-        <div className="input-container">
+        {/* <div className="input-container">
           <Input
             type="number"
             min={1}
@@ -160,7 +167,7 @@ const RFPRequest = () => {
             style={{ width: "120px", marginRight: "1rem" }}
           />
           <span className="label">Rows per page</span>
-        </div>
+        </div> */}
         <div className="table-container">
           <Table variant="striped" colorScheme="gray" size="sm">
             <Thead>
