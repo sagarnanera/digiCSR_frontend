@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import jwt_decode from "jwt-decode";
 import {
   Box,
@@ -36,7 +36,7 @@ import {
 import { fetchStates } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
 import { useNavigate } from "react-router-dom";
-export const allNgoFieldsContext = createContext();
+// export const allNgoFieldsContext = createContext();
 
 const EditNgoProfile = () => {
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ const EditNgoProfile = () => {
   const [loading, setLoading] = useState(false);
   const [memberloading, setmemberLoading] = useState(false);
   const toast = useToast();
-  const [allfields, setAllfields] = useState(false);
+  // const [allfields, setAllfields] = useState(false);
   const [boardMembers, setBoardMembers] = useState([]);
 
   const handleAddMember = () => {
@@ -108,7 +108,7 @@ const EditNgoProfile = () => {
       setLoading(false);
       return;
     } else {
-      setAllfields(true);
+      // setAllfields(true);
     }
     setBoardMembers((prevBoardMembers) => {
       const updatedMembers = [...prevBoardMembers];
@@ -266,7 +266,7 @@ const EditNgoProfile = () => {
   };
 
   return (
-    <allNgoFieldsContext.Provider value={allfields}>
+    // <allNgoFieldsContext.Provider value={allfields}>
       <Container centerContent>
         <Box
           d="flex"
@@ -663,7 +663,7 @@ const EditNgoProfile = () => {
           </VStack>
         </Box>
       </Container>
-    </allNgoFieldsContext.Provider>
+    // </allNgoFieldsContext.Provider>
   );
 };
 

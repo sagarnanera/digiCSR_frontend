@@ -1,7 +1,8 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Avatar, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+import { Avatar, Menu, MenuButton, MenuList, MenuItem, IconButton } from "@chakra-ui/react";
 import classes from "../../CSS/ComCss.module.css";
+import { FiBell } from "react-icons/fi";
 
 const NgoNavigation = () => {
   const location = useLocation();
@@ -64,6 +65,13 @@ const NgoNavigation = () => {
             >
               Media Section
             </Link>
+          </li>
+          <li>
+            <IconButton
+              aria-label="Share proposal"
+              variant={"ghost"}
+              icon={<FiBell />}
+            />
           </li>
           <li>
             <Menu>

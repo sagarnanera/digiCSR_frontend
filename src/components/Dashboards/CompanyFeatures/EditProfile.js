@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext } from "react";
+import React, { useEffect, useState } from "react";
 import jwt_decode from "jwt-decode";
 import {
   Box,
@@ -39,7 +39,7 @@ import {
   PhoneIcon,
 } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
-export const allFieldsContext = createContext();
+// export const allFieldsContext = createContext();
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -65,7 +65,7 @@ const EditProfile = () => {
   const [selectedSectorText, setSelectedSectorText] = useState("");
   const [isSectorTextAreaVisible, setIsSectorTextAreaVisible] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [allfields, setAllfields] = useState(false);
+  // const [allfields, setAllfields] = useState(false);
 
   useEffect(() => {
     const getStates = async () => {
@@ -169,7 +169,7 @@ const EditProfile = () => {
       setLoading(false);
       return;
     } else {
-      setAllfields(true);
+      // setAllfields(true);
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(personEmail)) {
@@ -238,7 +238,7 @@ const EditProfile = () => {
   };
 
   return (
-    <allFieldsContext.Provider value={allfields}>
+    // <allFieldsContext.Provider value={allfields}>
       <Container centerContent>
         <Box
           d="flex"
@@ -576,7 +576,7 @@ const EditProfile = () => {
           </VStack>
         </Box>
       </Container>
-    </allFieldsContext.Provider>
+    // </allFieldsContext.Provider>
   );
 };
 

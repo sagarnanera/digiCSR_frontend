@@ -137,6 +137,7 @@ const ShowProfile = () => {
               <Text fontSize="lg">
                 <strong>Sectors:</strong> {profileData.profile.sectors}
               </Text>
+              <br />
               <HStack>
                 <Text fontSize="lg">
                   <strong>Company Registration Certificate:</strong>
@@ -165,17 +166,15 @@ const ShowProfile = () => {
                     />
                   </Box>
                 )}
-                <br />
-                <br />
-                <Button
-                  colorScheme="teal"
-                  w={"20vw"}
-                  mt={6}
-                  onClick={submitHandler}
-                >
-                  Edit Profile
-                </Button>
               </HStack>
+              <Button
+                colorScheme="teal"
+                w={"20vw"}
+                mt={6}
+                onClick={submitHandler}
+              >
+                Edit Profile
+              </Button>
             </Box>
           </>
         ) : (

@@ -10,12 +10,12 @@ import {
 import { PinInput, PinInputField } from "@chakra-ui/react";
 import { SelectedOptionContext } from "../chooseUserComponent";
 import { useNavigate } from "react-router-dom";
-import { allFieldsContext } from "../Dashboards/CompanyFeatures/EditProfile";
-import { allNgoFieldsContext } from "../Dashboards/NgoFeatures/EditNgoProfile";
+// import { allFieldsContext } from "../Dashboards/CompanyFeatures/EditProfile";
+// import { allNgoFieldsContext } from "../Dashboards/NgoFeatures/EditNgoProfile";
 
 function AllUserLogin() {
-  const allfields = useContext(allFieldsContext);
-  const allNgofields = useContext(allNgoFieldsContext);
+  // const allfields = useContext(allFieldsContext);
+  // const allNgofields = useContext(allNgoFieldsContext);
   const selectedOption = useContext(SelectedOptionContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -201,18 +201,18 @@ function AllUserLogin() {
           });
           localStorage.setItem("CompanyAuthToken", JSON.stringify(data));
           setLoading(false);
-          if (allfields) {
-            navigate("/Company", { replace: true });
-          } else {
-            toast({
-              title: "Please Complete the whole profile first.",
-              status: "warning",
-              duration: 5000,
-              isClosable: true,
-              position: "bottom",
-            });
-            navigate("/Company/editprofile", { replace: true });
-          }
+          // if (allfields) {
+          navigate("/Company", { replace: true });
+          // } else {
+          //   toast({
+          //     title: "Please Complete the whole profile first.",
+          //     status: "warning",
+          //     duration: 5000,
+          //     isClosable: true,
+          //     position: "bottom",
+          //   });
+          //   navigate("/Company/editprofile", { replace: true });
+          // }
         } else {
           throw new Error("Failed to verify. Please try again later.");
         }
@@ -256,18 +256,18 @@ function AllUserLogin() {
           });
           localStorage.setItem("NgoAuthToken", JSON.stringify(data));
           setLoading(false);
-          if (allNgofields) {
-            navigate("/Ngo", { replace: true });
-          } else {
-            toast({
-              title: "Please Complete the whole profile first.",
-              status: "warning",
-              duration: 5000,
-              isClosable: true,
-              position: "bottom",
-            });
-            navigate("/Ngo/editprofile", { replace: true });
-          }
+          // if (allNgofields) {
+          navigate("/Ngo", { replace: true });
+          // } else {
+          //   toast({
+          //     title: "Please Complete the whole profile first.",
+          //     status: "warning",
+          //     duration: 5000,
+          //     isClosable: true,
+          //     position: "bottom",
+          //   });
+          //   navigate("/Ngo/editprofile", { replace: true });
+          // }
         } else {
           throw new Error("Failed to verify. Please try again later.");
         }
