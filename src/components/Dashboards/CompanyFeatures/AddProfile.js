@@ -189,7 +189,7 @@ const AddProfile = () => {
 
       const formData = new FormData();
       formData.append("company_name", companyName);
-      formData.append("summary", CompanySummary);
+      formData.append("summary", JSON.stringify(CompanySummary));
       formData.append("city", selectedcities);
       formData.append("state", selectedstates);
       formData.append("pincode", pincode);

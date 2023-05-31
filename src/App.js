@@ -16,6 +16,8 @@ import AcceptedRPF from "./components/Dashboards/NgoFeatures/AcceptedRPF";
 import MediaSection from "./components/Dashboards/NgoFeatures/MediaSection";
 import ShowNgoProfile from "./components/Dashboards/NgoFeatures/ShowNgoProfile";
 import AddNgoProfile from "./components/Dashboards/NgoFeatures/AddNgoProfile";
+import EditProfile from "./components/Dashboards/CompanyFeatures/EditProfile";
+import EditNgoProfile from "./components/Dashboards/NgoFeatures/EditNgoProfile";
 
 function App() {
   const authToken = localStorage.getItem("CompanyAuthToken");
@@ -46,6 +48,7 @@ function App() {
             <Route path="/Company/FundingStats" element={<FundingStats />} />
             <Route path="/Company/NGOReviews" element={<NGOReviews />} />
             <Route path="/Company/addprofile" element={<AddProfile />} />
+            <Route path="/Company/editprofile" element={<EditProfile />} />
             <Route path="/Company/profile" element={<ShowProfile />} />
           </>
         )}
@@ -56,6 +59,7 @@ function App() {
             <Route path="/Ngo/acceptedrpfs" element={<AcceptedRPF />} />
             <Route path="/Ngo/media" element={<MediaSection />} />
             <Route path="/Ngo/profile" element={<ShowNgoProfile />} />
+            <Route path="/Ngo/editprofile" element={<EditNgoProfile />} />
             <Route path="/Ngo/addprofile" element={<AddNgoProfile />} />
           </>
         )}
