@@ -41,7 +41,7 @@ import {
 import { useNavigate } from "react-router-dom";
 // export const allFieldsContext = createContext();
 
-const EditProfile = () => {
+const AddProfile = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -580,4 +580,4 @@ const EditProfile = () => {
   );
 };
 
-export default EditProfile;
+export default AddProfile;

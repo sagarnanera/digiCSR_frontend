@@ -7,7 +7,7 @@ import TrackRPF from "./components/Dashboards/CompanyFeatures/TrackRPF";
 import FundingStats from "./components/Dashboards/CompanyFeatures/FundingStats";
 import NGOReviews from "./components/Dashboards/CompanyFeatures/NGOReviews";
 import RaiseRPF from "./components/Dashboards/CompanyFeatures/RaiseRPF";
-import EditProfile from "./components/Dashboards/CompanyFeatures/EditProfile";
+import AddProfile from "./components/Dashboards/CompanyFeatures/AddProfile";
 import ShowProfile from "./components/Dashboards/CompanyFeatures/showProfile";
 import NgoDashboard from "./pages/Dashboards/NgoDashboard";
 import RPFRequests from "./components/Dashboards/NgoFeatures/RPFRequests";
@@ -15,7 +15,7 @@ import PostBlogs from "./components/Dashboards/NgoFeatures/PostBlogs";
 import AcceptedRPF from "./components/Dashboards/NgoFeatures/AcceptedRPF";
 import MediaSection from "./components/Dashboards/NgoFeatures/MediaSection";
 import ShowNgoProfile from "./components/Dashboards/NgoFeatures/ShowNgoProfile";
-import EditNgoProfile from "./components/Dashboards/NgoFeatures/EditNgoProfile";
+import AddNgoProfile from "./components/Dashboards/NgoFeatures/AddNgoProfile";
 
 function App() {
   const authToken = localStorage.getItem("CompanyAuthToken");
@@ -45,7 +45,7 @@ function App() {
             <Route path="/Company/TrackRPF" element={<TrackRPF />} />
             <Route path="/Company/FundingStats" element={<FundingStats />} />
             <Route path="/Company/NGOReviews" element={<NGOReviews />} />
-            <Route path="/Company/editprofile" element={<EditProfile />} />
+            <Route path="/Company/addprofile" element={<AddProfile />} />
             <Route path="/Company/profile" element={<ShowProfile />} />
           </>
         )}
@@ -56,7 +56,7 @@ function App() {
             <Route path="/Ngo/acceptedrpfs" element={<AcceptedRPF />} />
             <Route path="/Ngo/media" element={<MediaSection />} />
             <Route path="/Ngo/profile" element={<ShowNgoProfile />} />
-            <Route path="/Ngo/editprofile" element={<EditNgoProfile />} />
+            <Route path="/Ngo/addprofile" element={<AddNgoProfile />} />
           </>
         )}
         <Route path="*" element={<Navigate to="/" />} />

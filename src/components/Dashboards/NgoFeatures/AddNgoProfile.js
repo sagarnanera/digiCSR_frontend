@@ -38,7 +38,7 @@ import { sectorOptions } from "../../sectorData";
 import { useNavigate } from "react-router-dom";
 // export const allNgoFieldsContext = createContext();
 
-const EditNgoProfile = () => {
+const AddNgoProfile = () => {
   const navigate = useNavigate();
   const [NgoName, setNgoName] = useState("");
   const [NgoSummary, setNgoSummary] = useState("");
@@ -667,4 +667,4 @@ const EditNgoProfile = () => {
   );
 };
 
-export default EditNgoProfile;
+export default AddNgoProfile;

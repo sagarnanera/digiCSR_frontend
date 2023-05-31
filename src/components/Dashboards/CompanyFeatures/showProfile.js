@@ -76,7 +76,7 @@ const ShowProfile = () => {
   };
 
   const submitHandler = async () => {
-    navigate("/Company/editprofile", { replace: true });
+    navigate("/Company/addprofile", { replace: true });
   };
 
   return (
