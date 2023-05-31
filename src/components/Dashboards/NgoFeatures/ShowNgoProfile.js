@@ -45,7 +45,7 @@ const ShowNgoProfile = () => {
   });
 
   const submitHandler = async () => {
-    navigate("/Ngo/addprofile", { replace: true });
+    navigate("/Ngo/editprofile", { replace: true });
   };
   return (
     <div p={4}>
