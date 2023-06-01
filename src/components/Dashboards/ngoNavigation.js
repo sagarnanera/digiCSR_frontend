@@ -7,9 +7,9 @@ import {
   MenuList,
   MenuItem,
   IconButton,
-  Button,
   Text,
   Box,
+  Flex,
 } from "@chakra-ui/react";
 import classes from "../../CSS/ComCss.module.css";
 import {
@@ -20,7 +20,7 @@ import {
   DrawerContent,
   DrawerCloseButton,
 } from "@chakra-ui/react";
-import { FiBell } from "react-icons/fi";
+import { FiBell, FiCheck, FiTrash } from "react-icons/fi";
 
 import jwt_decode from "jwt-decode";
 
@@ -224,53 +224,88 @@ const NgoNavigation = () => {
               <DrawerHeader>Notifications</DrawerHeader>
               <DrawerBody>
                 {notifications.length > 0 ? (
-                  notifications.map((notification) => (
-                    <Box
-                      key={notification._id}
-                      borderWidth="1px"
-                      borderRadius="md"
-                      p={4}
-                      mb={4}
-                    >
-                      <Text fontSize="lg" fontWeight="bold" mb={2}>
-                        {notification.content}
-                      </Text>
-                      <br />
-                      <Text fontSize="sm" color="gray.500" mb={2}>
-                        {notification.timestamp}
-                      </Text>
-                      {notification.read ? (
-                        <Text fontSize="sm" color="green" ml={2} mb={2}>
-                          Status: Readed
-                        </Text>
-                      ) : (
-                        <>
-                          <Text fontSize="sm" color="red" ml={2} mb={2}>
-                            Status: Not Readed
-                          </Text>
-                          <Button
-                            colorScheme="blue"
-                            size="sm"
-                            onClick={() =>
-                              markNotificationAsRead(notification._id)
-                            }
-                            // mb={2}
-                          >
-                            Mark as Read
-                          </Button>
-                        </>
-                      )}
-                      {/* <Divider /> */}
-                      <Button
-                        colorScheme="red"
-                        size="sm"
-                        onClick={() => deleteNotification(notification._id)}
-                        ml={2}
-                      >
-                        Delete
-                      </Button>
-                    </Box>
-                  ))
+                  <>
+                    {notifications
+                      .sort((a, b) => {
+                        if (a.read && !b.read) {
+                          return 1; // Place read notifications after unread notifications
+                        } else if (!a.read && b.read) {
+                          return -1; // Place unread notifications before read notifications
+                        } else {
+                          // Sort by timestamp if read statuses are the same
+                          return b.timestamp - a.timestamp;
+                        }
+                      })
+                      .map((notification) => (
+                        <Box
+                          key={notification._id}
+                          borderWidth="1px"
+                          borderRadius="md"
+                          p={4}
+                          mb={4}
+                        >
+                          {notification.read ? (
+                            <>
+                              <Text fontSize="lg" fontWeight="hairline" mb={2}>
+                                {notification.content}
+                              </Text>
+                              <br />
+                              <Text fontSize="sm" color="gray.500" mb={2}>
+                                {notification.timestamp}
+                              </Text>
+                              <Text fontSize="sm" color="green" ml={2} mb={2}>
+                                Status: Readed
+                              </Text>
+                            </>
+                          ) : (
+                            <>
+                              <Text fontSize="lg" fontWeight="bold" mb={2}>
+                                {notification.content}
+                              </Text>
+                              <br />
+                              <Text fontSize="sm" color="gray.500" mb={2}>
+                                {notification.timestamp}
+                              </Text>
+                              <Text fontSize="sm" color="red" ml={2} mb={2}>
+                                Status: Not Readed
+                              </Text>
+                              <Flex justify="flex-end">
+                                <IconButton
+                                  aria-label="Mark as Read"
+                                  icon={<FiCheck />}
+                                  onClick={() =>
+                                    markNotificationAsRead(notification._id)
+                                  }
+                                  variant="solid"
+                                  colorScheme="green"
+                                  mr={2}
+                                />
+                                <IconButton
+                                  aria-label="Delete Notification"
+                                  icon={<FiTrash />}
+                                  onClick={() =>
+                                    deleteNotification(notification._id)
+                                  }
+                                  variant="solid"
+                                  colorScheme="red"
+                                />
+                              </Flex>
+                            </>
+                          )}
+                          <Flex justify="flex-end">
+                            <IconButton
+                              aria-label="Delete Notification"
+                              icon={<FiTrash />}
+                              onClick={() =>
+                                deleteNotification(notification._id)
+                              }
+                              variant="solid"
+                              colorScheme="red"
+                            />
+                          </Flex>
+                        </Box>
+                      ))}
+                  </>
                 ) : (
                   <Text>No notifications found.</Text>
                 )}

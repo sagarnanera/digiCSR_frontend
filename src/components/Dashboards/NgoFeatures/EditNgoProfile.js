@@ -23,9 +23,9 @@ import {
   MenuItem,
   Checkbox,
   Tooltip,
-  WrapItem,
-  Wrap,
   useToast,
+  // HStack,
+  Wrap,
 } from "@chakra-ui/react";
 import {
   ChevronDownIcon,
@@ -72,44 +72,44 @@ const EditNgoProfile = () => {
     setUserId(decodedToken._id);
     getStatesAndCompanyId();
   }, []);
-  const fetchCompanyProfile = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:4000/NGO/profile/${userId}`
-      );
-      const data = await response.json();
-      if (data.success) {
-        setProfileData(data.data);
-
-        const defaultMembers = data.data.profile.board_members.map(
-          (member) => ({
-            name: member.bm_name,
-            gender: member.bm_gender,
-            dinNumber: member.bm_din,
-            phoneNo: member.bm_phone,
-            designation: member.bm_designation,
-            isEditing: false, // Initially set to false to show the text form
-          })
-        );
-        setBoardMembers(defaultMembers);
-        setNgoName(profileData.NGO_name);
-        setNgoSummary(profileData.profile.summary);
-        setCSRBudget(profileData.profile.csr_budget);
-        // setSelectedStates(profileData.profile.operation_area);
-        // setSector(profileData.profile.sectors);
-      } else {
-        console.log(data.message);
-        throw new Error("Failed to Get Profile.please Reload");
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
 
   useEffect(() => {
+    const fetchCompanyProfile = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/NGO/profile/${userId}`
+        );
+        const data = await response.json();
+        if (data.success) {
+          setProfileData(data.data);
+        } else {
+          console.log(data.message);
+          throw new Error("Failed to Get Profile.please Reload");
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
     fetchCompanyProfile();
-  });
-
+  }, [userId]);
+  useEffect(() => {
+    if (profileData) {
+      setNgoName(profileData.NGO_name);
+      setNgoSummary(profileData.profile.summary);
+      setCSRBudget(profileData.profile.csr_budget);
+      const defaultMembers = profileData.profile.board_members.map(
+        (member) => ({
+          name: member.bm_name,
+          gender: member.bm_gender,
+          dinNumber: member.bm_din,
+          phoneNo: member.bm_phone,
+          designation: member.bm_designation,
+          isEditing: false, // Initially set to false to show the text form
+        })
+      );
+      setBoardMembers(defaultMembers);
+    }
+  }, [profileData]);
   const handleAddMember = () => {
     setBoardMembers((prevBoardMembers) => [
       ...prevBoardMembers,
@@ -372,6 +372,46 @@ const EditNgoProfile = () => {
           <Box flex={5} w="95%">
             <FormControl isRequired={true}>
               <FormLabel>Board Member's Of NGO</FormLabel>
+              <Wrap spacing={10}>
+                {boardMembers.map((member, index) => (
+                  <Box
+                    // ml={25}
+                    key={index}
+                    borderWidth="1px"
+                    borderRadius="md"
+                    p={4}
+                    width="350px"
+                  >
+                    {!member.isEditing && (
+                      <>
+                        <Text mb={2}>
+                          <strong>Member Name:</strong> {member.name}
+                        </Text>
+                        <Text mb={2}>
+                          <strong>Gender:</strong> {member.gender}
+                        </Text>
+                        <Text mb={2}>
+                          <strong>DIN:</strong> {member.dinNumber}
+                        </Text>
+                        <Text mb={2}>
+                          <strong>Phone:</strong> {member.phoneNo}
+                        </Text>
+                        <Text mb={2}>
+                          <strong>Designation:</strong> {member.designation}
+                        </Text>
+                        <Button
+                          colorScheme="teal"
+                          size="sm"
+                          onClick={() => handleEditMember(index)}
+                        >
+                          <EditIcon mr={1} /> Edit
+                        </Button>
+                      </>
+                    )}
+                  </Box>
+                ))}
+              </Wrap>
+
               {boardMembers.map((member, index) => (
                 <Box
                   key={index}
@@ -379,9 +419,9 @@ const EditNgoProfile = () => {
                   p={3}
                   bg="#f2f2f2"
                   w={{ base: "100%", md: "75vw" }}
-                  m="10px 0 10px 0"
+                  // m="10px 0 0 0"
                 >
-                  {member.isEditing ? (
+                  {member.isEditing && (
                     <>
                       <FormControl isRequired={true} mb={3}>
                         <FormLabel>Name</FormLabel>
@@ -468,46 +508,6 @@ const EditNgoProfile = () => {
                         Save
                       </Button>
                     </>
-                  ) : (
-                    <Box>
-                      <Wrap align="center" justify="center" spacing={3} mb={-2}>
-                        <WrapItem>
-                          <Text>
-                            <strong>Member Name:</strong> {member.name}
-                          </Text>
-                        </WrapItem>
-                        <WrapItem>
-                          <Text>
-                            <strong>Gender:</strong> {member.gender}
-                          </Text>
-                        </WrapItem>
-                        <WrapItem>
-                          <Text>
-                            <strong>DIN:</strong> {member.dinNumber}
-                          </Text>
-                        </WrapItem>
-                        <WrapItem>
-                          <Text>
-                            <strong>Phone:</strong> {member.phoneNo}
-                          </Text>
-                        </WrapItem>
-                        <WrapItem>
-                          <Text>
-                            <strong>Designation:</strong> {member.designation}
-                          </Text>
-                        </WrapItem>
-                        <WrapItem>
-                          <Button
-                            colorScheme="teal"
-                            size="sm"
-                            ml={4}
-                            onClick={() => handleEditMember(index)}
-                          >
-                            <EditIcon mr={1} /> Edit
-                          </Button>
-                        </WrapItem>
-                      </Wrap>
-                    </Box>
                   )}
                 </Box>
               ))}
