@@ -1,13 +1,13 @@
 import React from "react";
 import NgoNavigation from "../ngoNavigation";
 
-const AcceptedRPF = () => {
+const AcceptedRFP = () => {
   return (
     <div>
       <NgoNavigation />
-      AcceptedRPF
+      AcceptedRFP
     </div>
   );
 };
 
-export default AcceptedRPF;
+export default AcceptedRFP;

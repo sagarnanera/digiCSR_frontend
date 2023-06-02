@@ -3,16 +3,16 @@ import "./App.css";
 import ChooseUserComponent from "./components/chooseUserComponent";
 import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import CompanyDashboard from "./pages/Dashboards/CompanyDashboard";
-import TrackRPF from "./components/Dashboards/CompanyFeatures/TrackRPF";
+import TrackRFP from "./components/Dashboards/CompanyFeatures/TrackRFP";
 import FundingStats from "./components/Dashboards/CompanyFeatures/FundingStats";
 import NGOReviews from "./components/Dashboards/CompanyFeatures/NGOReviews";
-import RaiseRPF from "./components/Dashboards/CompanyFeatures/RaiseRPF";
+import RaiseRFP from "./components/Dashboards/CompanyFeatures/RaiseRFP";
 import AddProfile from "./components/Dashboards/CompanyFeatures/AddProfile";
 import ShowProfile from "./components/Dashboards/CompanyFeatures/showProfile";
 import NgoDashboard from "./pages/Dashboards/NgoDashboard";
-import RPFRequests from "./components/Dashboards/NgoFeatures/RPFRequests";
+import RFPRequests from "./components/Dashboards/NgoFeatures/RFPRequests";
 import PostBlogs from "./components/Dashboards/NgoFeatures/PostBlogs";
-import AcceptedRPF from "./components/Dashboards/NgoFeatures/AcceptedRPF";
+import AcceptedRFP from "./components/Dashboards/NgoFeatures/AcceptedRFP";
 import MediaSection from "./components/Dashboards/NgoFeatures/MediaSection";
 import ShowNgoProfile from "./components/Dashboards/NgoFeatures/ShowNgoProfile";
 import AddNgoProfile from "./components/Dashboards/NgoFeatures/AddNgoProfile";
@@ -43,8 +43,8 @@ function App() {
         {isNgoAuthenticated && <Route path="/Ngo" element={<NgoDashboard />} />}
         {isCompanyAuthenticated && (
           <>
-            <Route path="/Company/RaiseRPF" element={<RaiseRPF />} />
-            <Route path="/Company/TrackRPF" element={<TrackRPF />} />
+            <Route path="/Company/RaiseRFP" element={<RaiseRFP />} />
+            <Route path="/Company/TrackRFP" element={<TrackRFP />} />
             <Route path="/Company/FundingStats" element={<FundingStats />} />
             <Route path="/Company/NGOReviews" element={<NGOReviews />} />
             <Route path="/Company/addprofile" element={<AddProfile />} />
@@ -54,9 +54,9 @@ function App() {
         )}
         {isNgoAuthenticated && (
           <>
-            <Route path="/Ngo/RPFs" element={<RPFRequests />} />
+            <Route path="/Ngo/RFPs" element={<RFPRequests />} />
             <Route path="/Ngo/postblogs" element={<PostBlogs />} />
-            <Route path="/Ngo/acceptedrpfs" element={<AcceptedRPF />} />
+            <Route path="/Ngo/acceptedRFPs" element={<AcceptedRFP />} />
             <Route path="/Ngo/media" element={<MediaSection />} />
             <Route path="/Ngo/profile" element={<ShowNgoProfile />} />
             <Route path="/Ngo/editprofile" element={<EditNgoProfile />} />

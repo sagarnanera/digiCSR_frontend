@@ -27,22 +27,22 @@ const CompanyNavigation = () => {
           </li>
           <li>
             <Link
-              to="/Company/RaiseRPF"
+              to="/Company/RaiseRFP"
               className={
-                location.pathname === "/Company/RaiseRPF" ? classes.active : ""
+                location.pathname === "/Company/RaiseRFP" ? classes.active : ""
               }
             >
-              Raise RPFs
+              Raise RFPs
             </Link>
           </li>
           <li>
             <Link
-              to="/Company/TrackRPF"
+              to="/Company/TrackRFP"
               className={
-                location.pathname === "/Company/TrackRPF" ? classes.active : ""
+                location.pathname === "/Company/TrackRFP" ? classes.active : ""
               }
             >
-              Track RPFs
+              Track RFPs
             </Link>
           </li>
           <li>

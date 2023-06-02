@@ -10,6 +10,7 @@ import {
   Text,
   Box,
   Flex,
+  Badge,
 } from "@chakra-ui/react";
 import classes from "../../CSS/ComCss.module.css";
 import {
@@ -29,6 +30,7 @@ const NgoNavigation = () => {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [ngoId, setNgoId] = useState("");
   // const toast = useToast();
   useEffect(() => {
@@ -36,6 +38,9 @@ const NgoNavigation = () => {
     const decodedToken = jwt_decode(token);
     setNgoId(decodedToken._id);
   }, []);
+
+
+
   const fetchNotifications = async () => {
     try {
       const response = await fetch(
@@ -44,6 +49,12 @@ const NgoNavigation = () => {
       const data = await response.json();
       if (data.success) {
         setNotifications(data.notifications);
+        const unreadCount = data.notifications.filter(
+          (notification) => !notification.read
+        ).length;
+
+        // Update the unread count state
+        setUnreadCount(unreadCount);
       } else {
         console.log(data.message);
         throw new Error("Failed to fetch notifications. Please try again.");
@@ -150,12 +161,12 @@ const NgoNavigation = () => {
           </li>
           <li>
             <Link
-              to="/Ngo/RPFs"
+              to="/Ngo/RFPs"
               className={
-                location.pathname === "/Ngo/RPFs" ? classes.active : ""
+                location.pathname === "/Ngo/RFPs" ? classes.active : ""
               }
             >
-              RPF Requests
+              RFP Requests
             </Link>
           </li>
           <li>
@@ -170,12 +181,12 @@ const NgoNavigation = () => {
           </li>
           <li>
             <Link
-              to="/Ngo/acceptedrpfs"
+              to="/Ngo/acceptedRFPs"
               className={
-                location.pathname === "/Ngo/acceptedrpfs" ? classes.active : ""
+                location.pathname === "/Ngo/acceptedRFPs" ? classes.active : ""
               }
             >
-              Accepted RPFs
+              Accepted RFPs
             </Link>
           </li>
           <li>
@@ -194,7 +205,13 @@ const NgoNavigation = () => {
               variant={"ghost"}
               icon={<FiBell />}
               onClick={handleBellIconClick}
+              ml={-5}
             />
+            {unreadCount > 0 && (
+              <Badge colorScheme="red" borderRadius="full" ml={-5} mb={5}>
+                {unreadCount}
+              </Badge>
+            )}
           </li>
           <li>
             <Menu>
@@ -256,6 +273,17 @@ const NgoNavigation = () => {
                               <Text fontSize="sm" color="green" ml={2} mb={2}>
                                 Status: Readed
                               </Text>
+                              <Flex justify="flex-end">
+                                <IconButton
+                                  aria-label="Delete Notification"
+                                  icon={<FiTrash />}
+                                  onClick={() =>
+                                    deleteNotification(notification._id)
+                                  }
+                                  variant="solid"
+                                  colorScheme="red"
+                                />
+                              </Flex>
                             </>
                           ) : (
                             <>
@@ -292,17 +320,6 @@ const NgoNavigation = () => {
                               </Flex>
                             </>
                           )}
-                          <Flex justify="flex-end">
-                            <IconButton
-                              aria-label="Delete Notification"
-                              icon={<FiTrash />}
-                              onClick={() =>
-                                deleteNotification(notification._id)
-                              }
-                              variant="solid"
-                              colorScheme="red"
-                            />
-                          </Flex>
                         </Box>
                       ))}
                   </>

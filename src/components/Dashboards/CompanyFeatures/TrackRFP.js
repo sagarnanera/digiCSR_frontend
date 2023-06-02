@@ -1,13 +1,13 @@
 import React from "react";
 import CompanyNavigation from "../companyNavigation";
 
-const TrackRPF = () => {
+const TrackRFP = () => {
   return (
     <div>
       <CompanyNavigation />
-      <p>TrackRPF</p>
+      <p>TrackRFP</p>
     </div>
   );
 };
 
-export default TrackRPF;
+export default TrackRFP;
