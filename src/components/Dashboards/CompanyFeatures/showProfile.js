@@ -19,11 +19,19 @@ const ShowProfile = () => {
   const [companyId, setCompanyId] = useState("");
   const toast = useToast();
   const [showCertificate, setShowCertificate] = useState(false);
+
   useEffect(() => {
     const token = localStorage.getItem("CompanyAuthToken");
     const decodedToken = jwt_decode(token);
     setCompanyId(decodedToken._id);
   }, []);
+
+  // only executes when id is set
+  useEffect(() => {
+    if (companyId && companyId !== "") {
+      fetchCompanyProfile(); // runs when id is non-empty string
+    }
+  }, [companyId]);
 
   const fetchCompanyProfile = async () => {
     try {
@@ -41,10 +49,6 @@ const ShowProfile = () => {
       console.log(error.message);
     }
   };
-
-  useEffect(() => {
-    fetchCompanyProfile();
-  });
 
   const fetchCertificate = async () => {
     try {
