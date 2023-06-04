@@ -15,6 +15,12 @@ const ShowNgoProfile = () => {
     setNgoId(decodedToken._id);
   }, []);
 
+  useEffect(() => {
+    if (ngoId && ngoId !== "") {
+      fetchCompanyProfile();
+    }
+  }, [ngoId]);
+
   const fetchCompanyProfile = async () => {
     try {
       const response = await fetch(
@@ -39,10 +45,6 @@ const ShowNgoProfile = () => {
       // });
     }
   };
-
-  useEffect(() => {
-    fetchCompanyProfile();
-  });
 
   const submitHandler = async () => {
     navigate("/Ngo/editprofile", { replace: true });
