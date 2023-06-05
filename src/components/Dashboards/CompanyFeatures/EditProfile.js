@@ -54,7 +54,6 @@ const EditProfile = () => {
   const [personPhone, setPersonPhone] = useState();
   const [personDesignation, setPersonDesignation] = useState();
   const [userId, setUserId] = useState("");
-  // const [certificate, setCertificate] = useState();
   const [Sector, setSector] = useState([]);
   const [taxEligibility, setTaxEligibility] = useState([]);
   const [states, setStates] = useState([]);
@@ -95,7 +94,7 @@ const EditProfile = () => {
       }
       setCompanyName(profileData.company_name);
       setPincode(profileData.profile.location.pincode);
-      setCompanySummary(profileData.profile.summary);
+      // setCompanySummary(profileData.profile.summary);
       setPersonName(profileData.profile.comunication_person.cp_name);
       setPersonEmail(profileData.profile.comunication_person.cp_email);
       setPersonDesignation(
@@ -109,10 +108,7 @@ const EditProfile = () => {
   useEffect(() => {
     fetchCompanyProfile();
   });
-  // const handleFileChange = (event) => {
-  //   const file = event.target.files[0];
-  //   setCertificate(file);
-  // };
+
   const handleStateChange = async (stateId) => {
     const fetchedCities = await fetchCities(stateId);
     const fetchedstateName = await fetchStateName(stateId);
@@ -183,8 +179,21 @@ const EditProfile = () => {
       (establishmentyear && establishmentyear.length !== 4) ||
       (personPhone && personPhone.length !== 10) ||
       !(pincode && pincode.length <= 10 && pincode.length >= 5)
-      // || !(certificate && certificate.type === "application/pdf")
     ) {
+      console.log(
+        companyName,
+        establishmentyear,
+        CompanySummary,
+        personEmail,
+        personName,
+        personDesignation,
+        personPhone,
+        Sector,
+        taxEligibility,
+        pincode,
+        selectedcities,
+        selectedstates
+      );
       toast({
         title: "Please Fill all the Fields",
         status: "warning",
@@ -192,6 +201,7 @@ const EditProfile = () => {
         isClosable: true,
         position: "bottom",
       });
+      // console.log(comp);
       setLoading(false);
       return;
     }
@@ -223,8 +233,7 @@ const EditProfile = () => {
       formData.append("cp_phone", personPhone);
       formData.append("tax_comp", taxEligibility);
       formData.append("sectors", JSON.stringify(Sector));
-      // formData.append("registration_certificate", certificate);
-
+      // console.log(formData);
       const response = await fetch(url, {
         method: "POST",
         body: formData,
@@ -308,7 +317,7 @@ const EditProfile = () => {
                 <NumberInput>
                   <NumberInputField
                     placeholder="yyyy"
-                    value={establishmentyear || null}
+                    value={establishmentyear}
                     // defaultValue={profileData.profile.sectors}
                     onChange={(e) => setEstablishmentYear(e.target.value)}
                     maxLength={4}
@@ -537,7 +546,7 @@ const EditProfile = () => {
                   placeholder="Selected Sectors"
                   isReadOnly
                   rows={rows}
-                  onChange={handleChange}
+                  // onChange={handleChange}
                   height="fit-content"
                   textOverflow="ellipsis"
                   resize="none"
@@ -550,18 +559,6 @@ const EditProfile = () => {
             )}
           </Box>
           <br />
-          {/* <Box flex={5} w="90%">
-              <FormControl id="certificate" isRequired>
-                <FormLabel>Company Registration Certificate</FormLabel>
-                <Input
-                  type="file"
-                  p={1.5}
-                  accept="application/pdf"
-                  onChange={handleFileChange}
-                />
-              </FormControl>
-            </Box>
-            <br /> */}
           <Box flex={5} w="90%">
             <FormControl id="taxeligibility" isRequired={true}>
               <FormLabel>Tax Compliance Eligibility</FormLabel>
