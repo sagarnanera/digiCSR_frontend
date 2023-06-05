@@ -16,35 +16,34 @@ const ShowNgoProfile = () => {
   }, []);
 
   useEffect(() => {
+    const fetchCompanyProfile = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/NGO/profile/${ngoId}`
+        );
+        const data = await response.json();
+        if (data.success) {
+          setProfileData(data.data);
+        } else {
+          console.log(data.message);
+          throw new Error("Failed to Get Profile.please Reload");
+        }
+      } catch (error) {
+        console.log(error.message);
+        // toast({
+        //   title: "Error Occurred!",
+        //   description: error.message,
+        //   status: "error",
+        //   duration: 5000,
+        //   isClosable: true,
+        //   position: "bottom",
+        // });
+      }
+    };
     if (ngoId && ngoId !== "") {
       fetchCompanyProfile();
     }
   }, [ngoId]);
-
-  const fetchCompanyProfile = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:4000/NGO/profile/${ngoId}`
-      );
-      const data = await response.json();
-      if (data.success) {
-        setProfileData(data.data);
-      } else {
-        console.log(data.message);
-        throw new Error("Failed to Get Profile.please Reload");
-      }
-    } catch (error) {
-      console.log(error.message);
-      // toast({
-      //   title: "Error Occurred!",
-      //   description: error.message,
-      //   status: "error",
-      //   duration: 5000,
-      //   isClosable: true,
-      //   position: "bottom",
-      // });
-    }
-  };
 
   const submitHandler = async () => {
     navigate("/Ngo/editprofile", { replace: true });
@@ -98,23 +97,21 @@ const ShowNgoProfile = () => {
                         </Text>
                         <Divider />
                         {/* <HStack> */}
-                        <Text fontSize="lg" mt={2}
-                          mb={2}>
-                            <strong>Member Name:</strong> {member.bm_name}
-                          </Text>
-                          <Text fontSize="lg" mb={2}>
-                            <strong>Gender:</strong> {member.bm_gender}
-                          </Text>
-                          <Text fontSize="lg" mb={2}>
-                            <strong>DIN Number:</strong> {member.bm_din}
-                          </Text>
-                          <Text fontSize="lg" mb={2}>
-                            <strong>Phone Number:</strong> {member.bm_phone}
-                          </Text>
-                          <Text fontSize="lg">
-                            <strong>Designation:</strong>{" "}
-                            {member.bm_designation}
-                          </Text>
+                        <Text fontSize="lg" mt={2} mb={2}>
+                          <strong>Member Name:</strong> {member.bm_name}
+                        </Text>
+                        <Text fontSize="lg" mb={2}>
+                          <strong>Gender:</strong> {member.bm_gender}
+                        </Text>
+                        <Text fontSize="lg" mb={2}>
+                          <strong>DIN Number:</strong> {member.bm_din}
+                        </Text>
+                        <Text fontSize="lg" mb={2}>
+                          <strong>Phone Number:</strong> {member.bm_phone}
+                        </Text>
+                        <Text fontSize="lg">
+                          <strong>Designation:</strong> {member.bm_designation}
+                        </Text>
                         {/* </HStack> */}
                       </Box>
                     ))

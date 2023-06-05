@@ -28,27 +28,26 @@ const ShowProfile = () => {
 
   // only executes when id is set
   useEffect(() => {
+    const fetchCompanyProfile = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/company/profile/${companyId}`
+        );
+        const data = await response.json();
+        if (data.success) {
+          setProfileData(data.data);
+        } else {
+          console.log(data.message);
+          throw new Error("Failed to Get Profile.please Reload");
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
     if (companyId && companyId !== "") {
       fetchCompanyProfile(); // runs when id is non-empty string
     }
   }, [companyId]);
-
-  const fetchCompanyProfile = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:4000/company/profile/${companyId}`
-      );
-      const data = await response.json();
-      if (data.success) {
-        setProfileData(data.data);
-      } else {
-        console.log(data.message);
-        throw new Error("Failed to Get Profile.please Reload");
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
 
   const fetchCertificate = async () => {
     try {

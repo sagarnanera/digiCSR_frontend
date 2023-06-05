@@ -17,6 +17,7 @@ import { FiEye } from "react-icons/fi";
 import NgoNavigation from "../ngoNavigation";
 import { proposals } from "../../rfpData";
 import "../../../CSS/rfpTable.css";
+import jwt_decode from "jwt-decode";
 // import config from "../../config";
 
 const TrackRFP = () => {
@@ -27,14 +28,19 @@ const TrackRFP = () => {
   const [currentRows, setCurrentRows] = useState(
     proposals.slice(indexOfFirstRow, indexOfLastRow)
   );
-  const [documentCount, setDocumentCount] = useState(0);
-  const pageCount = Math.ceil(documentCount / rowsPerPage);
-
+  // const [documentCount, setDocumentCount] = useState(0);
+  const pageCount = Math.ceil(proposals.length / rowsPerPage);
+  const [companyId, setCompanyId] = useState("");
+  useEffect(() => {
+    const token = localStorage.getItem("CompanyAuthToken");
+    const decodedToken = jwt_decode(token);
+    setCompanyId(decodedToken._id);
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:4000/rfps?page=${currentPage}`
+          `http://localhost:4000/company/rfp/${companyId}?page=${currentPage}`
         );
         const data = await response.json();
         if (data === []) {
@@ -48,21 +54,7 @@ const TrackRFP = () => {
     };
 
     fetchData();
-  }, [currentPage]);
-  useEffect(() => {
-    const fetchDocumentCount = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/rfp-count");
-        const data = await response.json();
-        setDocumentCount(data.count);
-        console.log(documentCount);
-      } catch (error) {
-        console.error("Error fetching document count:", error);
-      }
-    };
-
-    fetchDocumentCount();
-  });
+  }, [currentPage, companyId]);
   // const handleRowsPerPageChange = (event) => {
   //   const value = parseInt(event.target.value);
   //   setRowsPerPage(value);
@@ -194,7 +186,6 @@ const TrackRFP = () => {
                 <Th>Proposal Name</Th>
                 <Th>Development Sector</Th>
                 <Th>States</Th>
-                <Th>Company</Th>
                 <Th>Action</Th>
               </Tr>
             </Thead>
@@ -238,7 +229,6 @@ const TrackRFP = () => {
                       </span>
                     )}
                   </Td>
-                  <Td>{proposal.company_name}</Td>
                   <Td>
                     <IconButton
                       aria-label="View proposal"
