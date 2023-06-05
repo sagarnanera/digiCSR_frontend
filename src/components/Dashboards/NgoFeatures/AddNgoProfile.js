@@ -23,9 +23,9 @@ import {
   MenuItem,
   Checkbox,
   Tooltip,
-  useToast,
-  // HStack,
+  // WrapItem,
   Wrap,
+  useToast,
 } from "@chakra-ui/react";
 import {
   ChevronDownIcon,
@@ -38,7 +38,7 @@ import { sectorOptions } from "../../sectorData";
 import { useNavigate } from "react-router-dom";
 // export const allNgoFieldsContext = createContext();
 
-const EditNgoProfile = () => {
+const AddNgoProfile = () => {
   const navigate = useNavigate();
   const [NgoName, setNgoName] = useState("");
   const [NgoSummary, setNgoSummary] = useState("");
@@ -56,60 +56,10 @@ const EditNgoProfile = () => {
   const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [memberloading, setmemberLoading] = useState(false);
-  const [profileData, setProfileData] = useState(null);
   const toast = useToast();
   // const [allfields, setAllfields] = useState(false);
   const [boardMembers, setBoardMembers] = useState([]);
 
-  useEffect(() => {
-    const getStatesAndCompanyId = async () => {
-      const fetchedStates = await fetchStates();
-      setStates(fetchedStates);
-    };
-    const token = localStorage.getItem("NgoAuthToken");
-    const decodedToken = jwt_decode(token);
-    // Set the user's ID in the state variable
-    setUserId(decodedToken._id);
-    getStatesAndCompanyId();
-  }, []);
-
-  useEffect(() => {
-    const fetchCompanyProfile = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:4000/NGO/profile/${userId}`
-        );
-        const data = await response.json();
-        if (data.success) {
-          setProfileData(data.data);
-        } else {
-          console.log(data.message);
-          throw new Error("Failed to Get Profile.please Reload");
-        }
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-    fetchCompanyProfile();
-  }, [userId]);
-  useEffect(() => {
-    if (profileData) {
-      setNgoName(profileData.NGO_name);
-      setNgoSummary(profileData.profile.summary);
-      setCSRBudget(profileData.profile.csr_budget);
-      const defaultMembers = profileData.profile.board_members.map(
-        (member) => ({
-          name: member.bm_name,
-          gender: member.bm_gender,
-          dinNumber: member.bm_din,
-          phoneNo: member.bm_phone,
-          designation: member.bm_designation,
-          isEditing: false, // Initially set to false to show the text form
-        })
-      );
-      setBoardMembers(defaultMembers);
-    }
-  }, [profileData]);
   const handleAddMember = () => {
     setBoardMembers((prevBoardMembers) => [
       ...prevBoardMembers,
@@ -181,6 +131,18 @@ const EditNgoProfile = () => {
       setRows(currentRows);
     }
   };
+
+  useEffect(() => {
+    const getStatesAndCompanyId = async () => {
+      const fetchedStates = await fetchStates();
+      setStates(fetchedStates);
+    };
+    const token = localStorage.getItem("NgoAuthToken");
+    const decodedToken = jwt_decode(token);
+    // Set the user's ID in the state variable
+    setUserId(decodedToken._id);
+    getStatesAndCompanyId();
+  }, []);
 
   useEffect(() => {
     setSelectedStatesText(selectedStates.join(", "));
@@ -344,7 +306,7 @@ const EditNgoProfile = () => {
                 <Input
                   type="text"
                   placeholder="Enter Ngo's Full Name"
-                  defaultValue={NgoName || ""}
+                  value={NgoName || ""}
                   onChange={(e) => setNgoName(e.target.value)}
                 />
               </FormControl>
@@ -360,7 +322,7 @@ const EditNgoProfile = () => {
               <FormLabel>Ngo Summary</FormLabel>
 
               <Textarea
-                defaultValue={NgoSummary}
+                value={NgoSummary}
                 rows={rows}
                 onChange={handleChange}
                 placeholder="Enter text..."
@@ -419,7 +381,7 @@ const EditNgoProfile = () => {
                   p={3}
                   bg="#f2f2f2"
                   w={{ base: "100%", md: "75vw" }}
-                  // m="10px 0 0 0"
+                  m="10px 0 10px 0"
                 >
                   {member.isEditing && (
                     <>
@@ -534,7 +496,7 @@ const EditNgoProfile = () => {
                 <Input
                   type="number"
                   placeholder="CSR Budget"
-                  defaultValue={CSRBudget}
+                  value={CSRBudget}
                   onChange={(e) => {
                     setCSRBudget(e.target.value);
                   }}
@@ -576,7 +538,7 @@ const EditNgoProfile = () => {
                     <MenuList maxH="200px" overflowY="auto">
                       <CheckboxGroup
                         colorScheme="teal"
-                        defaultValue={selectedStates}
+                        value={selectedStates}
                         onChange={handleStateChange}
                       >
                         {states.map((state) => (
@@ -645,7 +607,7 @@ const EditNgoProfile = () => {
                     <MenuList maxH="200px" overflowY="auto">
                       <CheckboxGroup
                         colorScheme="teal"
-                        defaultValue={sector}
+                        value={sector}
                         onChange={handleSectorChange}
                       >
                         {sectorOptions.map((option) => (
@@ -700,4 +662,4 @@ const EditNgoProfile = () => {
   );
 };
 
-export default EditNgoProfile;
+export default AddNgoProfile;

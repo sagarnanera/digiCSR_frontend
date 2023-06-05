@@ -206,7 +206,7 @@ function NgoAndComSignup() {
           });
           localStorage.setItem("CompanyAuthToken", JSON.stringify(data));
           setLoading(false);
-          navigate("/Company/editprofile", { replace: true });
+          navigate("/Company/addprofile", { replace: true });
         } else {
           throw new Error("Failed to verify. Please try again.");
         }
@@ -264,7 +264,7 @@ function NgoAndComSignup() {
           });
           localStorage.setItem("NgoAuthToken", JSON.stringify(data));
           setLoading(false);
-          navigate("/Ngo/editprofile", { replace: true });
+          navigate("/Ngo/addprofile", { replace: true });
         } else {
           throw new Error("Failed to verify. Please try again.");
         }

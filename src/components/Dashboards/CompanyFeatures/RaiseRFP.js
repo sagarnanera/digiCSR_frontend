@@ -144,7 +144,7 @@ function RaiseRFP() {
           isClosable: true,
           position: "bottom",
         });
-        navigate("/Company/TrackRPF", { replace: true });
+        navigate("/Company/TrackRFP", { replace: true });
         setLoading(false);
       } else {
         console.warn(response);

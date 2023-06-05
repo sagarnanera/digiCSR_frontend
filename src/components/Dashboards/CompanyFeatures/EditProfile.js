@@ -45,16 +45,15 @@ const EditProfile = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const [companyName, setCompanyName] = useState("");
+  const [companyName, setCompanyName] = useState();
   const [CompanySummary, setCompanySummary] = useState("");
   const [rows, setRows] = useState(1);
-  const [establishmentyear, setEstablishmentYear] = useState();
+  const [establishmentyear, setEstablishmentYear] = useState(1);
   const [personName, setPersonName] = useState();
   const [personEmail, setPersonEmail] = useState();
   const [personPhone, setPersonPhone] = useState();
   const [personDesignation, setPersonDesignation] = useState();
   const [userId, setUserId] = useState("");
-  const [certificate, setCertificate] = useState();
   const [Sector, setSector] = useState([]);
   const [taxEligibility, setTaxEligibility] = useState([]);
   const [states, setStates] = useState([]);
@@ -65,6 +64,7 @@ const EditProfile = () => {
   const [selectedSectorText, setSelectedSectorText] = useState("");
   const [isSectorTextAreaVisible, setIsSectorTextAreaVisible] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [profileData, setProfileData] = useState(null);
   // const [allfields, setAllfields] = useState(false);
 
   useEffect(() => {
@@ -80,12 +80,36 @@ const EditProfile = () => {
     getStates();
   }, []);
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setCertificate(file);
+  const fetchCompanyProfile = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/company/profile/${userId}`
+      );
+      const data = await response.json();
+      if (data.success) {
+        setProfileData(data.data);
+      } else {
+        console.log(data.message);
+        throw new Error("Failed to Get Profile.please Reload");
+      }
+      setCompanyName(profileData.company_name);
+      setPincode(profileData.profile.location.pincode);
+      // setCompanySummary(profileData.profile.summary);
+      setPersonName(profileData.profile.comunication_person.cp_name);
+      setPersonEmail(profileData.profile.comunication_person.cp_email);
+      setPersonDesignation(
+        profileData.profile.comunication_person.cp_designation
+      );
+      setPersonPhone(profileData.profile.comunication_person.cp_phone);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
+  useEffect(() => {
+    fetchCompanyProfile();
+  });
+
   const handleStateChange = async (stateId) => {
-    // console.log(states);
     const fetchedCities = await fetchCities(stateId);
     const fetchedstateName = await fetchStateName(stateId);
     setselectedStates(fetchedstateName);
@@ -110,7 +134,6 @@ const EditProfile = () => {
 
   const handleSectorChange = (selectedItems) => {
     setSector(selectedItems);
-    // console.log(selectedcities);
   };
 
   const handleTaxEligibilityChange = (selectedValues) => {
@@ -155,10 +178,22 @@ const EditProfile = () => {
       !selectedcities ||
       (establishmentyear && establishmentyear.length !== 4) ||
       (personPhone && personPhone.length !== 10) ||
-      !(pincode && pincode.length <= 10 && pincode.length >= 5) ||
-      !(certificate && certificate.type === "application/pdf")
+      !(pincode && pincode.length <= 10 && pincode.length >= 5)
     ) {
-      // Display an error message or handle the validation error
+      console.log(
+        companyName,
+        establishmentyear,
+        CompanySummary,
+        personEmail,
+        personName,
+        personDesignation,
+        personPhone,
+        Sector,
+        taxEligibility,
+        pincode,
+        selectedcities,
+        selectedstates
+      );
       toast({
         title: "Please Fill all the Fields",
         status: "warning",
@@ -166,14 +201,12 @@ const EditProfile = () => {
         isClosable: true,
         position: "bottom",
       });
+      // console.log(comp);
       setLoading(false);
       return;
-    } else {
-      // setAllfields(true);
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(personEmail)) {
-      // Display an error message or handle the email validation error
       toast({
         title: "Please Enter a valid email",
         status: "warning",
@@ -189,7 +222,7 @@ const EditProfile = () => {
 
       const formData = new FormData();
       formData.append("company_name", companyName);
-      formData.append("summary", CompanySummary);
+      formData.append("summary", JSON.stringify(CompanySummary));
       formData.append("city", selectedcities);
       formData.append("state", selectedstates);
       formData.append("pincode", pincode);
@@ -200,8 +233,7 @@ const EditProfile = () => {
       formData.append("cp_phone", personPhone);
       formData.append("tax_comp", taxEligibility);
       formData.append("sectors", JSON.stringify(Sector));
-      formData.append("registration_certificate", certificate);
-
+      // console.log(formData);
       const response = await fetch(url, {
         method: "POST",
         body: formData,
@@ -238,345 +270,333 @@ const EditProfile = () => {
   };
 
   return (
-    // <allFieldsContext.Provider value={allfields}>
-      <Container centerContent>
-        <Box
-          d="flex"
-          textAlign="center"
-          p={3}
-          bg="#f2f2f2"
-          w={{ base: "100%", md: "80vw" }}
-          m="50px 0 10px 0"
-          borderRadius="10px"
-        >
-          <Text fontSize="3xl" fontFamily="Work sans">
-            Edit Company Profile
-          </Text>
-        </Box>
-        <Box
-          d="flex"
-          textAlign="center"
-          m="25px 0 10px 0"
-          p={3}
-          bg="#f2f2f2"
-          w={{ base: "100%", md: "80vw" }}
-          borderRadius="10px"
-        >
-          <VStack spacing={4} w="100%">
-            <Flex
-              w="90%"
-              flexWrap="wrap"
-              justifyContent={{ base: "center", md: "flex-start" }}
-            >
-              <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
-                <FormControl id="companyname" isRequired={true}>
-                  <FormLabel>Company Name</FormLabel>
-                  <Input
-                    type="text"
-                    placeholder="Enter Company's Full Name"
-                    value={companyName || ""}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                  />
-                </FormControl>
-              </Box>
-              <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
-                <FormControl id="year" isRequired={true}>
-                  <FormLabel>Year of Establishment</FormLabel>
-                  <NumberInput>
-                    <NumberInputField
-                      placeholder="yyyy"
-                      value={establishmentyear || null}
-                      onChange={(e) => setEstablishmentYear(e.target.value)}
-                      maxLength={4}
-                      minLength={4}
-                    />
-                    <NumberInputStepper>
-                      <NumberIncrementStepper />
-                      <NumberDecrementStepper />
-                    </NumberInputStepper>
-                  </NumberInput>
-                </FormControl>
-              </Box>
-            </Flex>
-            <br />
-            <Flex
-              flexWrap="wrap"
-              justifyContent={{ base: "center", md: "flex-start" }}
-              flex={5}
-              w="90%"
-            >
-              <FormControl id="Ngo" isRequired={true}>
-                <FormLabel>Company Summary</FormLabel>
-
-                <Textarea
-                  value={CompanySummary}
-                  rows={rows}
-                  onChange={handleChange}
-                  placeholder="Enter text..."
-                  resize="none"
-                ></Textarea>
-              </FormControl>
-            </Flex>
-            <br />
-            <Box flex={5} w="90%">
-              <FormControl isRequired={true}>
-                <FormLabel>Location of the Company</FormLabel>
-                <Flex
-                  w="100%"
-                  flexWrap="wrap"
-                  justifyContent={{ base: "center", md: "flex-start" }}
-                >
-                  <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
-                    <FormControl>
-                      <FormLabel htmlFor="state">State:</FormLabel>
-                      <Select
-                        id="state"
-                        onChange={(e) => handleStateChange(e.target.value)}
-                      >
-                        <option value="">Select a state</option>
-                        {states.map((state) => (
-                          <option key={state.geonameId} value={state.geonameId}>
-                            {state.name}
-                          </option>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Box>
-                  <Box
-                    flex={{ base: "100%", md: "5" }}
-                    mr={{ base: 0, md: 10 }}
-                    ml={{ base: 0, md: 10 }}
-                  >
-                    <FormControl>
-                      <FormLabel htmlFor="city">City:</FormLabel>
-                      <Select
-                        id="city"
-                        onChange={(e) => handlecityChange(e.target.value)}
-                      >
-                        <option value="">Select a city</option>
-                        {cities.map((city) => (
-                          <option key={city.geonameId} value={city.name}>
-                            {city.name}
-                          </option>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Box>
-                  <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
-                    <FormControl id="pincode" isRequired={true}>
-                      <FormLabel>Pincode</FormLabel>
-                      <Input
-                        type="number"
-                        placeholder="Enter Pincode"
-                        value={pincode || null}
-                        onChange={(e) => setPincode(e.target.value)}
-                        minLength={5}
-                        maxLength={10}
-                      />
-                    </FormControl>
-                  </Box>
-                </Flex>
-              </FormControl>
-            </Box>
-            <br />
-            <Box flex={5} w="90%">
-              <FormControl isRequired={true}>
-                <FormLabel>Communication Person of the Company</FormLabel>
-                <Flex
-                  w="100%"
-                  flexWrap="wrap"
-                  justifyContent={{ base: "center", md: "flex-start" }}
-                >
-                  <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
-                    <FormControl id="name" isRequired={true}>
-                      <FormLabel>Name</FormLabel>
-                      <Input
-                        type="text"
-                        placeholder="Enter Name of Communication Person"
-                        value={personName || ""}
-                        onChange={(e) => setPersonName(e.target.value)}
-                      />
-                    </FormControl>
-                  </Box>
-                  <Box
-                    flex={{ base: "100%", md: "5" }}
-                    mr={{ base: 0, md: 10 }}
-                    ml={{ base: 0, md: 10 }}
-                  >
-                    <FormControl id="email" isRequired={true}>
-                      <FormLabel>Email</FormLabel>
-                      <InputGroup>
-                        <InputLeftElement>
-                          <EmailIcon color="gray.300" />
-                        </InputLeftElement>
-                        <Input
-                          type="email"
-                          placeholder="Enter email of Communication Person"
-                          value={personEmail || ""}
-                          onChange={(e) => setPersonEmail(e.target.value)}
-                        />
-                      </InputGroup>
-                    </FormControl>
-                  </Box>
-                  <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
-                    <FormControl id="phoneno" isRequired={true}>
-                      <FormLabel>Phone No</FormLabel>
-                      <InputGroup>
-                        <InputLeftElement>
-                          <PhoneIcon color="gray.300" />
-                        </InputLeftElement>
-                        <Input
-                          type="tel"
-                          placeholder="Phone number"
-                          value={personPhone || null}
-                          onChange={(e) => setPersonPhone(e.target.value)}
-                          minLength={10}
-                          maxLength={10}
-                        />
-                      </InputGroup>
-                    </FormControl>
-                  </Box>
-                </Flex>
-              </FormControl>
-            </Box>
-            <Flex
-              flexWrap="wrap"
-              justifyContent={{ base: "center", md: "flex-start" }}
-              flex={5}
-              w="90%"
-            >
-              <Box
-                w={{ base: "90%", md: "23.5vw" }}
-                mr={{ base: 0, md: "54.5vw" }}
-              >
-                <FormControl id="designation" isRequired={true}>
-                  <FormLabel>Designation of Communication Person</FormLabel>
-                  <Input
-                    type="text"
-                    placeholder="Enter Degignation of Communication Person"
-                    value={personDesignation || ""}
-                    onChange={(e) => setPersonDesignation(e.target.value)}
-                  />
-                </FormControl>
-              </Box>
-            </Flex>
-            <br />
-            <Box flex={5} w="90%">
-              <FormControl isRequired>
-                <FormLabel>Sectors to provide CSR</FormLabel>
-                <Checkbox
-                  isChecked={Sector.length === sectorOptions.length}
-                  onChange={handleAllChecked}
-                  w="100%"
-                >
-                  All Sectors
-                </Checkbox>
-                <Box>
-                  <Menu closeOnSelect={false}>
-                    <MenuButton
-                      as={Button}
-                      w="100%"
-                      rightIcon={
-                        isDropdownOpen ? <ChevronUpIcon /> : <ChevronDownIcon />
-                      }
-                      onClick={handleToggleDropdown}
-                      display="flex"
-                      justifyContent="flex-start"
-                      isOpen={isDropdownOpen.toString()}
-                    >
-                      Select Sector
-                    </MenuButton>
-                    <MenuList maxH="200px" overflowY="auto">
-                      <CheckboxGroup
-                        colorScheme="teal"
-                        value={Sector}
-                        onChange={handleSectorChange}
-                      >
-                        {sectorOptions.map((option) => (
-                          <MenuItem key={option.value}>
-                            <Checkbox id={option.id} value={option.label}>
-                              {option.label}
-                            </Checkbox>
-                          </MenuItem>
-                        ))}
-                      </CheckboxGroup>
-                    </MenuList>
-                  </Menu>
-                </Box>
-              </FormControl>
-              {isSectorTextAreaVisible && (
-                <Tooltip
-                  label={Sector.join(", ")}
-                  isDisabled={Sector.length <= 5}
-                >
-                  <Textarea
-                    placeholder="Selected Sectors"
-                    isReadOnly
-                    rows={rows}
-                    onChange={handleChange}
-                    height="fit-content"
-                    textOverflow="ellipsis"
-                    resize="none"
-                  >
-                    {Sector.length <= 5
-                      ? selectedSectorText
-                      : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`}
-                  </Textarea>
-                </Tooltip>
-              )}
-            </Box>
-            <br />
-            <Box flex={5} w="90%">
-              <FormControl id="certificate" isRequired>
-                <FormLabel>Company Registration Certificate</FormLabel>
+    <Container centerContent>
+      <Box
+        d="flex"
+        textAlign="center"
+        p={3}
+        bg="#f2f2f2"
+        w={{ base: "100%", md: "80vw" }}
+        m="50px 0 10px 0"
+        borderRadius="10px"
+      >
+        <Text fontSize="3xl" fontFamily="Work sans">
+          Edit Company Profile
+        </Text>
+      </Box>
+      <Box
+        d="flex"
+        textAlign="center"
+        m="25px 0 10px 0"
+        p={3}
+        bg="#f2f2f2"
+        w={{ base: "100%", md: "80vw" }}
+        borderRadius="10px"
+      >
+        <VStack spacing={4} w="100%">
+          <Flex
+            w="90%"
+            flexWrap="wrap"
+            justifyContent={{ base: "center", md: "flex-start" }}
+          >
+            <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+              <FormControl id="companyname" isRequired={true}>
+                <FormLabel>Company Name</FormLabel>
                 <Input
-                  type="file"
-                  p={1.5}
-                  accept="application/pdf"
-                  onChange={handleFileChange}
+                  type="text"
+                  placeholder="Enter Company's Full Name"
+                  defaultValue={companyName}
+                  // defaultValue={profileData.company_name}
+                  onChange={(e) => setCompanyName(e.target.value)}
                 />
               </FormControl>
             </Box>
-            <br />
-            <Box flex={5} w="90%">
-              <FormControl id="taxeligibility" isRequired={true}>
-                <FormLabel>Tax Compliance Eligibility</FormLabel>
-                <CheckboxGroup
-                  colorScheme="teal"
-                  value={taxEligibility}
-                  onChange={handleTaxEligibilityChange}
-                >
-                  <Stack spacing={[1, 3]} direction={["column", "row"]}>
-                    <Checkbox value="80G">80 G (for 50% tax benefits)</Checkbox>
-                    <Checkbox value="35AC">
-                      35 AC (for 100% tax benefits)
-                    </Checkbox>
-                    <Checkbox value="12AA">
-                      12 AA (Tax exemption for NGO income)
-                    </Checkbox>
-                    <Checkbox value="FCRA">
-                      FCRA (Eligible for international funding)
-                    </Checkbox>
-                  </Stack>
-                </CheckboxGroup>
+            <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
+              <FormControl id="year" isRequired={true}>
+                <FormLabel>Year of Establishment</FormLabel>
+                <NumberInput>
+                  <NumberInputField
+                    placeholder="yyyy"
+                    value={establishmentyear}
+                    // defaultValue={profileData.profile.sectors}
+                    onChange={(e) => setEstablishmentYear(e.target.value)}
+                    maxLength={4}
+                    minLength={4}
+                  />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
               </FormControl>
             </Box>
-            <br />
-            <br />
-            <br />
-            <Button
-              colorScheme="teal"
-              variant="solid"
-              w={"10vw"}
-              onClick={submitHandler}
-              isLoading={loading}
+          </Flex>
+          <br />
+          <Flex
+            flexWrap="wrap"
+            justifyContent={{ base: "center", md: "flex-start" }}
+            flex={5}
+            w="90%"
+          >
+            <FormControl id="Ngo" isRequired={true}>
+              <FormLabel>Company Summary</FormLabel>
+
+              <Textarea
+                defaultValue={CompanySummary}
+                rows={rows}
+                onChange={handleChange}
+                placeholder="Enter text..."
+                resize="none"
+              ></Textarea>
+            </FormControl>
+          </Flex>
+          <br />
+          <Box flex={5} w="90%">
+            <FormControl isRequired={true}>
+              <FormLabel>Location of the Company</FormLabel>
+              <Flex
+                w="100%"
+                flexWrap="wrap"
+                justifyContent={{ base: "center", md: "flex-start" }}
+              >
+                <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+                  <FormControl>
+                    <FormLabel htmlFor="state">State:</FormLabel>
+                    <Select
+                      id="state"
+                      onChange={(e) => handleStateChange(e.target.value)}
+                    >
+                      <option value="">Select a state</option>
+                      {states.map((state) => (
+                        <option key={state.geonameId} value={state.geonameId}>
+                          {state.name}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Box
+                  flex={{ base: "100%", md: "5" }}
+                  mr={{ base: 0, md: 10 }}
+                  ml={{ base: 0, md: 10 }}
+                >
+                  <FormControl>
+                    <FormLabel htmlFor="city">City:</FormLabel>
+                    <Select
+                      id="city"
+                      onChange={(e) => handlecityChange(e.target.value)}
+                    >
+                      <option value="">Select a city</option>
+                      {cities.map((city) => (
+                        <option key={city.geonameId} value={city.name}>
+                          {city.name}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
+                  <FormControl id="pincode" isRequired={true}>
+                    <FormLabel>Pincode</FormLabel>
+                    <Input
+                      type="number"
+                      placeholder="Enter Pincode"
+                      defaultValue={pincode || null}
+                      onChange={(e) => setPincode(e.target.value)}
+                      minLength={5}
+                      maxLength={10}
+                    />
+                  </FormControl>
+                </Box>
+              </Flex>
+            </FormControl>
+          </Box>
+          <br />
+          <Box flex={5} w="90%">
+            <FormControl isRequired={true}>
+              <FormLabel>Communication Person of the Company</FormLabel>
+              <Flex
+                w="100%"
+                flexWrap="wrap"
+                justifyContent={{ base: "center", md: "flex-start" }}
+              >
+                <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+                  <FormControl id="name" isRequired={true}>
+                    <FormLabel>Name</FormLabel>
+                    <Input
+                      type="text"
+                      placeholder="Enter Name of Communication Person"
+                      defaultValue={personName || ""}
+                      onChange={(e) => setPersonName(e.target.value)}
+                    />
+                  </FormControl>
+                </Box>
+                <Box
+                  flex={{ base: "100%", md: "5" }}
+                  mr={{ base: 0, md: 10 }}
+                  ml={{ base: 0, md: 10 }}
+                >
+                  <FormControl id="email" isRequired={true}>
+                    <FormLabel>Email</FormLabel>
+                    <InputGroup>
+                      <InputLeftElement>
+                        <EmailIcon color="gray.300" />
+                      </InputLeftElement>
+                      <Input
+                        type="email"
+                        placeholder="Enter email of Communication Person"
+                        defaultValue={personEmail || ""}
+                        onChange={(e) => setPersonEmail(e.target.value)}
+                      />
+                    </InputGroup>
+                  </FormControl>
+                </Box>
+                <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
+                  <FormControl id="phoneno" isRequired={true}>
+                    <FormLabel>Phone No</FormLabel>
+                    <InputGroup>
+                      <InputLeftElement>
+                        <PhoneIcon color="gray.300" />
+                      </InputLeftElement>
+                      <Input
+                        type="tel"
+                        placeholder="Phone number"
+                        defaultValue={personPhone || null}
+                        onChange={(e) => setPersonPhone(e.target.value)}
+                        minLength={10}
+                        maxLength={10}
+                      />
+                    </InputGroup>
+                  </FormControl>
+                </Box>
+              </Flex>
+            </FormControl>
+          </Box>
+          <Flex
+            flexWrap="wrap"
+            justifyContent={{ base: "center", md: "flex-start" }}
+            flex={5}
+            w="90%"
+          >
+            <Box
+              w={{ base: "90%", md: "23.5vw" }}
+              mr={{ base: 0, md: "54.5vw" }}
             >
-              Save
-            </Button>
-          </VStack>
-        </Box>
-      </Container>
-    // </allFieldsContext.Provider>
+              <FormControl id="designation" isRequired={true}>
+                <FormLabel>Designation of Communication Person</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="Enter Degignation of Communication Person"
+                  defaultValue={personDesignation || ""}
+                  onChange={(e) => setPersonDesignation(e.target.value)}
+                />
+              </FormControl>
+            </Box>
+          </Flex>
+          <br />
+          <Box flex={5} w="90%">
+            <FormControl isRequired>
+              <FormLabel>Sectors to provide CSR</FormLabel>
+              <Checkbox
+                isChecked={Sector.length === sectorOptions.length}
+                onChange={handleAllChecked}
+                w="100%"
+              >
+                All Sectors
+              </Checkbox>
+              <Box>
+                <Menu closeOnSelect={false}>
+                  <MenuButton
+                    as={Button}
+                    w="100%"
+                    rightIcon={
+                      isDropdownOpen ? <ChevronUpIcon /> : <ChevronDownIcon />
+                    }
+                    onClick={handleToggleDropdown}
+                    display="flex"
+                    justifyContent="flex-start"
+                    isOpen={isDropdownOpen.toString()}
+                  >
+                    Select Sector
+                  </MenuButton>
+                  <MenuList maxH="200px" overflowY="auto">
+                    <CheckboxGroup
+                      colorScheme="teal"
+                      defaultValue={Sector.join(",")}
+                      onChange={handleSectorChange}
+                    >
+                      {sectorOptions.map((option) => (
+                        <MenuItem key={option.value}>
+                          <Checkbox id={option.id} value={option.label}>
+                            {option.label}
+                          </Checkbox>
+                        </MenuItem>
+                      ))}
+                    </CheckboxGroup>
+                  </MenuList>
+                </Menu>
+              </Box>
+            </FormControl>
+            {isSectorTextAreaVisible && (
+              <Tooltip
+                label={Sector.join(", ")}
+                isDisabled={Sector.length <= 5}
+              >
+                <Textarea
+                  placeholder="Selected Sectors"
+                  isReadOnly
+                  rows={rows}
+                  // onChange={handleChange}
+                  height="fit-content"
+                  textOverflow="ellipsis"
+                  resize="none"
+                >
+                  {Sector.length <= 5
+                    ? selectedSectorText
+                    : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`}
+                </Textarea>
+              </Tooltip>
+            )}
+          </Box>
+          <br />
+          <Box flex={5} w="90%">
+            <FormControl id="taxeligibility" isRequired={true}>
+              <FormLabel>Tax Compliance Eligibility</FormLabel>
+              <CheckboxGroup
+                colorScheme="teal"
+                defaultValue={taxEligibility}
+                onChange={handleTaxEligibilityChange}
+              >
+                <Stack spacing={[1, 3]} direction={["column", "row"]}>
+                  <Checkbox value="80G">80 G (for 50% tax benefits)</Checkbox>
+                  <Checkbox value="35AC">
+                    35 AC (for 100% tax benefits)
+                  </Checkbox>
+                  <Checkbox value="12AA">
+                    12 AA (Tax exemption for NGO income)
+                  </Checkbox>
+                  <Checkbox value="FCRA">
+                    FCRA (Eligible for international funding)
+                  </Checkbox>
+                </Stack>
+              </CheckboxGroup>
+            </FormControl>
+          </Box>
+          <br />
+          <br />
+          <br />
+          <Button
+            colorScheme="teal"
+            variant="solid"
+            w={"10vw"}
+            onClick={submitHandler}
+            isLoading={loading}
+          >
+            Save
+          </Button>
+        </VStack>
+      </Box>
+    </Container>
   );
 };
 

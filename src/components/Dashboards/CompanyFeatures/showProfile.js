@@ -154,23 +154,23 @@ const ShowProfile = () => {
                 >
                   Show Certificate
                 </Button>
-                {showCertificate && (
-                  <Box mt={0}>
-                    <IconButton
-                      icon={<CloseIcon />}
-                      colorScheme="red"
-                      mt={2}
-                      onClick={handleCloseCertificate}
-                    />
-                    <embed
-                      src={showCertificate}
-                      type="application/pdf"
-                      width="100%"
-                      height="500px"
-                    />
-                  </Box>
-                )}
               </HStack>
+              {showCertificate && (
+                <Box mt={0}>
+                  <IconButton
+                    icon={<CloseIcon />}
+                    colorScheme="red"
+                    mt={2}
+                    onClick={handleCloseCertificate}
+                  />
+                  <embed
+                    src={showCertificate}
+                    type="application/pdf"
+                    width="100%"
+                    height="500px"
+                  />
+                </Box>
+              )}
               <Button
                 colorScheme="teal"
                 w={"20vw"}

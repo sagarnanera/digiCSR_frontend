@@ -13,20 +13,23 @@ import {
   ButtonGroup,
   Tooltip,
 } from "@chakra-ui/react";
-import { FiEye, FiShare } from "react-icons/fi";
+import { FiEye } from "react-icons/fi";
 import NgoNavigation from "../ngoNavigation";
 import { proposals } from "../../rfpData";
 import "../../../CSS/rfpTable.css";
-const RFPRequest = () => {
+// import config from "../../config";
+
+const TrackRFP = () => {
   const rowsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
-
-  const pageCount = Math.ceil(proposals.length / rowsPerPage);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const [currentRows, setCurrentRows] = useState(
     proposals.slice(indexOfFirstRow, indexOfLastRow)
   );
+  const [documentCount, setDocumentCount] = useState(0);
+  const pageCount = Math.ceil(documentCount / rowsPerPage);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -38,6 +41,7 @@ const RFPRequest = () => {
           setCurrentPage(currentPage === 1 ? currentPage : currentPage - 1);
         }
         setCurrentRows(data);
+        console.log(data);
       } catch (error) {
         console.log(error);
       }
@@ -45,6 +49,20 @@ const RFPRequest = () => {
 
     fetchData();
   }, [currentPage]);
+  useEffect(() => {
+    const fetchDocumentCount = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/rfp-count");
+        const data = await response.json();
+        setDocumentCount(data.count);
+        console.log(documentCount);
+      } catch (error) {
+        console.error("Error fetching document count:", error);
+      }
+    };
+
+    fetchDocumentCount();
+  });
   // const handleRowsPerPageChange = (event) => {
   //   const value = parseInt(event.target.value);
   //   setRowsPerPage(value);
@@ -182,7 +200,7 @@ const RFPRequest = () => {
             </Thead>
             <Tbody>
               {currentRows.map((proposal, index) => (
-                <Tr key={proposal.id}>
+                <Tr key={proposal._id}>
                   <Td>{indexOfFirstRow + index + 1}</Td>
                   <Td>{proposal.title}</Td>
                   <Td maxW={"20vw"}>
@@ -200,11 +218,11 @@ const RFPRequest = () => {
                     )}
                   </Td>
                   <Td>
-                    {proposal.states.length > 5 ? (
+                    {proposal.states.length > 3 ? (
                       <Tooltip label={proposal.states.join(", ")}>
                         <span>
-                          {proposal.states.slice(0, 5).join(", ")}
-                          {", ..+" + (proposal.states.length - 5) + " more"}
+                          {proposal.states.slice(0, 3).join(", ")}
+                          {", ..+" + (proposal.states.length - 3) + " more"}
                         </span>
                       </Tooltip>
                     ) : (
@@ -228,11 +246,11 @@ const RFPRequest = () => {
                       marginRight="0.5rem"
                       variant={"ghost"}
                     />
-                    <IconButton
+                    {/* <IconButton
                       aria-label="Share proposal"
                       variant={"ghost"}
                       icon={<FiShare />}
-                    />
+                    /> */}
                   </Td>
                 </Tr>
               ))}
@@ -263,4 +281,4 @@ const RFPRequest = () => {
   );
 };
 
-export default RFPRequest;
+export default TrackRFP;

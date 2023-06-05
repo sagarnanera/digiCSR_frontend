@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Box, Heading, Text, HStack } from "@chakra-ui/react";
+import { Button, Box, Heading, Text, Wrap, Divider } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import NgoNavigation from "../ngoNavigation";
@@ -78,40 +78,50 @@ const ShowNgoProfile = () => {
             </Text>
             <Box pl={4} mt={2}>
               <Text fontSize="lg">
-                <strong>Ngo Info Summary:</strong>{" "}
-                {profileData.profile.summary}
+                <strong>Ngo Info Summary:</strong> {profileData.profile.summary}
               </Text>
               <br />
               <Text fontSize="lg">
                 <strong>Board Members:</strong>
-                {Array.isArray(profileData.profile.board_members) ? (
-                  profileData.profile.board_members.map((member, index) => (
-                    <Box key={index} mt={2}>
-                      <Text fontSize="lg">
-                        <strong>Member {index + 1}:</strong>
-                      </Text>
-                      <HStack>
-                        <Text fontSize="lg" mr={2}>
-                          <strong>Member Name:</strong> {member.bm_name}
+                <Wrap spacing={10}>
+                  {Array.isArray(profileData.profile.board_members) ? (
+                    profileData.profile.board_members.map((member, index) => (
+                      <Box
+                        key={index}
+                        borderWidth="1px"
+                        borderRadius="md"
+                        p={4}
+                        width="350px"
+                      >
+                        <Text fontSize="lg">
+                          <strong>Member {index + 1}:</strong>
                         </Text>
-                        <Text fontSize="lg" mr={2}>
-                          <strong>Gender:</strong> {member.bm_gender}
-                        </Text>
-                        <Text fontSize="lg" mr={2}>
-                          <strong>DIN:</strong> {member.bm_din}
-                        </Text>
-                        <Text fontSize="lg" mr={2}>
-                          <strong>Phone:</strong> {member.bm_phone}
-                        </Text>
-                        <Text fontSize="lg" mr={2}>
-                          <strong>Designation:</strong> {member.bm_designation}
-                        </Text>
-                      </HStack>
-                    </Box>
-                  ))
-                ) : (
-                  <Text fontSize="lg">No board members found.</Text>
-                )}
+                        <Divider />
+                        {/* <HStack> */}
+                        <Text fontSize="lg" mt={2}
+                          mb={2}>
+                            <strong>Member Name:</strong> {member.bm_name}
+                          </Text>
+                          <Text fontSize="lg" mb={2}>
+                            <strong>Gender:</strong> {member.bm_gender}
+                          </Text>
+                          <Text fontSize="lg" mb={2}>
+                            <strong>DIN Number:</strong> {member.bm_din}
+                          </Text>
+                          <Text fontSize="lg" mb={2}>
+                            <strong>Phone Number:</strong> {member.bm_phone}
+                          </Text>
+                          <Text fontSize="lg">
+                            <strong>Designation:</strong>{" "}
+                            {member.bm_designation}
+                          </Text>
+                        {/* </HStack> */}
+                      </Box>
+                    ))
+                  ) : (
+                    <Text fontSize="lg">No board members found.</Text>
+                  )}
+                </Wrap>
               </Text>
               <br />
               <Text fontSize="lg">
