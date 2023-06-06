@@ -199,7 +199,8 @@ function AllUserLogin() {
             isClosable: true,
             position: "bottom",
           });
-          localStorage.setItem("CompanyAuthToken", JSON.stringify(data));
+          const { result } = data;
+          localStorage.setItem("CompanyAuthToken", result);
           setLoading(false);
           // if (allfields) {
           navigate("/Company", { replace: true });
@@ -254,7 +255,8 @@ function AllUserLogin() {
             isClosable: true,
             position: "bottom",
           });
-          localStorage.setItem("NgoAuthToken", JSON.stringify(data));
+          const { result } = data;
+          localStorage.setItem("NgoAuthToken", result);
           setLoading(false);
           // if (allNgofields) {
           navigate("/Ngo", { replace: true });

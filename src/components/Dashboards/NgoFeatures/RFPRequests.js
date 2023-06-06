@@ -39,7 +39,7 @@ const RFPRequest = () => {
           `http://localhost:4000/rfps?page=${currentPage}`,
           {
             headers: {
-              Authorization: localStorage.getItem("CompanyAuthToken"),
+              authorization: `${localStorage.getItem("NgoAuthToken")}`,
             },
           }
         );
