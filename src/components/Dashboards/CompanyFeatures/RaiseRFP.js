@@ -117,22 +117,24 @@ function RaiseRFP() {
     }
 
     try {
+      const result = localStorage.getItem("CompanyAuthToken");
       const config = {
         headers: {
           "Content-type": "application/json",
+          authorization: result,
         },
       };
-
+      console.log(result);
       const response = await fetch("http://localhost:4000/add-rfp", {
         method: "POST",
         headers: config.headers,
         body: JSON.stringify({
           title,
           amount: amountRfp,
-          sectors: sector,
           timeline,
+          sectors: sector,
           states: selectedStates,
-          company,
+          company, // Replace with the appropriate value
         }),
       });
 

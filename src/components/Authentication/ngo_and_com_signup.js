@@ -197,6 +197,7 @@ function NgoAndComSignup() {
 
         if (response.ok) {
           const data = await response.json();
+          const { result } = data;
           toast({
             title: "Registration Successful",
             status: "success",
@@ -204,7 +205,7 @@ function NgoAndComSignup() {
             isClosable: true,
             position: "bottom",
           });
-          localStorage.setItem("CompanyAuthToken", JSON.stringify(data));
+          localStorage.setItem("CompanyAuthToken", result);
           setLoading(false);
           navigate("/Company/addprofile", { replace: true });
         } else {
@@ -255,6 +256,7 @@ function NgoAndComSignup() {
 
         if (response.ok) {
           const data = await response.json();
+          const { result } = data;
           toast({
             title: "Registration Successful",
             status: "success",
@@ -262,7 +264,7 @@ function NgoAndComSignup() {
             isClosable: true,
             position: "bottom",
           });
-          localStorage.setItem("NgoAuthToken", JSON.stringify(data));
+          localStorage.setItem("NgoAuthToken", result);
           setLoading(false);
           navigate("/Ngo/addprofile", { replace: true });
         } else {

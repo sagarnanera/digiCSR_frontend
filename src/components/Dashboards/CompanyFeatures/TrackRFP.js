@@ -14,8 +14,8 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { FiEye } from "react-icons/fi";
-import NgoNavigation from "../ngoNavigation";
 import "../../../CSS/rfpTable.css";
+import CompanyNavigation from "../companyNavigation";
 // import config from "../../config";
 
 const TrackRFP = () => {
@@ -28,14 +28,16 @@ const TrackRFP = () => {
   useEffect(() => {
     const fetchRFPs = async () => {
       try {
-        // console.log(localStorage.getItem("CompanyAuthToken"));
+        const result = localStorage.getItem("CompanyAuthToken");
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            authorization: result,
+          },
+        };
         const response = await fetch(
           `http://localhost:4000/company/rfp?page=${currentPage}`,
-          {
-            headers: {
-              Authorization: localStorage.getItem("CompanyAuthToken"),
-            },
-          }
+          { headers: config.headers }
         );
 
         if (!response.ok) {
@@ -166,7 +168,7 @@ const TrackRFP = () => {
   };
   return (
     <Container centerContent>
-      <NgoNavigation />
+      <CompanyNavigation />
       <div className="container">
         <h1 className="title">List of Request for Proposals</h1>
         {/* <div className="input-container">

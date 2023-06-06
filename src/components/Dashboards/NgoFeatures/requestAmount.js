@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import jwt_decode from "jwt-decode";
 
-const RequestAmount = ({ rfpID,rowData, onClose }) => {
+const RequestAmount = ({ rfpID, rowData, onClose }) => {
   const [amount, setAmount] = useState("");
   const [ngoId, setNgoId] = useState("");
   // const toast = useToast();
@@ -24,18 +24,20 @@ const RequestAmount = ({ rfpID,rowData, onClose }) => {
   }, []);
 
   const handleSubmit = async (event) => {
+    console.log(ngoId);
     event.preventDefault();
     const requestBody = {
       rfpID: rfpID,
       amount: parseFloat(amount),
       ngoId: ngoId, // Replace with the actual NGO ID
     };
-    console.log(rfpID,ngoId);
+    console.log(rfpID, ngoId);
     try {
       const response = await fetch("http://localhost:4000/accept-rfp", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          authorization: `${localStorage.getItem("NgoAuthToken")}`,
         },
         body: JSON.stringify(requestBody),
       });

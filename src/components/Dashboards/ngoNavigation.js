@@ -23,7 +23,7 @@ import {
 } from "@chakra-ui/react";
 import { FiBell, FiCheck, FiTrash } from "react-icons/fi";
 
-import jwt_decode from "jwt-decode";
+// import jwt_decode from "jwt-decode";
 
 const NgoNavigation = () => {
   const location = useLocation();
@@ -31,21 +31,20 @@ const NgoNavigation = () => {
   const [notifications, setNotifications] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [ngoId, setNgoId] = useState("");
   // const toast = useToast();
-  useEffect(() => {
-    const token = localStorage.getItem("NgoAuthToken");
-    const decodedToken = jwt_decode(token);
-    setNgoId(decodedToken._id);
-  }, []);
-
-
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:4000/ngo/notifications/${ngoId}`
-      );
+      const result = localStorage.getItem("NgoAuthToken");
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          authorization: result,
+        },
+      };
+      const response = await fetch(`http://localhost:4000/notifications`, {
+        headers: config.headers,
+      });
       const data = await response.json();
       if (data.success) {
         setNotifications(data.notifications);
@@ -64,22 +63,23 @@ const NgoNavigation = () => {
       // Handle error
     }
   };
+
   useEffect(() => {
     fetchNotifications();
-  });
+  }, []);
 
   const markNotificationAsRead = async (notificationId) => {
     try {
       const response = await fetch(
-        "http://localhost:4000/ngo/notifications/updatestatus",
+        "http://localhost:4000/notifications/updatestatus",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            authorization: `${localStorage.getItem("NgoAuthToken")}`, // Add authorization header
           },
           body: JSON.stringify({
             notificationID: notificationId,
-            recipientID: ngoId,
           }),
         }
       );
@@ -108,7 +108,7 @@ const NgoNavigation = () => {
   const deleteNotification = async (notificationId) => {
     try {
       const response = await fetch(
-        "http://localhost:4000/ngo/notifications/delete",
+        "http://localhost:4000/notifications/delete",
         {
           method: "DELETE",
           headers: {
@@ -116,7 +116,6 @@ const NgoNavigation = () => {
           },
           body: JSON.stringify({
             notificationID: notificationId,
-            recipientID: ngoId,
           }),
         }
       );
@@ -137,6 +136,7 @@ const NgoNavigation = () => {
       // Handle error
     }
   };
+
   const handleBellIconClick = () => {
     setIsDrawerOpen(true);
   };
