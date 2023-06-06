@@ -15,9 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { FiEye } from "react-icons/fi";
 import NgoNavigation from "../ngoNavigation";
-import { proposals } from "../../rfpData";
 import "../../../CSS/rfpTable.css";
-import jwt_decode from "jwt-decode";
 // import config from "../../config";
 
 const TrackRFP = () => {
@@ -25,36 +23,40 @@ const TrackRFP = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const [currentRows, setCurrentRows] = useState(
-    proposals.slice(indexOfFirstRow, indexOfLastRow)
-  );
-  // const [documentCount, setDocumentCount] = useState(0);
-  const pageCount = Math.ceil(proposals.length / rowsPerPage);
-  const [companyId, setCompanyId] = useState("");
+  const [currentRows, setCurrentRows] = useState([]);
+  const pageCount = Math.ceil(20 / rowsPerPage);
   useEffect(() => {
-    const token = localStorage.getItem("CompanyAuthToken");
-    const decodedToken = jwt_decode(token);
-    setCompanyId(decodedToken._id);
-  }, []);
-  useEffect(() => {
-    const fetchData = async () => {
+    const fetchRFPs = async () => {
       try {
+        // console.log(localStorage.getItem("CompanyAuthToken"));
         const response = await fetch(
-          `http://localhost:4000/company/rfp/${companyId}?page=${currentPage}`
+          `http://localhost:4000/company/rfp?page=${currentPage}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("CompanyAuthToken"),
+            },
+          }
         );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch RFPs.");
+        }
+
         const data = await response.json();
-        if (data === []) {
+
+        if (data.length === 0) {
           setCurrentPage(currentPage === 1 ? currentPage : currentPage - 1);
         }
-        setCurrentRows(data);
         console.log(data);
+        setCurrentRows(data);
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchData();
-  }, [currentPage, companyId]);
+    fetchRFPs();
+  }, [currentPage]);
+
   // const handleRowsPerPageChange = (event) => {
   //   const value = parseInt(event.target.value);
   //   setRowsPerPage(value);

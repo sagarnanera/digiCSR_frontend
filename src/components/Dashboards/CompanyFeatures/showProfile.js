@@ -138,7 +138,14 @@ const ShowProfile = () => {
                 <strong>Tax Comp:</strong> {profileData.profile.tax_comp}
               </Text>
               <Text fontSize="lg">
-                <strong>Sectors:</strong> {profileData.profile.sectors}
+                <strong>Sectors:</strong>{" "}
+                {/* {JSON.parse(profileData.profile.sectors).join(", ")} */}
+                {JSON.parse(profileData.profile.sectors).map((sector, index) => (
+                  <span key={index}>
+                    <b>{index + 1}.</b> {sector},
+                    {/* <br /> */}
+                  </span>
+                ))}
               </Text>
               <br />
               <HStack>

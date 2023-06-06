@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { FiEye, FiShare } from "react-icons/fi";
 import NgoNavigation from "../ngoNavigation";
-import { proposals } from "../../rfpData";
+// import { proposals } from "../../rfpData";
 import "../../../CSS/rfpTable.css";
 import RequestAmount from "./requestAmount";
 // import config from "../../config";
@@ -25,20 +25,23 @@ const RFPRequest = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const [currentRows, setCurrentRows] = useState(
-    proposals.slice(indexOfFirstRow, indexOfLastRow)
-  );
+  const [currentRows, setCurrentRows] = useState([]);
   const [showShareForm, setShowShareForm] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRFPId, setSelectedRFPId] = useState(null);
-  const [documentCount, setDocumentCount] = useState(0);
-  const pageCount = Math.ceil(documentCount / rowsPerPage);
+  // const [documentCount, setDocumentCount] = useState(0);
+  const pageCount = Math.ceil(20 / rowsPerPage);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:4000/rfps?page=${currentPage}`
+          `http://localhost:4000/rfps?page=${currentPage}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("CompanyAuthToken"),
+            },
+          }
         );
         const data = await response.json();
         if (data === []) {
@@ -53,20 +56,20 @@ const RFPRequest = () => {
 
     fetchData();
   }, [currentPage]);
-  useEffect(() => {
-    const fetchDocumentCount = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/rfp-count");
-        const data = await response.json();
-        setDocumentCount(data.count);
-        console.log(documentCount);
-      } catch (error) {
-        console.error("Error fetching document count:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchDocumentCount = async () => {
+  //     try {
+  //       const response = await fetch("http://localhost:4000/rfp-count");
+  //       const data = await response.json();
+  //       setDocumentCount(data.count);
+  //       console.log(documentCount);
+  //     } catch (error) {
+  //       console.error("Error fetching document count:", error);
+  //     }
+  //   };
 
-    fetchDocumentCount();
-  });
+  //   fetchDocumentCount();
+  // });
   // const handleRowsPerPageChange = (event) => {
   //   const value = parseInt(event.target.value);
   //   setRowsPerPage(value);
