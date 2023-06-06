@@ -24,20 +24,13 @@ const ShowNgoProfile = () => {
         const data = await response.json();
         if (data.success) {
           setProfileData(data.data);
+          console.log(data.data);
         } else {
           console.log(data.message);
           throw new Error("Failed to Get Profile.please Reload");
         }
       } catch (error) {
         console.log(error.message);
-        // toast({
-        //   title: "Error Occurred!",
-        //   description: error.message,
-        //   status: "error",
-        //   duration: 5000,
-        //   isClosable: true,
-        //   position: "bottom",
-        // });
       }
     };
     if (ngoId && ngoId !== "") {
