@@ -269,10 +269,13 @@ function RaiseRFP() {
               </Tooltip>
             )}
             <FormControl id="timeline" isRequired>
-              <FormLabel>Timeline for money utilization</FormLabel>
+              <FormLabel>
+                Timeline for money utilization(least value should be of 12
+                months)
+              </FormLabel>
               <NumberInput>
                 <NumberInputField
-                  placeholder="mm (least value should be of 12 months)"
+                  placeholder="mm"
                   minLength={2}
                   value={timeline}
                   onChange={(e) => setTimeline(e.target.value)}

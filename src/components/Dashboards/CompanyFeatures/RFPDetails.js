@@ -89,9 +89,9 @@ const RFPCompanyDetails = () => {
                   >
                     <Image src="/rfppic.jpg" alt="RFP Picture" />
                     <VStack mt={4} ml={4} align="flex-start" spacing={2}>
-                      {/* <Text fontSize="xl">
-                        <strong>Created by:</strong> {rfpDetails.company_name}
-                      </Text> */}
+                      <Text mt={2} fontSize="xl">
+                        <strong>Title of RFP:</strong> {rfpDetails.title}
+                      </Text>
                       <Text mt={2} fontSize="xl">
                         <strong>Creation Date:</strong>
                         {formatDate(rfpDetails.date)}
@@ -103,12 +103,6 @@ const RFPCompanyDetails = () => {
                         <strong>Expiry Date:</strong>{" "}
                         {addMonths(rfpDetails.date, rfpDetails.timeline)}
                       </Text>
-                      {/* <Text mt={2} fontSize="xl">
-                        <strong>Communication Person:</strong> John Doe
-                      </Text>
-                      <Text mt={2} fontSize="xl">
-                        <strong>Email:</strong> john.doe@example.com
-                      </Text> */}
                     </VStack>
                   </Flex>
                 </Box>
@@ -142,18 +136,17 @@ const RFPCompanyDetails = () => {
                         <Text fontSize="lg">
                           <strong>Donation {index + 1}:</strong>
                         </Text>
-                        <Divider />
+                        <Divider borderBottomWidth="2 px" borderColor="red" />
                         {/* <HStack> */}
                         <Text fontSize="lg" mb={2}>
-                          <strong>NGO Name:</strong>
+                          <strong>NGO Name:</strong> {donation.ngo}
                         </Text>
                         <Text fontSize="lg" mb={2}>
                           <strong>Request Date:</strong>{" "}
                           {formatDate(donation.date)}
                         </Text>
                         <Text fontSize="lg" mt={2} mb={2}>
-                          <strong>Amount of Donation:</strong>
-                          ${donation.amount}
+                          <strong>Amount of Donation:</strong>${donation.amount}
                         </Text>
                         {/* </HStack> */}
                       </Box>

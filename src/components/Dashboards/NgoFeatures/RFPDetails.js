@@ -16,6 +16,7 @@ const RFPDetails = () => {
   const location = useLocation();
   const rfpID = location.state?.rfpID;
   const [rfpDetails, setRfpDetails] = useState(null);
+  const [companyDetails, setCompanyDetails] = useState(null);
 
   useEffect(() => {
     const fetchRFPDetails = async () => {
@@ -31,7 +32,8 @@ const RFPDetails = () => {
         const data = await response.json();
         console.log(data);
         if (response.ok) {
-          setRfpDetails(data.rfp[0]);
+          setRfpDetails(data.data.rfp);
+          setCompanyDetails(data.data.company);
         } else {
           console.error("Failed to fetch RFP details:", data.message);
         }
@@ -92,7 +94,11 @@ const RFPDetails = () => {
                     <Image src="/rfppic.jpg" alt="RFP Picture" />
                     <VStack mt={4} ml={4} align="flex-start" spacing={2}>
                       <Text fontSize="xl">
-                        <strong>Created by:</strong> {rfpDetails.company_name}
+                        <strong>Created by:</strong>{" "}
+                        {companyDetails.company_name}
+                      </Text>
+                      <Text mt={2} fontSize="xl">
+                        <strong>Title of RFP:</strong> {rfpDetails.title}
                       </Text>
                       <Text mt={2} fontSize="xl">
                         <strong>Creation Date:</strong>
@@ -106,10 +112,12 @@ const RFPDetails = () => {
                         {addMonths(rfpDetails.date, rfpDetails.timeline)}
                       </Text>
                       <Text mt={2} fontSize="xl">
-                        <strong>Communication Person:</strong> John Doe
+                        <strong>Communication Person:</strong>{" "}
+                        {companyDetails.profile.comunication_person.cp_name}
                       </Text>
                       <Text mt={2} fontSize="xl">
-                        <strong>Email:</strong> john.doe@example.com
+                        <strong>Email:</strong>{" "}
+                        {companyDetails.profile.comunication_person.cp_email}
                       </Text>
                     </VStack>
                   </Flex>
@@ -129,18 +137,18 @@ const RFPDetails = () => {
                   </strong>
                   <Divider borderBottomWidth="4px" borderColor="red" />
                 </Box>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam vitae purus enim.
-                </p>
+                <p>{JSON.parse(companyDetails.profile.summary)}</p>
                 {/* <br /> */}
                 <VStack mt={4} align="flex-start" spacing={2}>
                   <Text>
-                    <strong>Registered Office:</strong> XYZ Company
+                    <strong>Registered Office:</strong>{" "}
+                    {companyDetails.profile.location.city},
+                    {companyDetails.profile.location.state}{" "}
+                    {companyDetails.profile.location.pincode}
                   </Text>
                   <Text>
-                    <strong>Cause Area(CSR Sector Prefered):</strong> December
-                    31, 2023
+                    <strong>Cause Area(CSR Sector Prefered):</strong>{" "}
+                    {JSON.parse(companyDetails.profile.sectors).join(", ")}
                   </Text>
                 </VStack>
               </>
