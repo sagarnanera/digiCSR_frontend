@@ -89,9 +89,9 @@ const RFPCompanyDetails = () => {
                   >
                     <Image src="/rfppic.jpg" alt="RFP Picture" />
                     <VStack mt={4} ml={4} align="flex-start" spacing={2}>
-                      <Text fontSize="xl">
+                      {/* <Text fontSize="xl">
                         <strong>Created by:</strong> {rfpDetails.company_name}
-                      </Text>
+                      </Text> */}
                       <Text mt={2} fontSize="xl">
                         <strong>Creation Date:</strong>
                         {formatDate(rfpDetails.date)}
@@ -103,12 +103,12 @@ const RFPCompanyDetails = () => {
                         <strong>Expiry Date:</strong>{" "}
                         {addMonths(rfpDetails.date, rfpDetails.timeline)}
                       </Text>
-                      <Text mt={2} fontSize="xl">
+                      {/* <Text mt={2} fontSize="xl">
                         <strong>Communication Person:</strong> John Doe
                       </Text>
                       <Text mt={2} fontSize="xl">
                         <strong>Email:</strong> john.doe@example.com
-                      </Text>
+                      </Text> */}
                     </VStack>
                   </Flex>
                 </Box>
@@ -120,17 +120,6 @@ const RFPCompanyDetails = () => {
                 <br />
                 <strong>Cause Area(CSR Sectors):</strong>
                 <p>{rfpDetails.sectors.join(", ")}</p>
-                <br />
-                <Box width="98%" backgroundColor={"orange"} height={"10%"}>
-                  <strong style={{ backgroundColor: "orange" }}>
-                    Corporate(Company Summary):
-                  </strong>
-                  <Divider borderBottomWidth="4px" borderColor="red" />
-                </Box>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam vitae purus enim.
-                </p>
                 <br />
                 <Box width="98%" backgroundColor={"orange"} height={"10%"}>
                   <strong style={{ backgroundColor: "orange" }}>
@@ -164,24 +153,16 @@ const RFPCompanyDetails = () => {
                         </Text>
                         <Text fontSize="lg" mt={2} mb={2}>
                           <strong>Amount of Donation:</strong>
+                          ${donation.amount}
                         </Text>
                         {/* </HStack> */}
                       </Box>
                     ))
                   ) : (
-                    <Text fontSize="lg">No board members found.</Text>
+                    <Text fontSize="lg">No Donations Requested.</Text>
                   )}
                 </Wrap>
                 {/* <br /> */}
-                <VStack mt={4} align="flex-start" spacing={2}>
-                  <Text>
-                    <strong>Registered Office:</strong> XYZ Company
-                  </Text>
-                  <Text>
-                    <strong>Cause Area(CSR Sector Prefered):</strong> December
-                    31, 2023
-                  </Text>
-                </VStack>
               </>
             ) : (
               <Text>Loading Rfp Details...</Text>
