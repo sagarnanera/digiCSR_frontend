@@ -23,6 +23,7 @@ import {
   DrawerCloseButton,
 } from "@chakra-ui/react";
 import { FiBell, FiCheck, FiTrash } from "react-icons/fi";
+import jwt_decode from "jwt-decode";
 
 // import jwt_decode from "jwt-decode";
 
@@ -32,8 +33,46 @@ const NgoNavigation = () => {
   const [notifications, setNotifications] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  // const toast = useToast();
+  const [ngoId, setNgoId] = useState("");
 
+  // const toast = useToast();
+  const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
+useEffect(() => {
+  const token = localStorage.getItem("NgoAuthToken");
+  const decodedToken = jwt_decode(token);
+  setNgoId(decodedToken._id);
+}, []);
+   useEffect(() => {
+     const fetchLogo = async () => {
+       try {
+         const response = await fetch(
+           `http://localhost:4000/NGO/logo/${ngoId}`
+         );
+
+         const base64Data = await response.text();
+
+         const byteCharacters = atob(base64Data.split(",")[1]);
+         const byteNumbers = new Array(byteCharacters.length);
+         for (let i = 0; i < byteCharacters.length; i++) {
+           byteNumbers[i] = byteCharacters.charCodeAt(i);
+         }
+         const byteArray = new Uint8Array(byteNumbers);
+
+         const blob = new Blob([byteArray], { type: "image/png" });
+         const imageUrl = URL.createObjectURL(blob);
+         setImage(imageUrl);
+       } catch (error) {
+         console.error(error);
+       }
+     };
+     if (ngoId && ngoId !== "") {
+       fetchLogo();
+     }
+     // return () => {
+     //   // Clean up the created object URL
+     //   URL.revokeObjectURL(image);
+     // };
+   }, [ngoId]);
   const fetchNotifications = async () => {
     try {
       const result = localStorage.getItem("NgoAuthToken");
@@ -262,7 +301,7 @@ const NgoNavigation = () => {
               <MenuButton
                 as={Avatar}
                 size="sm"
-                src="https://bit.ly/broken-link"
+                src={image ? image : "/user-avatar"}
               />
               <MenuList>
                 <Link to="/Ngo/profile">

@@ -70,7 +70,12 @@ const EditProfile = () => {
   const [profileData, setProfileData] = useState(null);
   // const [allfields, setAllfields] = useState(false);
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
-
+  const [companyId, setCompanyId] = useState("");
+  useEffect(() => {
+    const token = localStorage.getItem("CompanyAuthToken");
+    const decodedToken = jwt_decode(token);
+    setCompanyId(decodedToken._id);
+  }, []);
   useEffect(() => {
     const getStates = async () => {
       const fetchedStates = await fetchStates();
@@ -98,7 +103,7 @@ const EditProfile = () => {
       }
       setCompanyName(profileData.company_name);
       setPincode(profileData.profile.location.pincode);
-      // setCompanySummary(profileData.profile.summary);
+      setCompanySummary(JSON.parse(profileData.profile.summary));
       setPersonName(profileData.profile.comunication_person.cp_name);
       setPersonEmail(profileData.profile.comunication_person.cp_email);
       setPersonDesignation(
@@ -110,6 +115,31 @@ const EditProfile = () => {
     }
   };
   useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/company/logo/${companyId}`
+        );
+
+        const base64Data = await response.text();
+
+        const byteCharacters = atob(base64Data.split(",")[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+
+        const blob = new Blob([byteArray], { type: "image/png" });
+        const imageUrl = URL.createObjectURL(blob);
+        setImage(imageUrl);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (companyId && companyId !== "") {
+      fetchLogo();
+    }
     fetchCompanyProfile();
   });
 

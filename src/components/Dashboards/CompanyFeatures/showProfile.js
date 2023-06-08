@@ -19,6 +19,7 @@ const ShowProfile = () => {
   const [companyId, setCompanyId] = useState("");
   const toast = useToast();
   const [showCertificate, setShowCertificate] = useState(false);
+  const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
 
   useEffect(() => {
     const token = localStorage.getItem("CompanyAuthToken");
@@ -44,9 +45,36 @@ const ShowProfile = () => {
         console.log(error.message);
       }
     };
+    const fetchLogo = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/company/logo/${companyId}`
+        );
+
+        const base64Data = await response.text();
+
+        const byteCharacters = atob(base64Data.split(",")[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+
+        const blob = new Blob([byteArray], { type: "image/png" });
+        const imageUrl = URL.createObjectURL(blob);
+        setImage(imageUrl);
+      } catch (error) {
+        console.error(error);
+      }
+    };
     if (companyId && companyId !== "") {
+      fetchLogo();
       fetchCompanyProfile(); // runs when id is non-empty string
     }
+    // return () => {
+    //   // Clean up the created object URL
+    //   URL.revokeObjectURL(image);
+    // };
   }, [companyId]);
 
   const fetchCertificate = async () => {
@@ -81,7 +109,6 @@ const ShowProfile = () => {
   const submitHandler = async () => {
     navigate("/Company/editprofile", { replace: true });
   };
-
   return (
     <div p={4}>
       <CompanyNavigation />
@@ -97,6 +124,34 @@ const ShowProfile = () => {
       >
         {profileData ? (
           <>
+            <Box mr={"1%"}>
+              <label htmlFor="profile-image">
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                  }}
+                >
+                  {image ? (
+                    <img
+                      src={image}
+                      alt="company logo"
+                      width="100%"
+                      height="100%"
+                    />
+                  ) : (
+                    <img
+                      src={"/user-avatar.jpg"}
+                      alt="Profile"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  )}
+                </div>
+              </label>
+            </Box>
             <Heading size="lg" mb={4}>
               Company Profile
             </Heading>
@@ -140,12 +195,13 @@ const ShowProfile = () => {
               <Text fontSize="lg">
                 <strong>Sectors:</strong>{" "}
                 {/* {JSON.parse(profileData.profile.sectors).join(", ")} */}
-                {JSON.parse(profileData.profile.sectors).map((sector, index) => (
-                  <span key={index}>
-                    <b>{index + 1}.</b> {sector},
-                    {/* <br /> */}
-                  </span>
-                ))}
+                {JSON.parse(profileData.profile.sectors).map(
+                  (sector, index) => (
+                    <span key={index}>
+                      <b>{index + 1}.</b> {sector},{/* <br /> */}
+                    </span>
+                  )
+                )}
               </Text>
               <br />
               <HStack>

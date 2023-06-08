@@ -85,7 +85,7 @@ const RequestAmount = ({ rfpID, rowData, onClose }) => {
               />
             </FormControl>
             <FormControl>
-              <FormLabel>Development Sector</FormLabel>
+              <FormLabel>States</FormLabel>
               <Input
                 type="text"
                 value={rowData.states && rowData.states.join(", ")}

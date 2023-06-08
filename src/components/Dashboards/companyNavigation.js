@@ -1,17 +1,57 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Avatar, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import classes from "../../CSS/ComCss.module.css";
+import jwt_decode from "jwt-decode";
 
 const CompanyNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [companyId, setCompanyId] = useState("");
+  const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
 
   const handleClick = () => {
     localStorage.removeItem("CompanyAuthToken");
-    navigate("/", { replace: true });   
+    navigate("/", { replace: true });
   };
+  useEffect(() => {
+    const token = localStorage.getItem("CompanyAuthToken");
+    const decodedToken = jwt_decode(token);
+    setCompanyId(decodedToken._id);
+  }, []);
 
+  // only executes when id is set
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/company/logo/${companyId}`
+        );
+
+        const base64Data = await response.text();
+
+        const byteCharacters = atob(base64Data.split(",")[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+
+        const blob = new Blob([byteArray], { type: "image/png" });
+        const imageUrl = URL.createObjectURL(blob);
+        setImage(imageUrl);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (companyId && companyId !== "") {
+      fetchLogo();
+    }
+    // return () => {
+    //   // Clean up the created object URL
+    //   URL.revokeObjectURL(image);
+    // };
+  }, [companyId]);
   return (
     <header className={classes.header}>
       <div className={classes.logo}>Company Dashboard</div>
@@ -74,7 +114,7 @@ const CompanyNavigation = () => {
               <MenuButton
                 as={Avatar}
                 size="sm"
-                src="https://bit.ly/broken-link"
+                src={image ? image : "/user-avatar"}
               />
               <MenuList>
                 <Link to="/Company/profile">
