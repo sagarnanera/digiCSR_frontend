@@ -20,20 +20,37 @@ import EditProfile from "./components/Dashboards/CompanyFeatures/EditProfile";
 import EditNgoProfile from "./components/Dashboards/NgoFeatures/EditNgoProfile";
 import RFPDetails from "./components/Dashboards/NgoFeatures/RFPDetails";
 import RFPCompanyDetails from "./components/Dashboards/CompanyFeatures/RFPDetails";
+import BeneficiaryDashboard from "./pages/Dashboards/BeneficiaryDashboard";
+import ShowBlogs from "./components/Dashboards/BeneficiaryFeatures.js/showBlogs";
+import ShowBenificiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/showprofile";
+import EditBeneficiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/editprofile";
+import AddBeneficiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/addprofile";
 
 function App() {
   const authToken = localStorage.getItem("CompanyAuthToken");
   const NgoauthToken = localStorage.getItem("NgoAuthToken");
+  const BeneficiaryauthToken = localStorage.getItem("BeneficiaryAuthToken");
+
   const isCompanyAuthenticated = authToken !== null;
   const isNgoAuthenticated = NgoauthToken !== null;
+  const isBeneficiaryAuthenticated = BeneficiaryauthToken !== null;
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isCompanyAuthenticated && !isNgoAuthenticated) {
+    if (
+      !isCompanyAuthenticated &&
+      !isNgoAuthenticated &&
+      !isBeneficiaryAuthenticated
+    ) {
       navigate("/", { replace: true });
     }
-  }, [isCompanyAuthenticated, isNgoAuthenticated, navigate]);
+  }, [
+    isCompanyAuthenticated,
+    isNgoAuthenticated,
+    isBeneficiaryAuthenticated,
+    navigate,
+  ]);
 
   return (
     <div className="App">
@@ -43,6 +60,9 @@ function App() {
           <Route path="/Company" element={<CompanyDashboard />} />
         )}
         {isNgoAuthenticated && <Route path="/Ngo" element={<NgoDashboard />} />}
+        {isBeneficiaryAuthenticated && (
+          <Route path="/Beneficiary" element={<BeneficiaryDashboard />} />
+        )}
         {isCompanyAuthenticated && (
           <>
             <Route path="/Company/RaiseRFP" element={<RaiseRFP />} />
@@ -65,6 +85,23 @@ function App() {
             <Route path="/Ngo/editprofile" element={<EditNgoProfile />} />
             <Route path="/Ngo/rfpdetails" element={<RFPDetails />} />
             <Route path="/Ngo/addprofile" element={<AddNgoProfile />} />
+          </>
+        )}
+        {isBeneficiaryAuthenticated && (
+          <>
+            <Route path="/Beneficiary/NGOBlogs" element={<ShowBlogs />} />
+            <Route
+              path="/Beneficiary/profile"
+              element={<ShowBenificiaryprofile />}
+            />
+            <Route
+              path="/Beneficiary/editprofile"
+              element={<EditBeneficiaryprofile />}
+            />
+            <Route
+              path="/Beneficiary/addprofile"
+              element={<AddBeneficiaryprofile />}
+            />
           </>
         )}
         <Route path="*" element={<Navigate to="/" />} />

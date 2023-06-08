@@ -149,6 +149,55 @@ function AllUserLogin() {
         });
         setLoading(false);
       }
+    } else if (selectedOption === "Benificiary") {
+      try {
+        const response = await fetch(
+          "http://localhost:4000/Beneficiary/login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+
+        if (response.ok) {
+          toast({
+            title: "OTP Sent Successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          setLoading(false);
+          setShowOtpInput(true);
+          setShowOtpButton(false);
+          setShowSignupButton(true);
+        } else {
+          const errorData = await response.json();
+          setErrorMessage(errorData.message);
+          toast({
+            title: "Error Occurred!",
+            description: errorMessage,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          setLoading(false);
+        }
+      } catch (error) {
+        toast({
+          title: "Error Occurred!",
+          description: "Failed to send OTP. Please try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+      }
     }
   };
 
@@ -285,6 +334,65 @@ function AllUserLogin() {
         setLoading(false);
         return; // Prevent further execution
       }
+    } else if (selectedOption === "Ngo") {
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+          },
+        };
+
+        const response = await fetch(
+          "http://localhost:4000/Beneficiary/login/verify",
+          {
+            method: "POST",
+            headers: config.headers,
+            body: JSON.stringify({
+              email,
+              otp,
+            }),
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          toast({
+            title: "Login Successful",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          const { result } = data;
+          localStorage.setItem("BeneficiaryAuthToken", result);
+          setLoading(false);
+          // if (allNgofields) {
+          navigate("/Beneficiary", { replace: true });
+          // } else {
+          //   toast({
+          //     title: "Please Complete the whole profile first.",
+          //     status: "warning",
+          //     duration: 5000,
+          //     isClosable: true,
+          //     position: "bottom",
+          //   });
+          //   navigate("/Ngo/editprofile", { replace: true });
+          // }
+        } else {
+          throw new Error("Failed to verify. Please try again later.");
+        }
+      } catch (error) {
+        toast({
+          title: "Error Occurred!",
+          description: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+        return; // Prevent further execution
+      }
     }
   };
 
@@ -332,6 +440,7 @@ function AllUserLogin() {
           w={"100%"}
           style={{ marginTop: 15 }}
           onClick={submitHandler}
+          isLoading={loading}
         >
           Login
         </Button>
