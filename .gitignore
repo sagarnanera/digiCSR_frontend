@@ -11,6 +11,9 @@
 # production
 /build
 
+# tinymce setUP
+/public/tinymce/
+
 # misc
 .DS_Store
 .env.local
