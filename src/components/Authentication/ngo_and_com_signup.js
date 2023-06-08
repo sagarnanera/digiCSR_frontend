@@ -166,7 +166,7 @@ function NgoAndComSignup() {
   const submitHandler = async () => {
     if (selectedOption === "Company") {
       setLoading(true);
-      if (!cin || !email || !otp) {
+      if (!otp) {
         toast({
           title: "Please Fill all the Fields",
           status: "warning",
@@ -225,7 +225,7 @@ function NgoAndComSignup() {
       }
     } else if (selectedOption === "Ngo") {
       setLoading(true);
-      if (!cin || !email || !otp) {
+      if (!otp) {
         toast({
           title: "Please Fill all the Fields",
           status: "warning",

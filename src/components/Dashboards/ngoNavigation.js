@@ -213,7 +213,7 @@ const NgoNavigation = () => {
               RFP Requests
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link
               to="/Ngo/postblogs"
               className={
@@ -222,7 +222,7 @@ const NgoNavigation = () => {
             >
               Post Success
             </Link>
-          </li>
+          </li> */}
           <li>
             <Link
               to="/Ngo/acceptedRFPs"

@@ -9,8 +9,10 @@ import {
   PinInputField,
   InputGroup,
   InputLeftElement,
+  useToast,
 } from "@chakra-ui/react";
 import { PhoneIcon } from "@chakra-ui/icons";
+import { useNavigate } from "react-router-dom";
 
 function BenificiarySignup() {
   const [userName, setUserName] = useState("");
@@ -21,14 +23,12 @@ function BenificiarySignup() {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [showSignupButton, setShowSignupButton] = useState(false);
   const [showOtpButton, setShowOtpButton] = useState(true);
-
-  const handleSendOtp = () => {
-    setShowOtpInput(true);
-    setShowOtpButton(false);
-    setShowSignupButton(true);
-  };
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+  const toast = useToast();
   const handleAadharKeyPress = (e) => {
-    const maxLength = 16; // Set your desired maxLength value
+    const maxLength = 12; // Set your desired maxLength value
     const inputValue = e.target.value;
 
     if (inputValue.length === maxLength) {
@@ -39,9 +39,151 @@ function BenificiarySignup() {
   const handleOtpChange = (value) => {
     setOtp(value);
   };
+  const handleSendOtp = async () => {
+    setShowOtpInput(false);
+    setOtp();
+    setLoading(true);
+    if (!userName || !email || !phoneNo || !aadharNo) {
+      toast({
+        title: "Please Fill all the Fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      // Display an error message or handle the email validation error
+      toast({
+        title: "Please Enter a valid email",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const response = await fetch("http://localhost:4000/Beneficiary/signup", {
+        method: "POST",
+        headers: config.headers,
+        body: JSON.stringify({
+          name: userName,
+          email: email,
+          mobile_no: phoneNo,
+          aadhar_no: aadharNo,
+        }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Otp Sent Successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+        setShowOtpInput(true);
+        setShowOtpButton(false);
+        setShowSignupButton(true);
+      } else {
+        const errorData = await response.json();
+        setErrorMessage(errorData.message);
+        toast({
+          title: "Error Occurred!",
+          description: errorMessage,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+      }
+    } catch (error) {
+      toast({
+        title: "Error Occurred!",
+        description: "Failed to send OTP. Please try again later.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+    }
+  };
 
   const submitHandler = async () => {
-    // Handle the form submission
+    setLoading(true);
+    if (!otp) {
+      toast({
+        title: "Please Fill the otp Fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const response = await fetch("http://localhost:4000/Beneficiary/verify", {
+        method: "POST",
+        headers: config.headers,
+        body: JSON.stringify({
+          name: userName,
+          email: email,
+          mobile_no: phoneNo,
+          aadhar_no: aadharNo,
+          otp: otp,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const { result } = data;
+        toast({
+          title: "Registration Successful",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        localStorage.setItem("BenificiaryAuthToken", result);
+        setLoading(false);
+        navigate("/Benificiary", { replace: true });
+      } else {
+        throw new Error("Failed to verify. Please try again.");
+      }
+    } catch (error) {
+      toast({
+        title: "Error Occurred!",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return; // Prevent further execution
+    }
   };
 
   return (
@@ -97,6 +239,7 @@ function BenificiarySignup() {
           w={"100%"}
           style={{ marginTop: 15 }}
           onClick={handleSendOtp}
+          isLoading={loading}
         >
           Send Otp
         </Button>
@@ -121,6 +264,7 @@ function BenificiarySignup() {
           w={"100%"}
           style={{ marginTop: 15 }}
           onClick={submitHandler}
+          isLoading={loading}
         >
           Sign Up
         </Button>
