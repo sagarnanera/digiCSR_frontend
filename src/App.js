@@ -55,9 +55,9 @@ function App() {
         {isNgoAuthenticated && (
           <>
             <Route path="/Ngo/RFPs" element={<RFPRequests />} />
-            <Route path="/Ngo/postblogs" element={<PostBlogs />} />
             <Route path="/Ngo/acceptedRFPs" element={<AcceptedRFP />} />
             <Route path="/Ngo/media" element={<MediaSection />} />
+            <Route path="/Ngo/media/create" element={<PostBlogs />} />
             <Route path="/Ngo/profile" element={<ShowNgoProfile />} />
             <Route path="/Ngo/editprofile" element={<EditNgoProfile />} />
             <Route path="/Ngo/addprofile" element={<AddNgoProfile />} />
