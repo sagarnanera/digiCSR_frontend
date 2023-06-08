@@ -17,8 +17,12 @@ import { FiEye } from "react-icons/fi";
 import "../../../CSS/rfpTable.css";
 import CompanyNavigation from "../companyNavigation";
 // import config from "../../config";
+import { useNavigate } from "react-router-dom";
 
 const TrackRFP = () => {
+  const navigate = useNavigate();
+  const [showRFPDetails, setShowRFPDetails] = useState(false);
+  const [selectedRFPId, setSelectedRFPId] = useState(null);
   const rowsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastRow = currentPage * rowsPerPage;
@@ -166,6 +170,15 @@ const TrackRFP = () => {
 
     return pageNumbers;
   };
+  const handleShowDetails = (rowData) => {
+    setSelectedRFPId(rowData._id);
+    console.log(selectedRFPId);
+    // navigate("/Ngo/rfpdetails", {
+    //   state: { rfpID: selectedRFPId },
+    //   replace: true,
+    // });
+    setShowRFPDetails(true);
+  };
   return (
     <Container centerContent>
       <CompanyNavigation />
@@ -239,17 +252,20 @@ const TrackRFP = () => {
                       icon={<FiEye />}
                       marginRight="0.5rem"
                       variant={"ghost"}
+                      onClick={() => {
+                        // setSelectedRFPId(proposal._id);
+                        handleShowDetails(proposal);
+                      }}
                     />
-                    {/* <IconButton
-                      aria-label="Share proposal"
-                      variant={"ghost"}
-                      icon={<FiShare />}
-                    /> */}
                   </Td>
                 </Tr>
               ))}
             </Tbody>
           </Table>
+          {showRFPDetails &&
+            navigate("/Company/rfpdetails", {
+              state: { rfpID: selectedRFPId },
+            })}
         </div>
         <div className="pagination">
           <ButtonGroup variant="outline" spacing="4">

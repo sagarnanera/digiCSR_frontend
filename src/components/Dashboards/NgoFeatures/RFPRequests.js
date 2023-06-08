@@ -15,18 +15,21 @@ import {
 } from "@chakra-ui/react";
 import { FiEye, FiShare } from "react-icons/fi";
 import NgoNavigation from "../ngoNavigation";
-// import { proposals } from "../../rfpData";
+import { useNavigate } from "react-router-dom";
 import "../../../CSS/rfpTable.css";
 import RequestAmount from "./requestAmount";
 // import config from "../../config";
 
 const RFPRequest = () => {
+  const navigate = useNavigate();
   const rowsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const [currentRows, setCurrentRows] = useState([]);
   const [showShareForm, setShowShareForm] = useState(false);
+  const [showRFPDetails, setShowRFPDetails] = useState(false);
+
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRFPId, setSelectedRFPId] = useState(null);
   // const [documentCount, setDocumentCount] = useState(0);
@@ -184,6 +187,16 @@ const RFPRequest = () => {
     console.log(selectedRFPId);
     setShowShareForm(true);
   };
+
+  const handleShowDetails = (rowData) => {
+    setSelectedRFPId(rowData._id);
+    console.log(selectedRFPId);
+    // navigate("/Ngo/rfpdetails", {
+    //   state: { rfpID: selectedRFPId },
+    //   replace: true,
+    // });
+    setShowRFPDetails(true);
+  };
   return (
     <Container centerContent>
       <NgoNavigation />
@@ -259,13 +272,16 @@ const RFPRequest = () => {
                       icon={<FiEye />}
                       marginRight="0.5rem"
                       variant={"ghost"}
+                      onClick={() => {
+                        // setSelectedRFPId(proposal._id);
+                        handleShowDetails(proposal);
+                      }}
                     />
                     <IconButton
                       aria-label="Share proposal"
                       variant={"ghost"}
                       icon={<FiShare />}
                       onClick={() => {
-                        // setSelectedRFPId(proposal._id);
                         handleShareClick(proposal);
                       }}
                     />
@@ -281,6 +297,10 @@ const RFPRequest = () => {
               onClose={() => setShowShareForm(false)}
             />
           )}
+          {showRFPDetails &&
+            navigate("/Ngo/rfpdetails", {
+              state: { rfpID: selectedRFPId }
+            })}
         </div>
         <div className="pagination">
           <ButtonGroup variant="outline" spacing="4">

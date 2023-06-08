@@ -11,6 +11,7 @@ import {
   Box,
   Flex,
   Badge,
+  Button,
 } from "@chakra-ui/react";
 import classes from "../../CSS/ComCss.module.css";
 import {
@@ -113,6 +114,7 @@ const NgoNavigation = () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
+            authorization: `${localStorage.getItem("NgoAuthToken")}`,
           },
           body: JSON.stringify({
             notificationID: notificationId,
@@ -131,6 +133,48 @@ const NgoNavigation = () => {
         console.log(data.message);
         throw new Error("Failed to delete notification. Please try again.");
       }
+    } catch (error) {
+      console.log(error.message);
+      // Handle error
+    }
+  };
+  const markAllAsRead = async () => {
+    try {
+      // Iterate over each notification and mark it as read
+      for (const notification of notifications) {
+        await markNotificationAsRead(notification._id);
+      }
+
+      // After marking all notifications as read, update the local state
+      const updatedNotifications = notifications.map((notification) => ({
+        ...notification,
+        read: true,
+      }));
+      setNotifications(updatedNotifications);
+      setUnreadCount(0);
+    } catch (error) {
+      console.log(error.message);
+      // Handle error
+    }
+  };
+
+  const deleteAllRead = async () => {
+    try {
+      // Filter out the read notifications
+      const readNotifications = notifications.filter(
+        (notification) => notification.read
+      );
+
+      // Iterate over each read notification and delete it
+      for (const notification of readNotifications) {
+        await deleteNotification(notification._id);
+      }
+
+      // After deleting all read notifications, update the local state
+      const updatedNotifications = notifications.filter(
+        (notification) => !notification.read
+      );
+      setNotifications(updatedNotifications);
     } catch (error) {
       console.log(error.message);
       // Handle error
@@ -242,6 +286,25 @@ const NgoNavigation = () => {
               <DrawerBody>
                 {notifications.length > 0 ? (
                   <>
+                    <Flex justify="flex-end">
+                      <Button
+                        variant="outline"
+                        colorScheme="green"
+                        onClick={markAllAsRead}
+                        disabled={notifications.length === 0}
+                      >
+                        Mark All as Read
+                      </Button>
+                      <Button
+                        variant="outline"
+                        colorScheme="red"
+                        onClick={deleteAllRead}
+                        disabled={notifications.length === 0}
+                        ml={2}
+                      >
+                        Delete All Read
+                      </Button>
+                    </Flex>
                     {notifications
                       .sort((a, b) => {
                         if (a.read && !b.read) {

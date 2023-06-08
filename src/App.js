@@ -18,6 +18,8 @@ import ShowNgoProfile from "./components/Dashboards/NgoFeatures/ShowNgoProfile";
 import AddNgoProfile from "./components/Dashboards/NgoFeatures/AddNgoProfile";
 import EditProfile from "./components/Dashboards/CompanyFeatures/EditProfile";
 import EditNgoProfile from "./components/Dashboards/NgoFeatures/EditNgoProfile";
+import RFPDetails from "./components/Dashboards/NgoFeatures/RFPDetails";
+import RFPCompanyDetails from "./components/Dashboards/CompanyFeatures/RFPDetails";
 
 function App() {
   const authToken = localStorage.getItem("CompanyAuthToken");
@@ -49,6 +51,7 @@ function App() {
             <Route path="/Company/NGOReviews" element={<NGOReviews />} />
             <Route path="/Company/addprofile" element={<AddProfile />} />
             <Route path="/Company/editprofile" element={<EditProfile />} />
+            <Route path="/Company/rfpdetails" element={<RFPCompanyDetails />} />
             <Route path="/Company/profile" element={<ShowProfile />} />
           </>
         )}
@@ -60,6 +63,7 @@ function App() {
             <Route path="/Ngo/media/create" element={<PostBlogs />} />
             <Route path="/Ngo/profile" element={<ShowNgoProfile />} />
             <Route path="/Ngo/editprofile" element={<EditNgoProfile />} />
+            <Route path="/Ngo/rfpdetails" element={<RFPDetails />} />
             <Route path="/Ngo/addprofile" element={<AddNgoProfile />} />
           </>
         )}
