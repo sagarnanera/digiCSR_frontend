@@ -28,11 +28,13 @@ import {
   useToast,
   Tooltip,
   Textarea,
+  IconButton,
 } from "@chakra-ui/react";
 // import CompanyNavigation from "../companyNavigation";
 import { sectorOptions } from "../../sectorData";
 import { fetchStates, fetchCities, fetchStateName } from "../../geoData";
 import {
+  AddIcon,
   ChevronDownIcon,
   ChevronUpIcon,
   EmailIcon,
@@ -66,6 +68,7 @@ const EditProfile = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [profileData, setProfileData] = useState(null);
   // const [allfields, setAllfields] = useState(false);
+  const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
 
   useEffect(() => {
     const getStates = async () => {
@@ -159,7 +162,33 @@ const EditProfile = () => {
     }
     console.log(CompanySummary);
   };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
 
+    reader.onload = () => {
+      setImage(reader.result);
+    };
+
+    if (file) {
+      // Validate file type
+      if (
+        file.type === "image/jpeg" ||
+        file.type === "image/jpg" ||
+        file.type === "image/png"
+      ) {
+        // Validate file size
+        if (file.size <= 150 * 1024) {
+          // 15 KB in bytes
+          reader.readAsDataURL(file);
+        } else {
+          alert("Please select an image file smaller than 150 KB.");
+        }
+      } else {
+        alert("Please select a JPEG, JPG, or PNG image file.");
+      }
+    }
+  };
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -233,13 +262,14 @@ const EditProfile = () => {
       formData.append("cp_phone", personPhone);
       formData.append("tax_comp", taxEligibility);
       formData.append("sectors", JSON.stringify(Sector));
-      // console.log(formData);
+      formData.append("company_logo", image);
       const response = await fetch(url, {
         method: "POST",
         body: formData,
       });
       const data = await response.json();
       if (response.ok) {
+        console.log(formData);
         toast({
           title: "Profile Edited Successfully",
           status: "success",
@@ -299,6 +329,53 @@ const EditProfile = () => {
             flexWrap="wrap"
             justifyContent={{ base: "center", md: "flex-start" }}
           >
+            <Box mr={"1%"}>
+              <label htmlFor="profile-image">
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                  }}
+                >
+                  <img
+                    src={image || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
+                    alt="Profile"
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                  <input
+                    type="file"
+                    id="profile-image"
+                    accept=".jpg,.jpeg,.png"
+                    style={{ display: "none" }}
+                    onChange={handleImageChange}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: "8px",
+                      right: "8px",
+                      zIndex: 1, // Increase the z-index value
+                    }}
+                  >
+                    <label htmlFor="profile-image">
+                      <IconButton
+                        component="span"
+                        size={"xs"}
+                        colorScheme="green"
+                        color="primary"
+                        aria-label="Add Photo"
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </label>
+                  </div>
+                </div>
+              </label>
+            </Box>
+
             <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
               <FormControl id="companyname" isRequired={true}>
                 <FormLabel>Company Name</FormLabel>
