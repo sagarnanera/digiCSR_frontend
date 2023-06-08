@@ -20,6 +20,7 @@ import EditProfile from "./components/Dashboards/CompanyFeatures/EditProfile";
 import EditNgoProfile from "./components/Dashboards/NgoFeatures/EditNgoProfile";
 import RFPDetails from "./components/Dashboards/NgoFeatures/RFPDetails";
 import RFPCompanyDetails from "./components/Dashboards/CompanyFeatures/RFPDetails";
+import Post from "./components/Dashboards/NgoFeatures/Post";
 
 function App() {
   const authToken = localStorage.getItem("CompanyAuthToken");
@@ -67,6 +68,8 @@ function App() {
             <Route path="/Ngo/addprofile" element={<AddNgoProfile />} />
           </>
         )}
+        <Route path="/Ngo/media/post/:id" element={<Post />} />
+
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>

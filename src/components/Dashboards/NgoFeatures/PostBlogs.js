@@ -10,11 +10,13 @@ import {
   useToast
 } from "@chakra-ui/react";
 import { Editor } from "@tinymce/tinymce-react";
+import { useNavigate } from "react-router-dom";
 
 const PostBlogs = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
+  const navigate = useNavigate();
   const toast = useToast();
 
   const handleSubmit = async () => {
@@ -70,6 +72,9 @@ const PostBlogs = () => {
         // Reset form fields
         setTitle("");
         setContent("");
+
+        navigate(`/Ngo/media/post/${createdPost._id}`);
+
       } else {
         console.log("Post creation failed");
         // Handle error case
