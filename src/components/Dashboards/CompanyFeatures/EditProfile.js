@@ -41,6 +41,7 @@ import {
   PhoneIcon,
 } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
+import CompanyNavigation from "../companyNavigation";
 // export const allFieldsContext = createContext();
 
 const EditProfile = () => {
@@ -248,6 +249,7 @@ const EditProfile = () => {
     }
     try {
       const url = `http://localhost:4000/company/add-profile/${userId}`; // Replace with your API endpoint URL
+      const companyLogoFile = new File([image], "company_logo.jpg");
 
       const formData = new FormData();
       formData.append("company_name", companyName);
@@ -262,7 +264,7 @@ const EditProfile = () => {
       formData.append("cp_phone", personPhone);
       formData.append("tax_comp", taxEligibility);
       formData.append("sectors", JSON.stringify(Sector));
-      formData.append("company_logo", image);
+      formData.append("company_logo", companyLogoFile);
       const response = await fetch(url, {
         method: "POST",
         body: formData,
@@ -301,6 +303,7 @@ const EditProfile = () => {
 
   return (
     <Container centerContent>
+      <CompanyNavigation />
       <Box
         d="flex"
         textAlign="center"
