@@ -35,19 +35,32 @@ const MediaSection = () => {
     },
   ];
 
-  // useEffect(() => {
-  //   // Fetch all blogs when the component mounts
-  //   const fetchBlogs = async () => {
-  //     try {
-  //       const blogsData = await getAllBlogs();
-  //       setBlogs(blogsData);
-  //     } catch (error) {
-  //       console.error('Error fetching blogs:', error);
-  //     }
-  //   };
 
-  //   fetchBlogs();
-  // }, []);
+  useEffect(() => {
+    // Fetch all blogs when the component mounts
+    const fetchBlogs = async () => {
+      try {
+        const res = await fetch(`http://localhost:4000/NGO/media/allPosts`);
+        const blogsData = await res.json();
+        setBlogs(blogsData.postsData);
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
+  const handleBlogClick = (blogId) => {
+    // Redirect to the single blog page with the blog ID as a parameter
+    // Example: /blog/:id
+    // Replace ":id" with the actual blog ID
+    // You can use a routing library like react-router-dom to handle the redirection
+    // Here, we are using the navigate function from useNavigate hook
+    // Make sure to import useNavigate from "react-router-dom" at the top of your file
+    // Replace "/single-blog" with the actual route/path for the single blog page
+    navigate(`/Ngo/media/post/${blogId}`);
+  };
 
   return (
     <div>
@@ -57,38 +70,34 @@ const MediaSection = () => {
           All Blogs
         </Heading>
 
-        {Blogs.length === 0 ? (
+        {blogs.length === 0 ? <Box>
+          <h2>NO Blogs</h2>
+          <Button onClick={() => navigate("/Ngo/media/create")} colorScheme="teal" mb={4}>Create New Blog</Button>
+        </Box>
+          :
           <Box>
-            <h2>NO Blogs</h2>
-            {/* <Button onClick={navigate("/create")} colorScheme="teal" mb={4}>Create New Blog</Button> */}
-            <Button
-              onClick={() => navigate("/Ngo/media/create")}
-              colorScheme="teal"
-              mb={4}
-            >
-              Create New Blog
-            </Button>
+            <Button onClick={() => navigate("/Ngo/media/create")} colorScheme="teal" mb={4}>Create New Blog</Button>
+            <Flex flexWrap="wrap" gap={4}>
+              {blogs.map((blog) => (
+
+                <Box key={blog._id} borderWidth="1px" p={4} mb={4} borderRadius="md"
+                  _hover={{ boxShadow: "md", cursor: "pointer" }}
+                  onClick={() => handleBlogClick(blog._id)}
+                  width={{ base: "100%", md: "50%", lg: "33.33%" }} height="300px"
+                >
+                  <Heading as="h2" size="lg" mb={2}>
+                    {blog.title}
+                  </Heading>
+                  <Text color="gray.600" mb={2}>
+                    {blog.author} - {blog.createdAt}
+                  </Text>
+                  <Text noOfLines={2} dangerouslySetInnerHTML={{ __html: blog.content }} />
+                </Box>
+              ))}
+            </Flex>
           </Box>
-        ) : (
-          Blogs.map((blog) => (
-            <Box key={blog.id} borderWidth="1px" p={4} mb={4} borderRadius="md">
-              <Heading as="h2" size="lg" mb={2}>
-                {blog.title}
-              </Heading>
-              <Text color="gray.600" mb={2}>
-                {blog.author} - {blog.date}
-              </Text>
-              <Text>{blog.excerpt}</Text>
-            </Box>
-          ))
-        )}
-        <Button
-          onClick={() => navigate("/Ngo/media/create")}
-          colorScheme="teal"
-          mb={4}
-        >
-          Create New Blog
-        </Button>
+        }
+
       </Box>
     </div>
   );

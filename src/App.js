@@ -20,6 +20,7 @@ import EditProfile from "./components/Dashboards/CompanyFeatures/EditProfile";
 import EditNgoProfile from "./components/Dashboards/NgoFeatures/EditNgoProfile";
 import RFPDetails from "./components/Dashboards/NgoFeatures/RFPDetails";
 import RFPCompanyDetails from "./components/Dashboards/CompanyFeatures/RFPDetails";
+import Post from "./components/Dashboards/NgoFeatures/Post";
 import BeneficiaryDashboard from "./pages/Dashboards/BeneficiaryDashboard";
 import ShowBlogs from "./components/Dashboards/BeneficiaryFeatures.js/showBlogs";
 import ShowBenificiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/showprofile";
@@ -87,6 +88,8 @@ function App() {
             <Route path="/Ngo/addprofile" element={<AddNgoProfile />} />
           </>
         )}
+        <Route path="/Ngo/media/post/:id" element={<Post />} />
+
         {isBeneficiaryAuthenticated && (
           <>
             <Route path="/Beneficiary/NGOBlogs" element={<ShowBlogs />} />
