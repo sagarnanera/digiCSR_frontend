@@ -173,7 +173,13 @@ const ShowNgoProfile = () => {
               <br />
               <Text fontSize="lg">
                 <strong>Area of operation :</strong>{" "}
-                {profileData.profile.operation_area.join(", ")}
+                {/* {profileData.profile.operation_area.join(", ")} */}
+                {profileData.profile.operation_area.map((states, index) => (
+                  <span key={index}>
+                    <b>{index + 1}.</b> {states}
+                    <br />
+                  </span>
+                ))}
               </Text>
               <br />
               <Text fontSize="lg">

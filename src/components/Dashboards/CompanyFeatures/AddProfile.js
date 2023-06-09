@@ -233,7 +233,9 @@ const AddProfile = () => {
       formData.append("cp_designation", personDesignation);
       formData.append("cp_phone", personPhone);
       formData.append("tax_comp", taxEligibility);
-      formData.append("sectors", JSON.stringify(Sector));
+      Sector.forEach((sectorItem) => {
+        formData.append("sectors", sectorItem);
+      });
       formData.append("registration_certificate", registrationCertificateFile);
       formData.append("company_logo", companyLogoFile);
 

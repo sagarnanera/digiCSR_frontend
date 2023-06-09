@@ -318,8 +318,14 @@ const EditNgoProfile = () => {
       formData.append("NGO_name", NgoName);
       formData.append("summary", NgoSummary);
       formData.append("csr_budget", CSRBudget);
-      formData.append("operation_area", selectedStates);
-      formData.append("sectors", sector);
+      selectedStates.forEach((state) => {
+        formData.append("operation_area", state);
+      });
+
+      sector.forEach((sectorItem) => {
+        formData.append("sectors", sectorItem);
+      });
+
 
       // Append each board member as a separate form field
       boardMembers.forEach((member, index) => {

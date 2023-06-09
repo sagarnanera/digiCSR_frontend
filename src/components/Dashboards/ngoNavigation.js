@@ -77,7 +77,7 @@ useEffect(() => {
    }, [ngoId]);
  const fetchNotifications = async () => {
    try {
-     const response = await fetch(`http://localhost:4000/notifications`, {
+     const response = await fetch("http://localhost:4000/notifications", {
        headers: {
          "Content-type": "application/json",
          authorization: localStorage.getItem("NgoAuthToken"),
