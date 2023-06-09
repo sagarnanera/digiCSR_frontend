@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NgoNavigation from "../ngoNavigation";
-import { Box, Heading, Text, Image, CSSReset, ChakraProvider } from "@chakra-ui/react";
+import { Box, Heading, Text, Image, ChakraProvider } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { extendTheme } from "@chakra-ui/react";
 
@@ -62,14 +62,14 @@ const Post = () => {
     });
 
 
-    const blogData = {
-        id: 3,
-        title: 'JavaScript Best Practices',
-        author: 'David Williams',
-        authorLogoUrl: "path/to/author-logo.png", // Replace with the actual URL of the author's logo image
-        date: '2023-06-12',
-        excerpt: 'Improve your JavaScript skills with these coding best practices and tips.',
-    };
+    // const blogData = {
+    //     id: 3,
+    //     title: 'JavaScript Best Practices',
+    //     author: 'David Williams',
+    //     authorLogoUrl: "path/to/author-logo.png", // Replace with the actual URL of the author's logo image
+    //     date: '2023-06-12',
+    //     excerpt: 'Improve your JavaScript skills with these coding best practices and tips.',
+    // };
 
     useEffect(() => {
         const fetchBlog = async () => {
@@ -84,7 +84,7 @@ const Post = () => {
             }
         }
         fetchBlog();
-    }, []);
+    }, [id]);
 
     return (
         <div>
