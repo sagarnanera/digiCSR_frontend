@@ -11,7 +11,6 @@ import {
   Wrap,
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
-import CompanyNavigation from "../companyNavigation";
 
 const RFPCompanyDetails = () => {
   const location = useLocation();
@@ -55,7 +54,6 @@ const RFPCompanyDetails = () => {
 
   return (
     <div>
-      <CompanyNavigation />
       <div className="company-details-container">
         <Container centerContent>
           <Box

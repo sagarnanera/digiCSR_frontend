@@ -1,7 +1,13 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import ChooseUserComponent from "./components/chooseUserComponent";
-import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import CompanyDashboard from "./pages/Dashboards/CompanyDashboard";
 import TrackRFP from "./components/Dashboards/CompanyFeatures/TrackRFP";
 import FundingStats from "./components/Dashboards/CompanyFeatures/FundingStats";
@@ -26,18 +32,25 @@ import ShowBlogs from "./components/Dashboards/BeneficiaryFeatures.js/showBlogs"
 import ShowBenificiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/showprofile";
 import EditBeneficiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/editprofile";
 import AddBeneficiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/addprofile";
+// import { SelectedOptionContext } from "./components/chooseUserComponent";
+import CompanyNavigation from "./components/Dashboards/companyNavigation";
+import NgoNavigation from "./components/Dashboards/ngoNavigation";
+import BenificiaryNavigation from "./components/Dashboards/beneficiaryNavigation";
 
 function App() {
   const authToken = localStorage.getItem("CompanyAuthToken");
   const NgoauthToken = localStorage.getItem("NgoAuthToken");
-  const BeneficiaryauthToken = localStorage.getItem("BeneficiaryAuthToken");
-
+  const BeneficiaryauthToken = localStorage.getItem("BenificiaryAuthToken");
+  // let selectedOption = "";
+  const location = useLocation();
   const isCompanyAuthenticated = authToken !== null;
   const isNgoAuthenticated = NgoauthToken !== null;
   const isBeneficiaryAuthenticated = BeneficiaryauthToken !== null;
 
   const navigate = useNavigate();
-
+  // if (isCompanyAuthenticated) {
+  //   selectedOption = "Company";
+  // }
   useEffect(() => {
     if (
       !isCompanyAuthenticated &&
@@ -52,63 +65,119 @@ function App() {
     isBeneficiaryAuthenticated,
     navigate,
   ]);
+  const isCompanyRoute = (routePath) => {
+    return routePath.includes("/Company");
+  };
+  const isNgoRoute = (routePath) => {
+    return routePath.includes("/Ngo");
+  };
 
+  const isBeneficiaryRoute = (routePath) => {
+    return routePath.includes("/Beneficiary");
+  };
+
+  // Function to render the CompanyNavigation component
+
+  const renderCompanyNavigation = () => {
+    if (
+      isCompanyAuthenticated &&
+      isCompanyRoute(location.pathname) &&
+      !location.pathname.includes("/Company/RaiseRFP") &&
+      !location.pathname.includes("/Company/addprofile")
+    ) {
+      return <CompanyNavigation />;
+    }
+    return null;
+  };
+  const renderNgoNavigation = () => {
+    if (
+      isNgoAuthenticated &&
+      isNgoRoute(location.pathname) &&
+      !location.pathname.includes("/Ngo/addprofile") &&
+      !location.pathname.includes("/Ngo/media")
+    ) {
+      return <NgoNavigation />;
+    }
+    return null;
+  };
+
+  const renderBeneficiaryNavigation = () => {
+    if (
+      isBeneficiaryAuthenticated &&
+      isBeneficiaryRoute(location.pathname) &&
+      !location.pathname.includes("/Beneficiary/addprofile")
+    ) {
+      return <BenificiaryNavigation />;
+    }
+    return null;
+  };
   return (
-    <div className="App">
-      <Routes>
-        <Route path="/" element={<ChooseUserComponent />} />
-        {isCompanyAuthenticated && (
-          <Route path="/Company" element={<CompanyDashboard />} />
-        )}
-        {isNgoAuthenticated && <Route path="/Ngo" element={<NgoDashboard />} />}
-        {isBeneficiaryAuthenticated && (
-          <Route path="/Beneficiary" element={<BeneficiaryDashboard />} />
-        )}
-        {isCompanyAuthenticated && (
-          <>
-            <Route path="/Company/RaiseRFP" element={<RaiseRFP />} />
-            <Route path="/Company/TrackRFP" element={<TrackRFP />} />
-            <Route path="/Company/FundingStats" element={<FundingStats />} />
-            <Route path="/Company/NGOReviews" element={<NGOReviews />} />
-            <Route path="/Company/addprofile" element={<AddProfile />} />
-            <Route path="/Company/editprofile" element={<EditProfile />} />
-            <Route path="/Company/rfpdetails" element={<RFPCompanyDetails />} />
-            <Route path="/Company/profile" element={<ShowProfile />} />
-          </>
-        )}
-        {isNgoAuthenticated && (
-          <>
-            <Route path="/Ngo/RFPs" element={<RFPRequests />} />
-            <Route path="/Ngo/acceptedRFPs" element={<AcceptedRFP />} />
-            <Route path="/Ngo/media" element={<MediaSection />} />
-            <Route path="/Ngo/media/create" element={<PostBlogs />} />
-            <Route path="/Ngo/profile" element={<ShowNgoProfile />} />
-            <Route path="/Ngo/editprofile" element={<EditNgoProfile />} />
-            <Route path="/Ngo/rfpdetails" element={<RFPDetails />} />
-            <Route path="/Ngo/addprofile" element={<AddNgoProfile />} />
-          </>
-        )}
-        <Route path="/Ngo/media/post/:id" element={<Post />} />
+    <div>
+      {renderCompanyNavigation()}
+      {renderNgoNavigation()}
+      {renderBeneficiaryNavigation()}
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<ChooseUserComponent />} />
+          {isBeneficiaryAuthenticated && (
+            <Route path="/Beneficiary" element={<BeneficiaryDashboard />} />
+          )}
+          {isCompanyAuthenticated && (
+            <Route path="/Company" element={<CompanyDashboard />} />
+          )}
+          {isNgoAuthenticated && (
+            <Route path="/Ngo" element={<NgoDashboard />} />
+          )}
+          {isCompanyAuthenticated && (
+            <>
+              <Route path="/Company/RaiseRFP" element={<RaiseRFP />} />
+              <Route path="/Company/TrackRFP" element={<TrackRFP />} />
+              <Route path="/Company/FundingStats" element={<FundingStats />} />
+              <Route path="/Company/NGOReviews" element={<NGOReviews />} />
+              <Route path="/Company/addprofile" element={<AddProfile />} />
+              <Route path="/Company/editprofile" element={<EditProfile />} />
+              <Route
+                path="/Company/rfpdetails"
+                element={<RFPCompanyDetails />}
+              />
+              <Route path="/Company/profile" element={<ShowProfile />} />
+            </>
+          )}
+          {isNgoAuthenticated && (
+            <>
+              <Route path="/Ngo/RFPs" element={<RFPRequests />} />
+              <Route path="/Ngo/acceptedRFPs" element={<AcceptedRFP />} />
+              <Route path="/Ngo/media" element={<MediaSection />} />
+              <Route path="/Ngo/media/create" element={<PostBlogs />} />
+              <Route path="/Ngo/profile" element={<ShowNgoProfile />} />
+              <Route path="/Ngo/editprofile" element={<EditNgoProfile />} />
+              <Route path="/Ngo/rfpdetails" element={<RFPDetails />} />
+              <Route path="/Ngo/addprofile" element={<AddNgoProfile />} />
+            </>
+          )}
+          <Route path="/Ngo/media/post/:id" element={<Post />} />
 
-        {isBeneficiaryAuthenticated && (
-          <>
-            <Route path="/Beneficiary/NGOBlogs" element={<ShowBlogs />} />
-            <Route
-              path="/Beneficiary/profile"
-              element={<ShowBenificiaryprofile />}
-            />
-            <Route
-              path="/Beneficiary/editprofile"
-              element={<EditBeneficiaryprofile />}
-            />
-            <Route
-              path="/Beneficiary/addprofile"
-              element={<AddBeneficiaryprofile />}
-            />
-          </>
-        )}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+          {isBeneficiaryAuthenticated && (
+            <>
+              <Route path="/Beneficiary" element={<BeneficiaryDashboard />} />
+              <Route path="/Beneficiary/NGOBlogs" element={<ShowBlogs />} />
+              <Route
+                path="/Beneficiary/profile"
+                element={<ShowBenificiaryprofile />}
+              />
+              <Route
+                path="/Beneficiary/editprofile"
+                element={<EditBeneficiaryprofile />}
+              />
+              <Route
+                path="/Beneficiary/addprofile"
+                element={<AddBeneficiaryprofile />}
+              />
+            </>
+          )}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </div>
     </div>
   );
 }

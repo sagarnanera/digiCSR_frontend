@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import CompanyNavigation from "../companyNavigation";
 import {
   Button,
   Box,
@@ -110,8 +109,12 @@ const ShowProfile = () => {
     navigate("/Company/editprofile", { replace: true });
   };
   return (
-    <div p={4}>
-      <CompanyNavigation />
+    <Box width={"80vw"}
+      // p={4}
+      marginLeft={"10%"}
+      display={"flex"}
+      justifyContent={"center"}
+    >
       <Box
         maxW="80vw"
         mx="auto"
@@ -247,7 +250,7 @@ const ShowProfile = () => {
           <Text>Loading profile data...</Text>
         )}
       </Box>
-    </div>
+    </Box>
   );
 };
 

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "../../../CSS/RFPDetails.css";
-import NgoNavigation from "../ngoNavigation";
 import {
   Box,
   Container,
@@ -59,7 +58,6 @@ const RFPDetails = () => {
 
   return (
     <div>
-      <NgoNavigation />
       <div className="company-details-container">
         <Container centerContent>
           <Box

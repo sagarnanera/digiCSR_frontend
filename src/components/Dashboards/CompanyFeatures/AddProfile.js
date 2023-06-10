@@ -30,7 +30,6 @@ import {
   Textarea,
   IconButton,
 } from "@chakra-ui/react";
-// import CompanyNavigation from "../companyNavigation";
 import { sectorOptions } from "../../sectorData";
 import { fetchStates, fetchCities, fetchStateName } from "../../geoData";
 import {

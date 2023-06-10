@@ -14,7 +14,6 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { FiEye, FiShare } from "react-icons/fi";
-import NgoNavigation from "../ngoNavigation";
 import { useNavigate } from "react-router-dom";
 import "../../../CSS/rfpTable.css";
 import RequestAmount from "./requestAmount";
@@ -199,7 +198,6 @@ const RFPRequest = () => {
   };
   return (
     <Container centerContent>
-      <NgoNavigation />
       <div className="container">
         <h1 className="title">List of Request for Proposals</h1>
         {/* <div className="input-container">

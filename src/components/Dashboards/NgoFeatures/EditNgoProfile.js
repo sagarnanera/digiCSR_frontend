@@ -63,7 +63,7 @@ const EditNgoProfile = () => {
   // const [allfields, setAllfields] = useState(false);
   const [boardMembers, setBoardMembers] = useState([]);
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
-
+  const [isImageChanged, setIsImageChanged] = useState(false);
   useEffect(() => {
     const getStatesAndCompanyId = async () => {
       const fetchedStates = await fetchStates();
@@ -264,6 +264,7 @@ const EditNgoProfile = () => {
         if (file.size <= 150 * 1024) {
           // 150 KB in bytes
           reader.readAsDataURL(file);
+          setIsImageChanged(true); // Set the state variable to true indicating the image has been changed
           // console.log(image);
         } else {
           alert("Please select an image file smaller than 150 KB.");
@@ -313,8 +314,7 @@ const EditNgoProfile = () => {
         sector
       );
       const formData = new FormData();
-      const ngoLogoFile = new File([image], "ngo_logo.jpg");
-      
+
       formData.append("NGO_name", NgoName);
       formData.append("summary", NgoSummary);
       formData.append("csr_budget", CSRBudget);
@@ -325,7 +325,6 @@ const EditNgoProfile = () => {
       sector.forEach((sectorItem) => {
         formData.append("sectors", sectorItem);
       });
-
 
       // Append each board member as a separate form field
       boardMembers.forEach((member, index) => {
@@ -338,7 +337,11 @@ const EditNgoProfile = () => {
           member.designation
         );
       });
-      formData.append("ngo_logo", ngoLogoFile);
+      if (isImageChanged) {
+        const ngoLogoFile = new File([image], "ngo_logo.jpg");
+        formData.append("ngo_logo", ngoLogoFile);
+      }
+
       const response = await fetch(url, {
         method: "POST",
         body: formData,

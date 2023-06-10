@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import { FiEye } from "react-icons/fi";
 import "../../../CSS/rfpTable.css";
-import CompanyNavigation from "../companyNavigation";
 // import config from "../../config";
 import { useNavigate } from "react-router-dom";
 
@@ -181,7 +180,6 @@ const TrackRFP = () => {
   };
   return (
     <Container centerContent>
-      <CompanyNavigation />
       <div className="container">
         <h1 className="title">List of Request for Proposals</h1>
         {/* <div className="input-container">

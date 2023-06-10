@@ -1,10 +1,10 @@
 import React from "react";
-import CompanyNavigation from "../../components/Dashboards/companyNavigation";
+// import CompanyNavigation from "../../components/Dashboards/companyNavigation";
 
 function CompanyDashboard() {
   return (
     <div>
-      <CompanyNavigation />
+      {/* <CompanyNavigation /> */}
     </div>
   );
 }

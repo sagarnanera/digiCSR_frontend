@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Button, Box, Heading, Text, Wrap, Divider } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
-import NgoNavigation from "../ngoNavigation";
 
 const ShowNgoProfile = () => {
   const navigate = useNavigate();
@@ -66,8 +65,14 @@ const ShowNgoProfile = () => {
     navigate("/Ngo/editprofile", { replace: true });
   };
   return (
-    <div p={4}>
-      <NgoNavigation />
+    <Box
+      // p={4}
+      width={"75%"}
+      p={4}
+      marginLeft={"12.5%"}
+      // display={"flex"}
+      // justifyContent={"center"}
+    >
       <Box
         maxW="80vw"
         mx="auto"
@@ -206,7 +211,7 @@ const ShowNgoProfile = () => {
           <Text>Loading profile data...</Text>
         )}
       </Box>
-    </div>
+    </Box>
   );
 };
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import NgoNavigation from "../ngoNavigation";
 import { Box, Heading, Text, Image, ChakraProvider } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { extendTheme } from "@chakra-ui/react";
@@ -88,7 +87,6 @@ const Post = () => {
 
     return (
         <div>
-            <NgoNavigation />
             <Box maxWidth="800px" mx="auto" mt={8} p={4}>
                 <Heading as="h1" mb={4}>
                     {blog.title}

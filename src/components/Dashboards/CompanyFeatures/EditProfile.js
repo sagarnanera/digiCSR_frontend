@@ -30,7 +30,6 @@ import {
   Textarea,
   IconButton,
 } from "@chakra-ui/react";
-// import CompanyNavigation from "../companyNavigation";
 import { sectorOptions } from "../../sectorData";
 import { fetchStates, fetchCities, fetchStateName } from "../../geoData";
 import {
@@ -41,7 +40,6 @@ import {
   PhoneIcon,
 } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
-import CompanyNavigation from "../companyNavigation";
 // export const allFieldsContext = createContext();
 
 const EditProfile = () => {
@@ -71,6 +69,8 @@ const EditProfile = () => {
   // const [allfields, setAllfields] = useState(false);
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
   const [companyId, setCompanyId] = useState("");
+  const [isImageChanged, setIsImageChanged] = useState(false);
+
   useEffect(() => {
     const token = localStorage.getItem("CompanyAuthToken");
     const decodedToken = jwt_decode(token);
@@ -212,6 +212,7 @@ const EditProfile = () => {
         if (file.size <= 150 * 1024) {
           // 15 KB in bytes
           reader.readAsDataURL(file);
+          setIsImageChanged(true); // Set the state variable to true indicating the image has been changed
         } else {
           alert("Please select an image file smaller than 150 KB.");
         }
@@ -279,7 +280,6 @@ const EditProfile = () => {
     }
     try {
       const url = `http://localhost:4000/company/add-profile/${userId}`; // Replace with your API endpoint URL
-      const companyLogoFile = new File([image], "company_logo.jpg");
 
       const formData = new FormData();
       formData.append("company_name", companyName);
@@ -294,7 +294,10 @@ const EditProfile = () => {
       formData.append("cp_phone", personPhone);
       formData.append("tax_comp", taxEligibility);
       formData.append("sectors", JSON.stringify(Sector));
-      formData.append("company_logo", companyLogoFile);
+      if (isImageChanged) {
+        const companyLogoFile = new File([image], "company_logo.jpg");
+        formData.append("company_logo", companyLogoFile);
+      }
       const response = await fetch(url, {
         method: "POST",
         body: formData,
@@ -333,7 +336,6 @@ const EditProfile = () => {
 
   return (
     <Container centerContent>
-      <CompanyNavigation />
       <Box
         d="flex"
         textAlign="center"
