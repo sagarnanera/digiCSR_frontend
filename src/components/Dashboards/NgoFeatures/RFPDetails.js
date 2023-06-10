@@ -103,7 +103,7 @@ const RFPDetails = () => {
                         {formatDate(rfpDetails.date)}
                       </Text>
                       <Text mt={2} fontSize="xl">
-                        <strong>Budget:</strong> ${rfpDetails.amount}
+                        <strong>Budget:</strong> ${rfpDetails.remaining_amount}
                       </Text>
                       <Text mt={2} fontSize="xl">
                         <strong>Expiry Date:</strong>{" "}
