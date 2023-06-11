@@ -17,6 +17,7 @@ import { FiEye, FiShare } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import "../../../CSS/rfpTable.css";
 import RequestAmount from "./requestAmount";
+import NgoNavigation from "../ngoNavigation";
 // import config from "../../config";
 
 const RFPRequest = () => {
@@ -198,6 +199,7 @@ const RFPRequest = () => {
   };
   return (
     <Container centerContent>
+      <NgoNavigation />
       <div className="container">
         <h1 className="title">List of Request for Proposals</h1>
         {/* <div className="input-container">
@@ -297,7 +299,7 @@ const RFPRequest = () => {
           )}
           {showRFPDetails &&
             navigate("/Ngo/rfpdetails", {
-              state: { rfpID: selectedRFPId }
+              state: { rfpID: selectedRFPId },
             })}
         </div>
         <div className="pagination">

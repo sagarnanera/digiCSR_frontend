@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
+import CompanyNavigation from "../companyNavigation";
 
 const RFPCompanyDetails = () => {
   const location = useLocation();
@@ -89,7 +90,8 @@ const RFPCompanyDetails = () => {
   };
 
   return (
-    <Box display={"flex"} justifyContent={"center"} marginLeft={"33%"}>
+    <Box>
+      <CompanyNavigation />
       <div className="company-details-container">
         <Container centerContent>
           <Box
@@ -181,7 +183,7 @@ const RFPCompanyDetails = () => {
                           <strong>Amount of Donation:</strong> $
                           {donation.amount}
                         </Text>
-                        {donation.status === "pending" && (
+                        {donation.status === "Pending" && (
                           <Flex justify="flex-end">
                             <IconButton
                               icon={<CheckIcon />}

@@ -1,7 +1,6 @@
-import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Avatar, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import classes from "../../CSS/ComCss.module.css";
+import { Avatar, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 
 const BenificiaryNavigation = () => {
   const location = useLocation();

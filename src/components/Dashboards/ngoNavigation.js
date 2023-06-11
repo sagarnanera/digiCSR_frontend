@@ -37,178 +37,175 @@ const NgoNavigation = () => {
 
   // const toast = useToast();
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
-useEffect(() => {
-  const token = localStorage.getItem("NgoAuthToken");
-  console.log(token);
-  const decodedToken = jwt_decode(token);
-  setNgoId(decodedToken._id);
-  console.log(decodedToken);
-}, []);
-   useEffect(() => {
-     const fetchLogo = async () => {
-       try {
-         const response = await fetch(
-           `http://localhost:4000/NGO/logo/${ngoId}`
-         );
+  useEffect(() => {
+    const token = localStorage.getItem("NgoAuthToken");
+    console.log(token);
+    const decodedToken = jwt_decode(token);
+    setNgoId(decodedToken._id);
+    console.log(decodedToken);
+  }, []);
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await fetch(`http://localhost:4000/NGO/logo/${ngoId}`);
 
-         const base64Data = await response.text();
+        const base64Data = await response.text();
 
-         const byteCharacters = atob(base64Data.split(",")[1]);
-         const byteNumbers = new Array(byteCharacters.length);
-         for (let i = 0; i < byteCharacters.length; i++) {
-           byteNumbers[i] = byteCharacters.charCodeAt(i);
-         }
-         const byteArray = new Uint8Array(byteNumbers);
+        const byteCharacters = atob(base64Data.split(",")[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
 
-         const blob = new Blob([byteArray], { type: "image/png" });
-         const imageUrl = URL.createObjectURL(blob);
-         setImage(imageUrl);
-       } catch (error) {
-         console.error(error);
-       }
-     };
-     if (ngoId && ngoId !== "") {
-       fetchLogo();
-     }
-     // return () => {
-     //   // Clean up the created object URL
-     //   URL.revokeObjectURL(image);
-     // };
-   }, [ngoId]);
- const fetchNotifications = async () => {
-   try {
-     const response = await fetch("http://localhost:4000/notifications", {
-       headers: {
-         "Content-type": "application/json",
-         authorization: localStorage.getItem("NgoAuthToken"),
-       },
-     });
-     const data = await response.json();
-     if (response.ok) {
-       setNotifications(data.notifications);
-       const unreadCount = data.notifications.filter(
-         (notification) => !notification.read
-       ).length;
-       setUnreadCount(unreadCount);
-     } else {
-       throw new Error(
-         data.message || "Failed to fetch notifications. Please try again."
-       );
-     }
-   } catch (error) {
-     console.log(error.message);
-     // Handle error
-   }
- };
+        const blob = new Blob([byteArray], { type: "image/png" });
+        const imageUrl = URL.createObjectURL(blob);
+        setImage(imageUrl);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (ngoId && ngoId !== "") {
+      fetchLogo();
+    }
+    // return () => {
+    //   // Clean up the created object URL
+    //   URL.revokeObjectURL(image);
+    // };
+  }, [ngoId]);
+  const fetchNotifications = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/notifications", {
+        headers: {
+          "Content-type": "application/json",
+          authorization: localStorage.getItem("NgoAuthToken"),
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setNotifications(data.notifications);
+        const unreadCount = data.notifications.filter(
+          (notification) => !notification.read
+        ).length;
+        setUnreadCount(unreadCount);
+      } else {
+        throw new Error(
+          data.message || "Failed to fetch notifications. Please try again."
+        );
+      }
+    } catch (error) {
+      console.log(error.message);
+      // Handle error
+    }
+  };
 
- useEffect(() => {
-   fetchNotifications();
- }, []);
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
 
- const markNotificationAsRead = async (notificationId) => {
-   try {
-     const response = await fetch(
-       "http://localhost:4000/notifications/updatestatus",
-       {
-         method: "POST",
-         headers: {
-           "Content-Type": "application/json",
-           authorization: localStorage.getItem("NgoAuthToken"),
-         },
-         body: JSON.stringify({
-           notificationID: notificationId,
-         }),
-       }
-     );
-     const data = await response.json();
-     if (response.ok) {
-       setNotifications((prevNotifications) =>
-         prevNotifications.map((notification) =>
-           notification._id === notificationId
-             ? { ...notification, read: true }
-             : notification
-         )
-       );
-     } else {
-       throw new Error(
-         data.message ||
-           "Failed to mark notification as read. Please try again."
-       );
-     }
-   } catch (error) {
-     console.log(error.message);
-     // Handle error
-   }
- };
+  const markNotificationAsRead = async (notificationId) => {
+    try {
+      const response = await fetch(
+        "http://localhost:4000/notifications/updatestatus",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: localStorage.getItem("NgoAuthToken"),
+          },
+          body: JSON.stringify({
+            notificationID: notificationId,
+          }),
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setNotifications((prevNotifications) =>
+          prevNotifications.map((notification) =>
+            notification._id === notificationId
+              ? { ...notification, read: true }
+              : notification
+          )
+        );
+      } else {
+        throw new Error(
+          data.message ||
+            "Failed to mark notification as read. Please try again."
+        );
+      }
+    } catch (error) {
+      console.log(error.message);
+      // Handle error
+    }
+  };
 
- const deleteNotification = async (notificationId) => {
-   try {
-     const response = await fetch(
-       "http://localhost:4000/notifications/delete",
-       {
-         method: "DELETE",
-         headers: {
-           "Content-Type": "application/json",
-           authorization: localStorage.getItem("NgoAuthToken"),
-         },
-         body: JSON.stringify({
-           notificationID: notificationId,
-         }),
-       }
-     );
-     const data = await response.json();
-     if (response.ok) {
-       setNotifications((prevNotifications) =>
-         prevNotifications.filter(
-           (notification) => notification._id !== notificationId
-         )
-       );
-     } else {
-       throw new Error(
-         data.message || "Failed to delete notification. Please try again."
-       );
-     }
-   } catch (error) {
-     console.log(error.message);
-     // Handle error
-   }
- };
+  const deleteNotification = async (notificationId) => {
+    try {
+      const response = await fetch(
+        "http://localhost:4000/notifications/delete",
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: localStorage.getItem("NgoAuthToken"),
+          },
+          body: JSON.stringify({
+            notificationID: notificationId,
+          }),
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setNotifications((prevNotifications) =>
+          prevNotifications.filter(
+            (notification) => notification._id !== notificationId
+          )
+        );
+      } else {
+        throw new Error(
+          data.message || "Failed to delete notification. Please try again."
+        );
+      }
+    } catch (error) {
+      console.log(error.message);
+      // Handle error
+    }
+  };
 
- const markAllAsRead = async () => {
-   try {
-     for (const notification of notifications) {
-       await markNotificationAsRead(notification._id);
-     }
-     const updatedNotifications = notifications.map((notification) => ({
-       ...notification,
-       read: true,
-     }));
-     setNotifications(updatedNotifications);
-     setUnreadCount(0);
-   } catch (error) {
-     console.log(error.message);
-     // Handle error
-   }
- };
+  const markAllAsRead = async () => {
+    try {
+      for (const notification of notifications) {
+        await markNotificationAsRead(notification._id);
+      }
+      const updatedNotifications = notifications.map((notification) => ({
+        ...notification,
+        read: true,
+      }));
+      setNotifications(updatedNotifications);
+      setUnreadCount(0);
+    } catch (error) {
+      console.log(error.message);
+      // Handle error
+    }
+  };
 
- const deleteAllRead = async () => {
-   try {
-     const readNotifications = notifications.filter(
-       (notification) => notification.read
-     );
-     for (const notification of readNotifications) {
-       await deleteNotification(notification._id);
-     }
-     const updatedNotifications = notifications.filter(
-       (notification) => !notification.read
-     );
-     setNotifications(updatedNotifications);
-   } catch (error) {
-     console.log(error.message);
-     // Handle error
-   }
- };
-
+  const deleteAllRead = async () => {
+    try {
+      const readNotifications = notifications.filter(
+        (notification) => notification.read
+      );
+      for (const notification of readNotifications) {
+        await deleteNotification(notification._id);
+      }
+      const updatedNotifications = notifications.filter(
+        (notification) => !notification.read
+      );
+      setNotifications(updatedNotifications);
+    } catch (error) {
+      console.log(error.message);
+      // Handle error
+    }
+  };
 
   const handleBellIconClick = () => {
     setIsDrawerOpen(true);

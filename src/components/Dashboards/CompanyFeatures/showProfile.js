@@ -11,6 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { CloseIcon } from "@chakra-ui/icons";
 import jwt_decode from "jwt-decode";
+import CompanyNavigation from "../companyNavigation";
 
 const ShowProfile = () => {
   const navigate = useNavigate();
@@ -109,12 +110,9 @@ const ShowProfile = () => {
     navigate("/Company/editprofile", { replace: true });
   };
   return (
-    <Box width={"80vw"}
-      // p={4}
-      marginLeft={"10%"}
-      display={"flex"}
-      justifyContent={"center"}
-    >
+    <Box>
+      <CompanyNavigation />
+
       <Box
         maxW="80vw"
         mx="auto"

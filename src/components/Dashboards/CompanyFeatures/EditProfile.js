@@ -40,6 +40,7 @@ import {
   PhoneIcon,
 } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
+import CompanyNavigation from "../companyNavigation";
 // export const allFieldsContext = createContext();
 
 const EditProfile = () => {
@@ -336,6 +337,7 @@ const EditProfile = () => {
 
   return (
     <Container centerContent>
+      <CompanyNavigation />
       <Box
         d="flex"
         textAlign="center"

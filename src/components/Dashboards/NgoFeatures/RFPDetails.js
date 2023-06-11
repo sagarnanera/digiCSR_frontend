@@ -10,6 +10,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
+import NgoNavigation from "../ngoNavigation";
 
 const RFPDetails = () => {
   const location = useLocation();
@@ -58,6 +59,7 @@ const RFPDetails = () => {
 
   return (
     <div>
+      <NgoNavigation />
       <div className="company-details-container">
         <Container centerContent>
           <Box

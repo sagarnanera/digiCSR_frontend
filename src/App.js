@@ -6,7 +6,6 @@ import {
   Routes,
   Navigate,
   useNavigate,
-  useLocation,
 } from "react-router-dom";
 import CompanyDashboard from "./pages/Dashboards/CompanyDashboard";
 import TrackRFP from "./components/Dashboards/CompanyFeatures/TrackRFP";
@@ -33,24 +32,18 @@ import ShowBenificiaryprofile from "./components/Dashboards/BeneficiaryFeatures.
 import EditBeneficiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/editprofile";
 import AddBeneficiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/addprofile";
 // import { SelectedOptionContext } from "./components/chooseUserComponent";
-import CompanyNavigation from "./components/Dashboards/companyNavigation";
-import NgoNavigation from "./components/Dashboards/ngoNavigation";
-import BenificiaryNavigation from "./components/Dashboards/beneficiaryNavigation";
 
 function App() {
   const authToken = localStorage.getItem("CompanyAuthToken");
   const NgoauthToken = localStorage.getItem("NgoAuthToken");
   const BeneficiaryauthToken = localStorage.getItem("BenificiaryAuthToken");
   // let selectedOption = "";
-  const location = useLocation();
   const isCompanyAuthenticated = authToken !== null;
   const isNgoAuthenticated = NgoauthToken !== null;
   const isBeneficiaryAuthenticated = BeneficiaryauthToken !== null;
 
   const navigate = useNavigate();
-  // if (isCompanyAuthenticated) {
-  //   selectedOption = "Company";
-  // }
+  
   useEffect(() => {
     if (
       !isCompanyAuthenticated &&
@@ -65,57 +58,9 @@ function App() {
     isBeneficiaryAuthenticated,
     navigate,
   ]);
-  const isCompanyRoute = (routePath) => {
-    return routePath.includes("/Company");
-  };
-  const isNgoRoute = (routePath) => {
-    return routePath.includes("/Ngo");
-  };
 
-  const isBeneficiaryRoute = (routePath) => {
-    return routePath.includes("/Beneficiary");
-  };
-
-  // Function to render the CompanyNavigation component
-
-  const renderCompanyNavigation = () => {
-    if (
-      isCompanyAuthenticated &&
-      isCompanyRoute(location.pathname) &&
-      !location.pathname.includes("/Company/RaiseRFP") &&
-      !location.pathname.includes("/Company/addprofile")
-    ) {
-      return <CompanyNavigation />;
-    }
-    return null;
-  };
-  const renderNgoNavigation = () => {
-    if (
-      isNgoAuthenticated &&
-      isNgoRoute(location.pathname) &&
-      !location.pathname.includes("/Ngo/addprofile") &&
-      !location.pathname.includes("/Ngo/media")
-    ) {
-      return <NgoNavigation />;
-    }
-    return null;
-  };
-
-  const renderBeneficiaryNavigation = () => {
-    if (
-      isBeneficiaryAuthenticated &&
-      isBeneficiaryRoute(location.pathname) &&
-      !location.pathname.includes("/Beneficiary/addprofile")
-    ) {
-      return <BenificiaryNavigation />;
-    }
-    return null;
-  };
   return (
     <div>
-      {renderCompanyNavigation()}
-      {renderNgoNavigation()}
-      {renderBeneficiaryNavigation()}
       <div className="App">
         <Routes>
           <Route path="/" element={<ChooseUserComponent />} />

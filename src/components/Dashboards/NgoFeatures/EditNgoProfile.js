@@ -38,6 +38,7 @@ import {
 import { fetchStates } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
 import { useNavigate } from "react-router-dom";
+import NgoNavigation from "../ngoNavigation";
 // export const allNgoFieldsContext = createContext();
 
 const EditNgoProfile = () => {
@@ -392,6 +393,7 @@ const EditNgoProfile = () => {
   return (
     // <allNgoFieldsContext.Provider value={allfields}>
     <Container centerContent>
+      <NgoNavigation />
       <Box
         d="flex"
         textAlign="center"

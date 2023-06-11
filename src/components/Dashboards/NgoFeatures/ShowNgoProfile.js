@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Box, Heading, Text, Wrap, Divider } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
+import NgoNavigation from "../ngoNavigation";
 
 const ShowNgoProfile = () => {
   const navigate = useNavigate();
@@ -35,9 +36,7 @@ const ShowNgoProfile = () => {
     };
     const fetchLogo = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:4000/NGO/logo/${ngoId}`
-        );
+        const response = await fetch(`http://localhost:4000/NGO/logo/${ngoId}`);
 
         const base64Data = await response.text();
 
@@ -65,14 +64,8 @@ const ShowNgoProfile = () => {
     navigate("/Ngo/editprofile", { replace: true });
   };
   return (
-    <Box
-      // p={4}
-      width={"75%"}
-      p={4}
-      marginLeft={"12.5%"}
-      // display={"flex"}
-      // justifyContent={"center"}
-    >
+    <Box>
+      <NgoNavigation />
       <Box
         maxW="80vw"
         mx="auto"
