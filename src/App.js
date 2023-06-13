@@ -26,6 +26,7 @@ import ShowBlogs from "./components/Dashboards/BeneficiaryFeatures.js/showBlogs"
 import ShowBenificiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/showprofile";
 import EditBeneficiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/editprofile";
 import AddBeneficiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/addprofile";
+import UpdateBlog from "./components/Dashboards/NgoFeatures/UpdateBlog";
 
 function App() {
   const authToken = localStorage.getItem("CompanyAuthToken");
@@ -55,6 +56,7 @@ function App() {
 
   return (
     <div className="App">
+
       <Routes>
         <Route path="/" element={<ChooseUserComponent />} />
         {isCompanyAuthenticated && (
@@ -74,21 +76,26 @@ function App() {
             <Route path="/Company/editprofile" element={<EditProfile />} />
             <Route path="/Company/rfpdetails" element={<RFPCompanyDetails />} />
             <Route path="/Company/profile" element={<ShowProfile />} />
+            <Route path="/Company/media" element={<MediaSection userType={"company"} />} />
+            <Route path="/Company/media/:id" element={<Post userType={"company"} />} />
           </>
         )}
         {isNgoAuthenticated && (
           <>
             <Route path="/Ngo/RFPs" element={<RFPRequests />} />
             <Route path="/Ngo/acceptedRFPs" element={<AcceptedRFP />} />
-            <Route path="/Ngo/media" element={<MediaSection />} />
+
+            <Route path="/Ngo/media" element={<MediaSection userType={"ngo"} />} />
             <Route path="/Ngo/media/create" element={<PostBlogs />} />
+            <Route path="/Ngo/media/:id" element={<Post userType={"ngo"} />} />
+            <Route path="/Ngo/media/update/:id" element={<UpdateBlog />} />
+
             <Route path="/Ngo/profile" element={<ShowNgoProfile />} />
             <Route path="/Ngo/editprofile" element={<EditNgoProfile />} />
             <Route path="/Ngo/rfpdetails" element={<RFPDetails />} />
             <Route path="/Ngo/addprofile" element={<AddNgoProfile />} />
           </>
         )}
-        <Route path="/Ngo/media/post/:id" element={<Post />} />
 
         {isBeneficiaryAuthenticated && (
           <>
@@ -104,6 +111,14 @@ function App() {
             <Route
               path="/Beneficiary/addprofile"
               element={<AddBeneficiaryprofile />}
+            />
+            <Route
+              path="/Beneficiary/media"
+              element={<MediaSection userType={"beneficiary"} />}
+            />
+            <Route
+              path="/Beneficiary/media/:id"
+              element={<MediaSection userType={"beneficiary"} />}
             />
           </>
         )}

@@ -61,7 +61,7 @@ const ShowProfile = () => {
       } else {
         const data = await response.json();
         console.log(data.message);
-        throw new Error("Failed to Download Certificate.");
+        throw new Error("Certificate not Found !!!");
       }
     } catch (error) {
       toast({
@@ -140,7 +140,7 @@ const ShowProfile = () => {
               <Text fontSize="lg">
                 <strong>Sectors:</strong>{" "}
                 {/* {JSON.parse(profileData.profile.sectors).join(", ")} */}
-                {JSON.parse(profileData.profile.sectors).map((sector, index) => (
+                {profileData.profile.sectors.map((sector, index) => (
                   <span key={index}>
                     <b>{index + 1}.</b> {sector},
                     {/* <br /> */}

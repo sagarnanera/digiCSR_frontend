@@ -1,103 +1,221 @@
-// import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import NgoNavigation from "../ngoNavigation";
-import { Box, Button, Heading, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import PostCard from "./PostCard";
 
-const MediaSection = () => {
-  // const [blogs, setBlogs] = useState([]);
+const MediaSection = ({ userType }) => {
+  const [blogs, setBlogs] = useState([]);
 
   const navigate = useNavigate();
-
-  const Blogs = [
-    {
-      id: 1,
-      title: "Getting Started with React",
-      author: "John Doe",
-      date: "2023-05-30",
-      excerpt:
-        "Learn the basics of React and how to build interactive web applications.",
-    },
-    {
-      id: 2,
-      title: "Mastering CSS Grid Layout",
-      author: "Jane Smith",
-      date: "2023-06-05",
-      excerpt:
-        "Discover the power of CSS Grid Layout and create complex responsive layouts.",
-    },
-    {
-      id: 3,
-      title: "JavaScript Best Practices",
-      author: "David Williams",
-      date: "2023-06-12",
-      excerpt:
-        "Improve your JavaScript skills with these coding best practices and tips.",
-    },
-  ];
-
+  const toast = useToast();
 
   useEffect(() => {
     // Fetch all blogs when the component mounts
     const fetchBlogs = async () => {
+
+      const url = "http://localhost:4000/media/posts";;
+      var options;
+
+      if (userType === "company" || userType == "Beneficiary") {
+        const token = userType === "company"
+          ? localStorage.getItem("CompanyAuthToken")
+          : localStorage.getItem("NgoAuthToken");
+
+        options = {
+          headers: {
+            "Content-type": "application/json",
+            "Authorization": token,
+          }
+        }
+      }
+      else {
+        const token = localStorage.getItem("NgoAuthToken");
+
+        options = {
+          headers: {
+            "Content-type": "application/json",
+            "Authorization": token,
+          }
+        }
+      };
+
       try {
-        const res = await fetch(`http://localhost:4000/NGO/media/allPosts`);
+        const res = await fetch(url, options);
         const blogsData = await res.json();
         setBlogs(blogsData.postsData);
       } catch (error) {
-        console.error('Error fetching blogs:', error);
+        console.error("Error fetching blogs:", error);
       }
     };
 
     fetchBlogs();
   }, []);
 
-  const handleBlogClick = (blogId) => {
-    // Redirect to the single blog page with the blog ID as a parameter
-    // Example: /blog/:id
-    // Replace ":id" with the actual blog ID
-    // You can use a routing library like react-router-dom to handle the redirection
-    // Here, we are using the navigate function from useNavigate hook
-    // Make sure to import useNavigate from "react-router-dom" at the top of your file
-    // Replace "/single-blog" with the actual route/path for the single blog page
-    navigate(`/Ngo/media/post/${blogId}`);
-  };
+  if (!blogs || blogs.length === 0) {
+    return (
+      <div>
+        <NgoNavigation />
+        <Box
+          maxWidth={{ base: "95vw", lg: "80vw" }}
+          mx="auto"
+          mt={8}
+          borderWidth="1px"
+          p={2}
+          bg={"white"}
+          borderRadius="md"
+          boxShadow="md"
+        >
+          <h2>NO Blogs</h2>
+          <Button
+            onClick={() => navigate("/Ngo/media/create")}
+            colorScheme="teal"
+            mb={4}
+          >
+            Create New Blog
+          </Button>
+        </Box>
+      </div>
+    );
+  }
 
   return (
     <div>
       <NgoNavigation />
-      <Box maxWidth="800px" mx="auto" mt={8}>
-        <Heading as="h1" mb={4}>
-          All Blogs
-        </Heading>
+      <Box
+        maxWidth={{ base: "95vw", lg: "80vw" }}
+        mx="auto"
+        mt={8}
+        mb={2}
+        borderWidth="1px"
+        p={2}
+        backdropFilter='auto' backdropBlur='8px'
+        borderRadius="md"
+        boxShadow="md"
+      >
+        <Flex justifyContent={"space-between"}>
+          <Heading as="h1" mb={4}>
+            All Blogs
+          </Heading>
 
-        {blogs.length === 0 ? <Box>
-          <h2>NO Blogs</h2>
-          <Button onClick={() => navigate("/Ngo/media/create")} colorScheme="teal" mb={4}>Create New Blog</Button>
+          <Button
+            onClick={() => navigate("/Ngo/media/create")}
+            colorScheme="teal"
+            mb={4}
+            bg={"white"}
+            color={"#28B5E1"}
+          >
+            Create New Blog
+          </Button>
+        </Flex>
+        <Box>
+
+          <Flex flexWrap="wrap" justifyContent={"space-around"}>
+            {blogs && blogs.map((blog) => {
+              return <PostCard setBlogs={setBlogs} blog={blog} userType={userType} key={blog._id} />
+              // const htmlDoc = parser.parseFromString(blog.content, "text/html");
+
+              // // Extract text from HTML content
+              // const textContent = htmlDoc.documentElement.textContent || "";
+
+              // // Limit the text to a certain number of lines
+              // const maxLines = 4;
+              // const content = textContent
+              //   .split("\n")
+              //   .map((line) => line.trim())
+              //   .filter((line) => line !== "")
+              //   .slice(0, maxLines)
+              //   .join(" ");
+
+              // const images = htmlDoc.getElementsByTagName("img");
+              // const thumbnail = images.length > 0 ? images[0].src : null;
+
+
+              // return (
+              //   <Box
+              //     key={blog._id}
+              //     borderWidth="1px"
+              //     p={4}
+              //     mb={4}
+              //     borderRadius="md"
+              //     _hover={{ boxShadow: "md", cursor: "pointer" }}
+              //     onClick={() => handleBlogClick(blog._id)}
+              //     width={{ base: "100%", md: "50%", lg: "33%" }}
+              //     height="auto"
+              //     position="relative"
+              //   >
+              //     {thumbnail && (
+              //       <Box
+              //         mb={2}
+              //         width="100%"
+              //         height="150px"
+              //         borderRadius="md"
+              //         overflow="hidden"
+              //       >
+              //         <Image
+              //           src={thumbnail}
+              //           alt="Thumbnail"
+              //           width="100%"
+              //           height="100%"
+              //           objectFit="cover"
+              //         />
+              //       </Box>
+              //     )}
+
+              //     {userType === "ngo" &&
+
+              //       <Flex
+              //         position="absolute"
+              //         top={5}
+              //         right={5}
+              //         alignItems="center"
+              //         justifyContent="center"
+              //         // opacity={0} // Initially hidden
+              //         // transition="opacity 0.2s"
+              //         _groupHover={{ opacity: 1 }} // Visible on hover
+              //       >
+              //         <IconButton
+              //           icon={<DeleteIcon />}
+              //           variant="ghost"
+              //           _hover={{ color: "black", bgColor: "red" }}
+              //           color="red"
+              //           aria-label="Delete"
+              //           size="md"
+              //           mr={2}
+              //           onClick={() => handleDeleteBlog(blog._id)}
+              //         />
+              //         <IconButton
+              //           icon={<EditIcon />}
+              //           variant="ghost"
+              //           _hover={{ color: "black", bgColor: "beige" }}
+              //           color="beige"
+              //           aria-label="Edit"
+              //           size="md"
+              //           onClick={() => handleEditBlog(blog._id)}
+              //         />
+              //       </Flex>
+              //     }
+
+              //     <Heading as="h2" size="lg" mb={2}>
+              //       {blog.title}
+              //     </Heading>
+              //     <Text color="gray.600" mb={2}>
+              //       {blog.author} -{" "}
+              //       {new Date(blog.createdAt).toLocaleString("en-US", {
+              //         month: "short",
+              //         day: "numeric",
+              //         year: "numeric",
+              //       })}
+              //     </Text>
+              //     <Text noOfLines={4} overflow="hidden" textOverflow="ellipsis">
+              //       {content}
+              //     </Text>
+
+              //   </Box>
+              // );
+            })}
+          </Flex>
         </Box>
-          :
-          <Box>
-            <Button onClick={() => navigate("/Ngo/media/create")} colorScheme="teal" mb={4}>Create New Blog</Button>
-            <Flex flexWrap="wrap" gap={4}>
-              {blogs.map((blog) => (
-
-                <Box key={blog._id} borderWidth="1px" p={4} mb={4} borderRadius="md"
-                  _hover={{ boxShadow: "md", cursor: "pointer" }}
-                  onClick={() => handleBlogClick(blog._id)}
-                  width={{ base: "100%", md: "50%", lg: "33.33%" }} height="300px"
-                >
-                  <Heading as="h2" size="lg" mb={2}>
-                    {blog.title}
-                  </Heading>
-                  <Text color="gray.600" mb={2}>
-                    {blog.author} - {blog.createdAt}
-                  </Text>
-                  <Text noOfLines={2} dangerouslySetInnerHTML={{ __html: blog.content }} />
-                </Box>
-              ))}
-            </Flex>
-          </Box>
-        }
-
       </Box>
     </div>
   );

@@ -9,7 +9,7 @@ const CompanyNavigation = () => {
 
   const handleClick = () => {
     localStorage.removeItem("CompanyAuthToken");
-    navigate("/", { replace: true });   
+    navigate("/", { replace: true });
   };
 
   return (
@@ -67,6 +67,18 @@ const CompanyNavigation = () => {
               }
             >
               NGO Reviews
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/Company/media"
+              className={
+                location.pathname === "/Company/media"
+                  ? classes.active
+                  : ""
+              }
+            >
+              Media
             </Link>
           </li>
           <li>
