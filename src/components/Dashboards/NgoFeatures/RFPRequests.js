@@ -14,10 +14,10 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { FiEye, FiShare } from "react-icons/fi";
-import NgoNavigation from "../ngoNavigation";
 import { useNavigate } from "react-router-dom";
 import "../../../CSS/rfpTable.css";
 import RequestAmount from "./requestAmount";
+import NgoNavigation from "../ngoNavigation";
 // import config from "../../config";
 
 const RFPRequest = () => {
@@ -299,7 +299,7 @@ const RFPRequest = () => {
           )}
           {showRFPDetails &&
             navigate("/Ngo/rfpdetails", {
-              state: { rfpID: selectedRFPId }
+              state: { rfpID: selectedRFPId },
             })}
         </div>
         <div className="pagination">

@@ -23,6 +23,7 @@ import {
   DrawerCloseButton,
 } from "@chakra-ui/react";
 import { FiBell, FiCheck, FiTrash } from "react-icons/fi";
+import jwt_decode from "jwt-decode";
 
 // import jwt_decode from "jwt-decode";
 
@@ -32,32 +33,65 @@ const NgoNavigation = () => {
   const [notifications, setNotifications] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  // const toast = useToast();
+  const [ngoId, setNgoId] = useState("");
 
+  // const toast = useToast();
+  const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
+  useEffect(() => {
+    const token = localStorage.getItem("NgoAuthToken");
+    console.log(token);
+    const decodedToken = jwt_decode(token);
+    setNgoId(decodedToken._id);
+    console.log(decodedToken);
+  }, []);
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await fetch(`http://localhost:4000/NGO/logo/${ngoId}`);
+
+        const base64Data = await response.text();
+
+        const byteCharacters = atob(base64Data.split(",")[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+
+        const blob = new Blob([byteArray], { type: "image/png" });
+        const imageUrl = URL.createObjectURL(blob);
+        setImage(imageUrl);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (ngoId && ngoId !== "") {
+      fetchLogo();
+    }
+    // return () => {
+    //   // Clean up the created object URL
+    //   URL.revokeObjectURL(image);
+    // };
+  }, [ngoId]);
   const fetchNotifications = async () => {
     try {
-      const result = localStorage.getItem("NgoAuthToken");
-      const config = {
+      const response = await fetch("http://localhost:4000/notifications", {
         headers: {
           "Content-type": "application/json",
-          authorization: result,
+          authorization: localStorage.getItem("NgoAuthToken"),
         },
-      };
-      const response = await fetch(`http://localhost:4000/notifications`, {
-        headers: config.headers,
       });
       const data = await response.json();
-      if (data.success) {
+      if (response.ok) {
         setNotifications(data.notifications);
         const unreadCount = data.notifications.filter(
           (notification) => !notification.read
         ).length;
-
-        // Update the unread count state
         setUnreadCount(unreadCount);
       } else {
-        console.log(data.message);
-        throw new Error("Failed to fetch notifications. Please try again.");
+        throw new Error(
+          data.message || "Failed to fetch notifications. Please try again."
+        );
       }
     } catch (error) {
       console.log(error.message);
@@ -77,7 +111,7 @@ const NgoNavigation = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            authorization: `${localStorage.getItem("NgoAuthToken")}`, // Add authorization header
+            authorization: localStorage.getItem("NgoAuthToken"),
           },
           body: JSON.stringify({
             notificationID: notificationId,
@@ -85,8 +119,7 @@ const NgoNavigation = () => {
         }
       );
       const data = await response.json();
-      if (data.success) {
-        // Update the read status in the local state
+      if (response.ok) {
         setNotifications((prevNotifications) =>
           prevNotifications.map((notification) =>
             notification._id === notificationId
@@ -95,9 +128,9 @@ const NgoNavigation = () => {
           )
         );
       } else {
-        console.log(data.message);
         throw new Error(
-          "Failed to mark notification as read. Please try again."
+          data.message ||
+            "Failed to mark notification as read. Please try again."
         );
       }
     } catch (error) {
@@ -114,7 +147,7 @@ const NgoNavigation = () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            authorization: `${localStorage.getItem("NgoAuthToken")}`,
+            authorization: localStorage.getItem("NgoAuthToken"),
           },
           body: JSON.stringify({
             notificationID: notificationId,
@@ -122,30 +155,28 @@ const NgoNavigation = () => {
         }
       );
       const data = await response.json();
-      if (data.success) {
-        // Remove the notification from the local state
+      if (response.ok) {
         setNotifications((prevNotifications) =>
           prevNotifications.filter(
             (notification) => notification._id !== notificationId
           )
         );
       } else {
-        console.log(data.message);
-        throw new Error("Failed to delete notification. Please try again.");
+        throw new Error(
+          data.message || "Failed to delete notification. Please try again."
+        );
       }
     } catch (error) {
       console.log(error.message);
       // Handle error
     }
   };
+
   const markAllAsRead = async () => {
     try {
-      // Iterate over each notification and mark it as read
       for (const notification of notifications) {
         await markNotificationAsRead(notification._id);
       }
-
-      // After marking all notifications as read, update the local state
       const updatedNotifications = notifications.map((notification) => ({
         ...notification,
         read: true,
@@ -160,17 +191,12 @@ const NgoNavigation = () => {
 
   const deleteAllRead = async () => {
     try {
-      // Filter out the read notifications
       const readNotifications = notifications.filter(
         (notification) => notification.read
       );
-
-      // Iterate over each read notification and delete it
       for (const notification of readNotifications) {
         await deleteNotification(notification._id);
       }
-
-      // After deleting all read notifications, update the local state
       const updatedNotifications = notifications.filter(
         (notification) => !notification.read
       );
@@ -262,7 +288,7 @@ const NgoNavigation = () => {
               <MenuButton
                 as={Avatar}
                 size="sm"
-                src="https://bit.ly/broken-link"
+                src={image ? image : "/user-avatar"}
               />
               <MenuList>
                 <Link to="/Ngo/profile">

@@ -26,8 +26,10 @@ import {
   // WrapItem,
   Wrap,
   useToast,
+  IconButton,
 } from "@chakra-ui/react";
 import {
+  AddIcon,
   ChevronDownIcon,
   ChevronUpIcon,
   EditIcon,
@@ -59,6 +61,7 @@ const AddNgoProfile = () => {
   const toast = useToast();
   // const [allfields, setAllfields] = useState(false);
   const [boardMembers, setBoardMembers] = useState([]);
+  const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
 
   const handleAddMember = () => {
     setBoardMembers((prevBoardMembers) => [
@@ -179,7 +182,34 @@ const AddNgoProfile = () => {
     setIsStateDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
     setIsTextAreaVisible(!isTextAreaVisible);
   };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
 
+    reader.onload = () => {
+      setImage(reader.result);
+    };
+
+    if (file) {
+      // Validate file type
+      if (
+        file.type === "image/jpeg" ||
+        file.type === "image/jpg" ||
+        file.type === "image/png"
+      ) {
+        // Validate file size
+        if (file.size <= 150 * 1024) {
+          // 150 KB in bytes
+          reader.readAsDataURL(file);
+          // console.log(image);
+        } else {
+          alert("Please select an image file smaller than 150 KB.");
+        }
+      } else {
+        alert("Please select a JPEG, JPG, or PNG image file.");
+      }
+    }
+  };
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -204,34 +234,41 @@ const AddNgoProfile = () => {
     try {
       const url = `http://localhost:4000/NGO/add-profile/${userId}`;
 
-      const formattedBoardMembers = boardMembers.map((member) => ({
-        bm_name: member.name,
-        bm_gender: member.gender,
-        bm_din: member.dinNumber,
-        bm_phone: member.phoneNo,
-        bm_designation: member.designation,
-      }));
-      console.log(
-        NgoName,
-        NgoSummary,
-        formattedBoardMembers,
-        CSRBudget,
-        selectedStates,
-        sector
-      );
+      const formData = new FormData();
+      const ngoLogoFile = new File([image], "ngo_logo.jpg");
+
+      formData.append("NGO_name", NgoName);
+      formData.append("summary", NgoSummary);
+      formData.append("csr_budget", CSRBudget);
+      formData.append("operation_area", selectedStates);
+      formData.append("sectors", sector);
+
+      // Append each board member as a separate form field
+      boardMembers.forEach((member, index) => {
+        formData.append(`board_members[${index}][bm_name]`, member.name);
+        formData.append(`board_members[${index}][bm_gender]`, member.gender);
+        formData.append(`board_members[${index}][bm_din]`, member.dinNumber);
+        formData.append(`board_members[${index}][bm_phone]`, member.phoneNo);
+        formData.append(
+          `board_members[${index}][bm_designation]`,
+          member.designation
+        );
+      });
+      formData.append("ngo_logo", ngoLogoFile);
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          NGO_name: NgoName,
-          summary: NgoSummary,
-          board_members: formattedBoardMembers,
-          csr_budget: CSRBudget,
-          operation_area: selectedStates,
-          sectors: sector,
-        }),
+        body: formData,
+        // headers: {
+        //   "Content-type": "application/json",
+        // },
+        // body: JSON.stringify({
+        //   NGO_name: NgoName,
+        //   summary: NgoSummary,
+        //   board_members: formattedBoardMembers,
+        //   csr_budget: CSRBudget,
+        //   operation_area: selectedStates,
+        //   sectors: sector,
+        // }),
       });
 
       const data = await response.json();
@@ -297,6 +334,52 @@ const AddNgoProfile = () => {
             flex={5}
             w="95%"
           >
+            <Box mr={"1%"}>
+              <label htmlFor="profile-image">
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                  }}
+                >
+                  <img
+                    src={image || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
+                    alt="Profile"
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                  <input
+                    type="file"
+                    id="profile-image"
+                    accept=".jpg,.jpeg,.png"
+                    style={{ display: "none" }}
+                    onChange={handleImageChange}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: "8px",
+                      right: "8px",
+                      zIndex: 1, // Increase the z-index value
+                    }}
+                  >
+                    <label htmlFor="profile-image">
+                      <IconButton
+                        component="span"
+                        size={"xs"}
+                        colorScheme="green"
+                        color="primary"
+                        aria-label="Add Photo"
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </label>
+                  </div>
+                </div>
+              </label>
+            </Box>
             <Box
               w={{ base: "90%", md: "33.5vw" }}
               mr={{ base: 0, md: "34.5vw" }}

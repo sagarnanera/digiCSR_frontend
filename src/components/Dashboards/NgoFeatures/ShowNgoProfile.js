@@ -14,6 +14,7 @@ const ShowNgoProfile = () => {
     const decodedToken = jwt_decode(token);
     setNgoId(decodedToken._id);
   }, []);
+  const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
 
   useEffect(() => {
     const fetchCompanyProfile = async () => {
@@ -33,7 +34,28 @@ const ShowNgoProfile = () => {
         console.log(error.message);
       }
     };
+    const fetchLogo = async () => {
+      try {
+        const response = await fetch(`http://localhost:4000/NGO/logo/${ngoId}`);
+
+        const base64Data = await response.text();
+
+        const byteCharacters = atob(base64Data.split(",")[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+
+        const blob = new Blob([byteArray], { type: "image/png" });
+        const imageUrl = URL.createObjectURL(blob);
+        setImage(imageUrl);
+      } catch (error) {
+        console.error(error);
+      }
+    };
     if (ngoId && ngoId !== "") {
+      fetchLogo();
       fetchCompanyProfile();
     }
   }, [ngoId]);
@@ -42,7 +64,7 @@ const ShowNgoProfile = () => {
     navigate("/Ngo/editprofile", { replace: true });
   };
   return (
-    <div p={4}>
+    <Box>
       <NgoNavigation />
       <Box
         maxW="80vw"
@@ -56,6 +78,34 @@ const ShowNgoProfile = () => {
       >
         {profileData ? (
           <>
+            <Box mr={"1%"}>
+              <label htmlFor="profile-image">
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                  }}
+                >
+                  {image ? (
+                    <img
+                      src={image}
+                      alt="ngo logo"
+                      width="100%"
+                      height="100%"
+                    />
+                  ) : (
+                    <img
+                      src={"/user-avatar.jpg"}
+                      alt="Profile"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  )}
+                </div>
+              </label>
+            </Box>
             <Heading size="lg" mb={4}>
               Ngo Profile
             </Heading>
@@ -121,7 +171,13 @@ const ShowNgoProfile = () => {
               <br />
               <Text fontSize="lg">
                 <strong>Area of operation :</strong>{" "}
-                {profileData.profile.operation_area.join(", ")}
+                {/* {profileData.profile.operation_area.join(", ")} */}
+                {profileData.profile.operation_area.map((states, index) => (
+                  <span key={index}>
+                    <b>{index + 1}.</b> {states}
+                    <br />
+                  </span>
+                ))}
               </Text>
               <br />
               <Text fontSize="lg">
@@ -148,7 +204,7 @@ const ShowNgoProfile = () => {
           <Text>Loading profile data...</Text>
         )}
       </Box>
-    </div>
+    </Box>
   );
 };
 

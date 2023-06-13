@@ -30,7 +30,6 @@ import {
   Textarea,
   IconButton,
 } from "@chakra-ui/react";
-// import CompanyNavigation from "../companyNavigation";
 import { sectorOptions } from "../../sectorData";
 import { fetchStates, fetchCities, fetchStateName } from "../../geoData";
 import {
@@ -70,7 +69,14 @@ const EditProfile = () => {
   const [profileData, setProfileData] = useState(null);
   // const [allfields, setAllfields] = useState(false);
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
+  const [companyId, setCompanyId] = useState("");
+  const [isImageChanged, setIsImageChanged] = useState(false);
 
+  useEffect(() => {
+    const token = localStorage.getItem("CompanyAuthToken");
+    const decodedToken = jwt_decode(token);
+    setCompanyId(decodedToken._id);
+  }, []);
   useEffect(() => {
     const getStates = async () => {
       const fetchedStates = await fetchStates();
@@ -98,7 +104,7 @@ const EditProfile = () => {
       }
       setCompanyName(profileData.company_name);
       setPincode(profileData.profile.location.pincode);
-      // setCompanySummary(profileData.profile.summary);
+      setCompanySummary(JSON.parse(profileData.profile.summary));
       setPersonName(profileData.profile.comunication_person.cp_name);
       setPersonEmail(profileData.profile.comunication_person.cp_email);
       setPersonDesignation(
@@ -110,6 +116,31 @@ const EditProfile = () => {
     }
   };
   useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/company/logo/${companyId}`
+        );
+
+        const base64Data = await response.text();
+
+        const byteCharacters = atob(base64Data.split(",")[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+
+        const blob = new Blob([byteArray], { type: "image/png" });
+        const imageUrl = URL.createObjectURL(blob);
+        setImage(imageUrl);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (companyId && companyId !== "") {
+      fetchLogo();
+    }
     fetchCompanyProfile();
   });
 
@@ -182,6 +213,7 @@ const EditProfile = () => {
         if (file.size <= 150 * 1024) {
           // 15 KB in bytes
           reader.readAsDataURL(file);
+          setIsImageChanged(true); // Set the state variable to true indicating the image has been changed
         } else {
           alert("Please select an image file smaller than 150 KB.");
         }
@@ -249,7 +281,6 @@ const EditProfile = () => {
     }
     try {
       const url = `http://localhost:4000/company/add-profile/${userId}`; // Replace with your API endpoint URL
-      const companyLogoFile = new File([image], "company_logo.jpg");
 
       const formData = new FormData();
       formData.append("company_name", companyName);
@@ -264,7 +295,10 @@ const EditProfile = () => {
       formData.append("cp_phone", personPhone);
       formData.append("tax_comp", taxEligibility);
       formData.append("sectors", JSON.stringify(Sector));
-      formData.append("company_logo", companyLogoFile);
+      if (isImageChanged) {
+        const companyLogoFile = new File([image], "company_logo.jpg");
+        formData.append("company_logo", companyLogoFile);
+      }
       const response = await fetch(url, {
         method: "POST",
         body: formData,

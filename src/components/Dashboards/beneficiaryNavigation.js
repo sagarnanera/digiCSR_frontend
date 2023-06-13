@@ -1,9 +1,8 @@
-import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Avatar, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import classes from "../../CSS/ComCss.module.css";
+import { Avatar, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 
-const CompanyNavigation = () => {
+const BenificiaryNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -60,4 +59,4 @@ const CompanyNavigation = () => {
   );
 };
 
-export default CompanyNavigation;
+export default BenificiaryNavigation;

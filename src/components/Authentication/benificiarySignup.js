@@ -28,7 +28,7 @@ function BenificiarySignup() {
   const navigate = useNavigate();
   const toast = useToast();
   const handleAadharKeyPress = (e) => {
-    const maxLength = 12; // Set your desired maxLength value
+    const maxLength = 16; // Set your desired maxLength value
     const inputValue = e.target.value;
 
     if (inputValue.length === maxLength) {

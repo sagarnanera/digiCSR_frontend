@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "../../../CSS/RFPDetails.css";
-import NgoNavigation from "../ngoNavigation";
 import {
   Box,
   Container,
@@ -11,6 +10,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
+import NgoNavigation from "../ngoNavigation";
 
 const RFPDetails = () => {
   const location = useLocation();
@@ -105,7 +105,7 @@ const RFPDetails = () => {
                         {formatDate(rfpDetails.date)}
                       </Text>
                       <Text mt={2} fontSize="xl">
-                        <strong>Budget:</strong> ${rfpDetails.amount}
+                        <strong>Budget:</strong> ${rfpDetails.remaining_amount}
                       </Text>
                       <Text mt={2} fontSize="xl">
                         <strong>Expiry Date:</strong>{" "}

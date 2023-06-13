@@ -1,7 +1,12 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import ChooseUserComponent from "./components/chooseUserComponent";
-import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import CompanyDashboard from "./pages/Dashboards/CompanyDashboard";
 import TrackRFP from "./components/Dashboards/CompanyFeatures/TrackRFP";
 import FundingStats from "./components/Dashboards/CompanyFeatures/FundingStats";
@@ -31,14 +36,14 @@ import UpdateBlog from "./components/Dashboards/NgoFeatures/UpdateBlog";
 function App() {
   const authToken = localStorage.getItem("CompanyAuthToken");
   const NgoauthToken = localStorage.getItem("NgoAuthToken");
-  const BeneficiaryauthToken = localStorage.getItem("BeneficiaryAuthToken");
-
+  const BeneficiaryauthToken = localStorage.getItem("BenificiaryAuthToken");
+  // let selectedOption = "";
   const isCompanyAuthenticated = authToken !== null;
   const isNgoAuthenticated = NgoauthToken !== null;
   const isBeneficiaryAuthenticated = BeneficiaryauthToken !== null;
 
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     if (
       !isCompanyAuthenticated &&

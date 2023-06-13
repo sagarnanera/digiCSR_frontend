@@ -1,7 +1,7 @@
 // import React, { useEffect, useState } from "react";
-import NgoNavigation from "../ngoNavigation";
 import { Box, Button, Heading, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import BenificiaryNavigation from "../beneficiaryNavigation";
 
 const ShowBlogs = () => {
   // const [blogs, setBlogs] = useState([]);
@@ -51,7 +51,7 @@ const ShowBlogs = () => {
 
   return (
     <div>
-      <NgoNavigation />
+      <BenificiaryNavigation />
       <Box maxWidth="800px" mx="auto" mt={8}>
         <Heading as="h1" mb={4}>
           All Blogs

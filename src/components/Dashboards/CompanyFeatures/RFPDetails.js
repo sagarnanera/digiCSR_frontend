@@ -6,11 +6,13 @@ import {
   Divider,
   Flex,
   Image,
+  IconButton,
   Text,
   VStack,
   Wrap,
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import CompanyNavigation from "../companyNavigation";
 
 const RFPCompanyDetails = () => {
@@ -53,8 +55,42 @@ const RFPCompanyDetails = () => {
     return formatDate(date);
   };
 
+  const handleManageDonation = async (donationId, action) => {
+    try {
+      const response = await fetch("http://localhost:4000/rfp/manage", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `${localStorage.getItem("CompanyAuthToken")}`,
+        },
+        body: JSON.stringify({
+          rfpID: rfpID,
+          donationId: donationId,
+          action: action,
+        }),
+      });
+      const data = await response.json();
+      console.log(data);
+      if (response.ok) {
+        // Update the donation status in the UI
+        const updatedRfpDetails = { ...rfpDetails };
+        const donationIndex = updatedRfpDetails.donations.findIndex(
+          (donation) => donation._id === donationId
+        );
+        if (donationIndex !== -1) {
+          updatedRfpDetails.donations[donationIndex].status = action;
+          setRfpDetails(updatedRfpDetails);
+        }
+      } else {
+        console.error("Failed to manage donation:", data.message);
+      }
+    } catch (error) {
+      console.error("Failed to manage donation:", error);
+    }
+  };
+
   return (
-    <div>
+    <Box>
       <CompanyNavigation />
       <div className="company-details-container">
         <Container centerContent>
@@ -93,11 +129,11 @@ const RFPCompanyDetails = () => {
                         <strong>Title of RFP:</strong> {rfpDetails.title}
                       </Text>
                       <Text mt={2} fontSize="xl">
-                        <strong>Creation Date:</strong>
+                        <strong>Creation Date:</strong>{" "}
                         {formatDate(rfpDetails.date)}
                       </Text>
                       <Text mt={2} fontSize="xl">
-                        <strong>Budget:</strong> ${rfpDetails.amount}
+                        <strong>Budget:</strong> ${rfpDetails.remaining_amount}
                       </Text>
                       <Text mt={2} fontSize="xl">
                         <strong>Expiry Date:</strong>{" "}
@@ -122,7 +158,6 @@ const RFPCompanyDetails = () => {
                   <Divider borderBottomWidth="4px" borderColor="red" />
                 </Box>
                 <br />
-                {/* {rfpDetails.donations} */}
                 <Wrap spacing={10}>
                   {Array.isArray(rfpDetails.donations) ? (
                     rfpDetails.donations.map((donation, index) => (
@@ -137,7 +172,6 @@ const RFPCompanyDetails = () => {
                           <strong>Donation {index + 1}:</strong>
                         </Text>
                         <Divider borderBottomWidth="2 px" borderColor="red" />
-                        {/* <HStack> */}
                         <Text fontSize="lg" mb={2}>
                           <strong>NGO Name:</strong> {donation.ngo}
                         </Text>
@@ -146,24 +180,55 @@ const RFPCompanyDetails = () => {
                           {formatDate(donation.date)}
                         </Text>
                         <Text fontSize="lg" mt={2} mb={2}>
-                          <strong>Amount of Donation:</strong>${donation.amount}
+                          <strong>Amount of Donation:</strong> $
+                          {donation.amount}
                         </Text>
-                        {/* </HStack> */}
+                        {donation.status === "Pending" && (
+                          <Flex justify="flex-end">
+                            <IconButton
+                              icon={<CheckIcon />}
+                              onClick={() =>
+                                handleManageDonation(donation._id, "approve")
+                              }
+                              aria-label="Accept Donation"
+                              variant="outline"
+                              colorScheme="green"
+                            />
+                            <IconButton
+                              icon={<CloseIcon />}
+                              onClick={() =>
+                                handleManageDonation(donation._id, "reject")
+                              }
+                              aria-label="Reject Donation"
+                              variant="outline"
+                              colorScheme="red"
+                            />
+                          </Flex>
+                        )}
+                        {donation.status === "approved" && (
+                          <Text fontSize="lg" mt={2} color="green">
+                            Donation Approved
+                          </Text>
+                        )}
+                        {donation.status === "rejected" && (
+                          <Text fontSize="lg" mt={2} color="red">
+                            Donation Rejected
+                          </Text>
+                        )}
                       </Box>
                     ))
                   ) : (
                     <Text fontSize="lg">No Donations Requested.</Text>
                   )}
                 </Wrap>
-                {/* <br /> */}
               </>
             ) : (
-              <Text>Loading Rfp Details...</Text>
+              <Text>Loading RFP Details...</Text>
             )}
           </Box>
         </Container>
       </div>
-    </div>
+    </Box>
   );
 };
 

@@ -141,7 +141,7 @@ const Post = ({ userType }) => {
             }
         }
         fetchBlog();
-    }, []);
+    }, [id]);
 
 
     const handleDeleteBlog = async blogId => {

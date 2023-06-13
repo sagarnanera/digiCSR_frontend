@@ -334,7 +334,7 @@ function AllUserLogin() {
         setLoading(false);
         return; // Prevent further execution
       }
-    } else if (selectedOption === "Ngo") {
+    } else if (selectedOption === "Benificiary") {
       try {
         const config = {
           headers: {
@@ -354,8 +354,9 @@ function AllUserLogin() {
           }
         );
 
+        const data = await response.json();
+        console.log(data);
         if (response.ok) {
-          const data = await response.json();
           toast({
             title: "Login Successful",
             status: "success",
@@ -366,18 +367,7 @@ function AllUserLogin() {
           const { result } = data;
           localStorage.setItem("BeneficiaryAuthToken", result);
           setLoading(false);
-          // if (allNgofields) {
-          navigate("/Beneficiary", { replace: true });
-          // } else {
-          //   toast({
-          //     title: "Please Complete the whole profile first.",
-          //     status: "warning",
-          //     duration: 5000,
-          //     isClosable: true,
-          //     position: "bottom",
-          //   });
-          //   navigate("/Ngo/editprofile", { replace: true });
-          // }
+          navigate("/Beneficiary/addprofile", { replace: true });
         } else {
           throw new Error("Failed to verify. Please try again later.");
         }

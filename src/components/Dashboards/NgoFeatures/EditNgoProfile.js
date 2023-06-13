@@ -26,8 +26,10 @@ import {
   useToast,
   // HStack,
   Wrap,
+  IconButton,
 } from "@chakra-ui/react";
 import {
+  AddIcon,
   ChevronDownIcon,
   ChevronUpIcon,
   EditIcon,
@@ -36,6 +38,7 @@ import {
 import { fetchStates } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
 import { useNavigate } from "react-router-dom";
+import NgoNavigation from "../ngoNavigation";
 // export const allNgoFieldsContext = createContext();
 
 const EditNgoProfile = () => {
@@ -60,7 +63,8 @@ const EditNgoProfile = () => {
   const toast = useToast();
   // const [allfields, setAllfields] = useState(false);
   const [boardMembers, setBoardMembers] = useState([]);
-
+  const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
+  const [isImageChanged, setIsImageChanged] = useState(false);
   useEffect(() => {
     const getStatesAndCompanyId = async () => {
       const fetchedStates = await fetchStates();
@@ -90,7 +94,32 @@ const EditNgoProfile = () => {
         console.log(error.message);
       }
     };
-    fetchCompanyProfile();
+    const fetchLogo = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/NGO/logo/${userId}`
+        );
+
+        const base64Data = await response.text();
+
+        const byteCharacters = atob(base64Data.split(",")[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+
+        const blob = new Blob([byteArray], { type: "image/png" });
+        const imageUrl = URL.createObjectURL(blob);
+        setImage(imageUrl);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (userId && userId !== "") {
+      fetchLogo();
+      fetchCompanyProfile(); // runs when id is non-empty string
+    }
   }, [userId]);
   useEffect(() => {
     if (profileData) {
@@ -217,7 +246,35 @@ const EditNgoProfile = () => {
     setIsStateDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
     setIsTextAreaVisible(!isTextAreaVisible);
   };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
 
+    reader.onload = () => {
+      setImage(reader.result);
+    };
+
+    if (file) {
+      // Validate file type
+      if (
+        file.type === "image/jpeg" ||
+        file.type === "image/jpg" ||
+        file.type === "image/png"
+      ) {
+        // Validate file size
+        if (file.size <= 150 * 1024) {
+          // 150 KB in bytes
+          reader.readAsDataURL(file);
+          setIsImageChanged(true); // Set the state variable to true indicating the image has been changed
+          // console.log(image);
+        } else {
+          alert("Please select an image file smaller than 150 KB.");
+        }
+      } else {
+        alert("Please select a JPEG, JPG, or PNG image file.");
+      }
+    }
+  };
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -242,34 +299,64 @@ const EditNgoProfile = () => {
     try {
       const url = `http://localhost:4000/NGO/add-profile/${userId}`;
 
-      const formattedBoardMembers = boardMembers.map((member) => ({
-        bm_name: member.name,
-        bm_gender: member.gender,
-        bm_din: member.dinNumber,
-        bm_phone: member.phoneNo,
-        bm_designation: member.designation,
-      }));
+      // const formattedBoardMembers = boardMembers.map((member) => ({
+      //   bm_name: member.name,
+      //   bm_gender: member.gender,
+      //   bm_din: member.dinNumber,
+      //   bm_phone: member.phoneNo,
+      //   bm_designation: member.designation,
+      // }));
       console.log(
         NgoName,
         NgoSummary,
-        formattedBoardMembers,
+        // formattedBoardMembers,
         CSRBudget,
         selectedStates,
         sector
       );
+      const formData = new FormData();
+
+      formData.append("NGO_name", NgoName);
+      formData.append("summary", NgoSummary);
+      formData.append("csr_budget", CSRBudget);
+      selectedStates.forEach((state) => {
+        formData.append("operation_area", state);
+      });
+
+      sector.forEach((sectorItem) => {
+        formData.append("sectors", sectorItem);
+      });
+
+      // Append each board member as a separate form field
+      boardMembers.forEach((member, index) => {
+        formData.append(`board_members[${index}][bm_name]`, member.name);
+        formData.append(`board_members[${index}][bm_gender]`, member.gender);
+        formData.append(`board_members[${index}][bm_din]`, member.dinNumber);
+        formData.append(`board_members[${index}][bm_phone]`, member.phoneNo);
+        formData.append(
+          `board_members[${index}][bm_designation]`,
+          member.designation
+        );
+      });
+      if (isImageChanged) {
+        const ngoLogoFile = new File([image], "ngo_logo.jpg");
+        formData.append("ngo_logo", ngoLogoFile);
+      }
+
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          NGO_name: NgoName,
-          summary: NgoSummary,
-          board_members: formattedBoardMembers,
-          csr_budget: CSRBudget,
-          operation_area: selectedStates,
-          sectors: sector,
-        }),
+        body: formData,
+        // headers: {
+        //   "Content-type": "application/json",
+        // },
+        // body: JSON.stringify({
+        //   NGO_name: NgoName,
+        //   summary: NgoSummary,
+        //   board_members: formattedBoardMembers,
+        //   csr_budget: CSRBudget,
+        //   operation_area: selectedStates,
+        //   sectors: sector,
+        // }),
       });
 
       const data = await response.json();
@@ -306,6 +393,7 @@ const EditNgoProfile = () => {
   return (
     // <allNgoFieldsContext.Provider value={allfields}>
     <Container centerContent>
+      <NgoNavigation />
       <Box
         d="flex"
         textAlign="center"
@@ -335,6 +423,52 @@ const EditNgoProfile = () => {
             flex={5}
             w="95%"
           >
+            <Box mr={"1%"}>
+              <label htmlFor="profile-image">
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                  }}
+                >
+                  <img
+                    src={image || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
+                    alt="Profile"
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                  <input
+                    type="file"
+                    id="profile-image"
+                    accept=".jpg,.jpeg,.png"
+                    style={{ display: "none" }}
+                    onChange={handleImageChange}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: "8px",
+                      right: "8px",
+                      zIndex: 1, // Increase the z-index value
+                    }}
+                  >
+                    <label htmlFor="profile-image">
+                      <IconButton
+                        component="span"
+                        size={"xs"}
+                        colorScheme="green"
+                        color="primary"
+                        aria-label="Add Photo"
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </label>
+                  </div>
+                </div>
+              </label>
+            </Box>
             <Box
               w={{ base: "90%", md: "33.5vw" }}
               mr={{ base: 0, md: "34.5vw" }}
