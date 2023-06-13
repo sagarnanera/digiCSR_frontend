@@ -89,7 +89,7 @@ const ShowProfile = () => {
       } else {
         const data = await response.json();
         console.log(data.message);
-        throw new Error("Failed to Download Certificate.");
+        throw new Error("Certificate not Found !!!");
       }
     } catch (error) {
       toast({

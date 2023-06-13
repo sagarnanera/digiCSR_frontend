@@ -269,6 +269,16 @@ const CompanyNavigation = () => {
             </Link>
           </li>
           <li>
+            <Link
+              to="/Company/media"
+              className={
+                location.pathname === "/Company/media"
+                  ? classes.active
+                  : ""
+              }
+            >
+              Media
+            </Link>
             <IconButton
               aria-label="Share proposal"
               variant={"ghost"}
