@@ -3,10 +3,19 @@
 .App {
   min-height: 100vh;
   display: flex;
-  background-image: url("../public/background1.jpeg");
+  position: relative;
+  background-image: url("../public/back-ground.svg");
+  justify-content: center;
   background-position: center;
-  /* justify-content: center; */
+  background-repeat: no-repeat;
   background-size: cover;
+
+}
+
+@media (max-width: 900px) {
+  .App {
+    background-image: url('../public/mobile-back.svg');
+  }
 }
 
 ::-webkit-scrollbar {

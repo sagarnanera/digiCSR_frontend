@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Box, Heading, Text, Image, ChakraProvider } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
+import NgoNavigation from "../ngoNavigation";
+import { Box, Heading, Text, Image, ChakraProvider, Button, Flex, IconButton, useToast } from "@chakra-ui/react";
+import { useNavigate, useParams } from "react-router-dom";
 import { extendTheme } from "@chakra-ui/react";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
-const Post = () => {
+const Post = ({ userType }) => {
 
     const { id } = useParams();
     const [blog, setBlog] = useState({});
 
-
+    const navigate = useNavigate();
+    const toast = useToast();
 
     const theme = extendTheme({
         styles: {
@@ -51,56 +54,263 @@ const Post = () => {
                 },
                 p: {
                     fontSize: 'md',
+                    textAlign: 'justify',
                 },
                 a: {
                     color: 'blue.500',
                     textDecoration: 'underline',
                 },
+                ul: {
+                    paddingLeft: '1.5rem',
+                    marginBottom: '1rem',
+                },
+                ol: {
+                    paddingLeft: '1.5rem',
+                    marginBottom: '1rem',
+                },
+                li: {
+                    marginBottom: '0.5rem',
+                },
+                img: {
+                    display: 'block',
+                    margin: '0 auto',
+                },
             }
         }
     });
 
+    var options;
 
-    // const blogData = {
-    //     id: 3,
-    //     title: 'JavaScript Best Practices',
-    //     author: 'David Williams',
-    //     authorLogoUrl: "path/to/author-logo.png", // Replace with the actual URL of the author's logo image
-    //     date: '2023-06-12',
-    //     excerpt: 'Improve your JavaScript skills with these coding best practices and tips.',
-    // };
+    if (userType === "company" || userType == "Beneficiary") {
+        const token = userType === "company"
+            ? localStorage.getItem("CompanyAuthToken")
+            : localStorage.getItem("NgoAuthToken");
+
+        options = {
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": token,
+            }
+        }
+    }
+    else {
+        const token = localStorage.getItem("NgoAuthToken");
+
+        options = {
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": token,
+            }
+        }
+    };
 
     useEffect(() => {
+
         const fetchBlog = async () => {
+
+            const url = `http://localhost:4000/media/post/${id}`;
+
             try {
                 // Replace this with your logic to fetch the blog post using the id
-                const response = await fetch(`http://localhost:4000/NGO/media/post/${id}`);
-                const blogData = await response.json();
-                console.log(blogData);
-                setBlog(blogData.postData);
+                const response = await fetch(url, options);
+                const Data = await response.json();
+                console.log(Data);
+
+                if (!Data.success) {
+                    setBlog({});
+                    toast({
+                        title: "Error fetching blog",
+                        status: "error",
+                        duration: 5000,
+                        isClosable: true,
+                        position: "top-right"
+                    });
+                    return
+                }
+
+                setBlog(Data.postData);
             } catch (error) {
                 console.error('Error fetching blog:', error);
+                toast({
+                    title: "Error fetching blog",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                    position: "top-right"
+                });
             }
         }
         fetchBlog();
     }, [id]);
 
+
+    const handleDeleteBlog = async blogId => {
+        console.log({
+            method: 'DELETE',
+            ...options
+        });
+
+        if (userType !== "ngo") {
+            toast({
+                title: "Not Allowed",
+                status: "warning",
+                duration: 5000,
+                isClosable: true,
+                position: "top-right"
+            });
+            return
+        }
+
+        try {
+            // Replace this with your logic to fetch the blog post using the id
+            const response = await fetch(`http://localhost:4000/media/delete/${blogId}`, {
+                method: 'DELETE',
+                ...options
+            });
+            const Data = await response.json();
+            console.log(Data);
+
+            if (!Data.success) {
+                toast({
+                    title: "Error deleting blog",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                    position: "top-right"
+                });
+                return
+            }
+
+            setBlog({});
+            navigate("/Ngo/media");
+
+        } catch (error) {
+            console.error('Error fetching blog:', error);
+            toast({
+                title: "Error fetching blog",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "top-right"
+            });
+        }
+
+    }
+
+    const handleEditBlog = blogId => {
+
+        if (userType !== "ngo") {
+            toast({
+                title: "Not Allowed",
+                status: "warning",
+                duration: 5000,
+                isClosable: true,
+                position: "top-right"
+            });
+            return
+        }
+
+        navigate(`/Ngo/media/update/${blogId}`, { replace: true });
+
+    }
+
+    if (!blog) {
+        return (
+            <div>
+                <NgoNavigation />
+                <Box
+                    maxWidth={{ base: "95vw", lg: "80vw" }}
+                    mx="auto"
+                    mt={8}
+                    mb={2}
+                    borderWidth="1px"
+                    p={2}
+                    bg={"white"}
+                    borderRadius="md"
+                    boxShadow="md"
+                >
+                    <h2>Blog Not Found</h2>
+                    <Button
+                        onClick={() => userType !== "ngo" ? navigate(-1) : navigate("/Ngo/media/create")}
+                        colorScheme="teal"
+                        mb={4}
+                    >
+                        {userType !== "ngo" ? "Back" : "Create New Blog"}
+                    </Button>
+                </Box>
+            </div>
+        );
+    }
+
     return (
         <div>
-            <Box maxWidth="800px" mx="auto" mt={8} p={4}>
-                <Heading as="h1" mb={4}>
+            <NgoNavigation />
+            <Box
+                maxWidth={{ base: "95vw", lg: "80vw" }}
+                mx="auto"
+                mt={8}
+                mb={2}
+                p={4}
+                borderWidth="1px"
+                bg={"white"}
+                borderRadius="md"
+                boxShadow="md"
+            >
+                <Heading as="h1" mb={5} fontSize={"5xl"}>
                     {blog.title}
                 </Heading>
-                <Box display="flex" alignItems="center" mb={4}>
-                    <Image src={blog.authorLogoUrl} alt={blog.author} boxSize="40px" borderRadius="full" mr={2} />
-                    <Text>{blog.author}</Text>
+                <Box display="flex" alignItems="center" justifyContent={"space-between"} mb={4}>
+                    <Box display="flex" alignItems="center">
+                        <Image src={blog.authorLogoUrl} alt={blog.author} boxSize="40px" borderRadius="full" m={0} mr={2} />
+                        <Text>{blog.author}</Text>
+                    </Box>
+
+                    {userType === "ngo" &&
+                        <Flex
+                            alignItems="center"
+                            justifyContent="center"
+                            // opacity={0} // Initially hidden
+                            // transition="opacity 0.2s"
+                            _groupHover={{ opacity: 1 }} // Visible on hover
+                        >
+                            <IconButton
+                                icon={<DeleteIcon />}
+                                variant="ghost"
+                                _hover={{ color: "black", bgColor: "red" }}
+                                color="red"
+                                aria-label="Delete"
+                                size="md"
+                                mr={2}
+                                onClick={() => handleDeleteBlog(blog._id)}
+                            />
+                            <IconButton
+                                icon={<EditIcon />}
+                                variant="ghost"
+                                _hover={{ color: "white", bgColor: "gray" }}
+                                color="black"
+                                aria-label="Edit"
+                                size="md"
+                                onClick={() => handleEditBlog(blog._id)}
+                            />
+                        </Flex>
+                    }
                 </Box>
                 <Text color="gray.600" mb={4}>
-                    Published on {blog.createdAt}
+                    Published on - {" "}
+                    {new Date(blog.createdAt).toLocaleString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                    })}
                 </Text>
-                <ChakraProvider theme={theme}>
-                    <Text dangerouslySetInnerHTML={{ __html: blog.content }} />
-                </ChakraProvider>
+                <Box
+                    width="100%"
+                    overflowWrap="break-word"
+                >
+                    <ChakraProvider theme={theme}>
+                        <Text dangerouslySetInnerHTML={{ __html: blog.content }} />
+                    </ChakraProvider>
+                </Box>
             </Box>
         </div>
     );
