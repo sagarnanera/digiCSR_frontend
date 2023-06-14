@@ -304,7 +304,7 @@ const AddProfile = () => {
             flexWrap="wrap"
             justifyContent={{ base: "center", md: "flex-start" }}
           >
-            <Box mr={"1%"}>
+            <div mr={"1%"}>
               <label htmlFor="profile-image">
                 <div
                   style={{
@@ -349,7 +349,7 @@ const AddProfile = () => {
                   </div>
                 </div>
               </label>
-            </Box>
+            </div>
 
             <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
               <FormControl id="companyname" isRequired={true}>

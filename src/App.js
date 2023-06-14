@@ -60,7 +60,6 @@ function App() {
   ]);
 
   return (
-    <div>
       <div className="App">
         <Routes>
           <Route path="/" element={<ChooseUserComponent />} />
@@ -123,7 +122,6 @@ function App() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
-    </div>
   );
 }
 
