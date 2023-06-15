@@ -34,6 +34,7 @@ const CompanyNavigation = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
   const [isMobile] = useMediaQuery("(max-width: 800px)");
+  
   const handleClick = () => {
     localStorage.removeItem("CompanyAuthToken");
     navigate("/", { replace: true });

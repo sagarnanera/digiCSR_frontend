@@ -8,7 +8,6 @@ import {
   HStack,
   Icon,
   Divider,
-  Tooltip,
   VStack,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
@@ -245,11 +244,13 @@ const ShowProfile = () => {
                       Sectors:
                     </strong>
                     <div style={{ display: "flex", justifyContent: "center" }}>
-                      <VStack gap={-10}>
+                      <VStack>
                         <Divider
-                          borderBottomWidth="4px"
+                          borderBottomWidth="10px"
                           borderColor="skyblue"
                           width={"115px"}
+                          mb="-9%" // Apply negative margin to remove the gap
+                          mt={"-12%"}
                         />
                         <Divider
                           borderBottomWidth="2px"
@@ -270,22 +271,15 @@ const ShowProfile = () => {
                       }}
                     >
                       {JSON.parse(profileData.profile.sectors).map((sector) => (
-                        <Tooltip
-                          label={sector.length > 40 ? sector : null}
-                          key={sector}
+                        <p
+                          style={{
+                            cursor: "default",
+                            marginLeft: 0,
+                            fontSize: { base: "sm", md: "lg" },
+                          }}
                         >
-                          <p
-                            style={{
-                              cursor: "default",
-                              marginLeft: 0,
-                              fontSize: { base: "sm", md: "lg" },
-                            }}
-                          >
-                            {sector.length > 40
-                              ? `${sector.slice(0, 40)}...`
-                              : sector}
-                          </p>
-                        </Tooltip>
+                          {sector}
+                        </p>
                       ))}
                     </div>
                   </Text>
@@ -312,7 +306,6 @@ const ShowProfile = () => {
                       bg="white"
                       color="skyblue"
                       w={"190px"}
-                      mr={"5%"}
                       boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
                       _hover={{ boxShadow: "0px 4px 6px skyblue" }}
                       _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}

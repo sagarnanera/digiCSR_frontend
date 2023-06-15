@@ -10,6 +10,7 @@ import {
   FormLabel,
   Input,
   Button,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import jwt_decode from "jwt-decode";
 
@@ -61,26 +62,35 @@ const RequestAmount = ({ rfpID, rowData, onClose }) => {
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose}>
+    <Modal isOpen={true} onClose={onClose} size={"sm"}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Share Proposal</ModalHeader>
-        <ModalBody>
+        <ModalHeader>Request For Donation</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody
+          style={{
+            zoom: "0.75",
+          }}
+        >
           <form onSubmit={handleSubmit}>
             <FormControl>
               <FormLabel>Proposal Name</FormLabel>
-              <Input type="text" value={rowData.title} isReadOnly />
+              <Input type="text" value={rowData.rfp.title} isReadOnly />
             </FormControl>
 
             <FormControl>
               <FormLabel>Company's Name</FormLabel>
-              <Input type="text" value={rowData.company_name} isReadOnly />
+              <Input
+                type="text"
+                value={rowData.company.company_name}
+                isReadOnly
+              />
             </FormControl>
             <FormControl>
               <FormLabel>Development Sector</FormLabel>
               <Input
                 type="text"
-                value={rowData.sectors && rowData.sectors.join(", ")}
+                value={rowData.rfp.sectors && rowData.rfp.sectors.join(", ")}
                 isReadOnly
               />
             </FormControl>
@@ -88,7 +98,7 @@ const RequestAmount = ({ rfpID, rowData, onClose }) => {
               <FormLabel>States</FormLabel>
               <Input
                 type="text"
-                value={rowData.states && rowData.states.join(", ")}
+                value={rowData.rfp.states && rowData.rfp.states.join(", ")}
                 isReadOnly
               />
             </FormControl>

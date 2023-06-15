@@ -167,15 +167,25 @@ const RFPCompanyDetails = () => {
                       <strong>Work Location:</strong>
                       <div
                         style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: "10px",
-                          whiteSpace: "nowrap",
-                          overflow: "auto",
+                          display: "grid",
+                          gridTemplateColumns: "repeat(3, minmax(20%, 1fr))",
+                          gap: "20px",
+                          whiteSpace: "wrap",
+                          maxWidth: "100%",
+                          overflow: "auto-fit",
+                          marginLeft: "0%",
                         }}
                       >
                         {rfpDetails.states.map((state) => (
-                          <p style={{ margin: 10 }}>{state}</p>
+                          <p
+                            style={{
+                              cursor: "default",
+                              marginLeft: 0,
+                              fontSize: { base: "sm", md: "lg" },
+                            }}
+                          >
+                            {state}
+                          </p>
                         ))}
                       </div>
                     </div>
@@ -183,15 +193,25 @@ const RFPCompanyDetails = () => {
                       <strong>Cause Area (CSR Sectors):</strong>
                       <div
                         style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: "10px",
-                          whiteSpace: "nowrap",
-                          overflow: "auto",
+                          display: "grid",
+                          gridTemplateColumns: "repeat(3, minmax(20%, 1fr))",
+                          gap: "20px",
+                          whiteSpace: "wrap",
+                          maxWidth: "100%",
+                          overflow: "auto-fit",
+                          marginLeft: "0%",
                         }}
                       >
                         {rfpDetails.sectors.map((sector) => (
-                          <p style={{ margin: 10 }}>{sector}</p>
+                          <p
+                            style={{
+                              cursor: "default",
+                              marginLeft: 0,
+                              fontSize: { base: "sm", md: "lg" },
+                            }}
+                          >
+                            {sector}
+                          </p>
                         ))}
                       </div>
                     </div>

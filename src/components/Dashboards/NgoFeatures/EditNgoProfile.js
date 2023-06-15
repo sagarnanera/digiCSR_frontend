@@ -27,11 +27,26 @@ import {
   // HStack,
   Wrap,
   IconButton,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  ModalHeader,
+  ModalContent,
+  ModalOverlay,
+  Modal,
+  Td,
+  Tr,
+  Tbody,
+  Th,
+  Thead,
+  TableCaption,
+  Table,
 } from "@chakra-ui/react";
 import {
   AddIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  DeleteIcon,
   EditIcon,
   PhoneIcon,
 } from "@chakra-ui/icons";
@@ -62,9 +77,100 @@ const EditNgoProfile = () => {
   const [profileData, setProfileData] = useState(null);
   const toast = useToast();
   // const [allfields, setAllfields] = useState(false);
+  const [isImageChanged, setIsImageChanged] = useState(false);
+
   const [boardMembers, setBoardMembers] = useState([]);
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
-  const [isImageChanged, setIsImageChanged] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [currentMemberIndex, setCurrentMemberIndex] = useState(null);
+
+  const handleAddMember = () => {
+    setShowModal(true);
+    setBoardMembers((prevBoardMembers) => [
+      ...prevBoardMembers,
+      {
+        name: "",
+        gender: "",
+        dinNumber: "",
+        phoneNo: "",
+        designation: "",
+        isEditing: true, // Initially set to true to show the form fields
+      },
+    ]);
+    setCurrentMemberIndex(boardMembers.length); // Set the current member index to the newly added member
+  };
+
+  const handleMemberChange = (index, field, value) => {
+    setBoardMembers((prevBoardMembers) => {
+      const updatedMembers = [...prevBoardMembers];
+      updatedMembers[index][field] = value;
+      return updatedMembers;
+    });
+  };
+
+  const handleEditMember = (index) => {
+    setShowModal(true);
+    setCurrentMemberIndex(index);
+    setBoardMembers((prevBoardMembers) => {
+      const updatedMembers = [...prevBoardMembers];
+      updatedMembers[index].isEditing = true; // Set isEditing to true to show the form fields
+      return updatedMembers;
+    });
+  };
+
+  const handleSaveMember = (index) => {
+    const member = boardMembers[index];
+
+    // Check if any of the fields have non-null values
+    const hasValues = Object.values(member).some(
+      (value) => value.trim() !== ""
+    );
+
+    if (!hasValues) {
+      toast({
+        title: "Please fill at least one field",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    setBoardMembers((prevBoardMembers) => {
+      const updatedMembers = [...prevBoardMembers];
+      updatedMembers[index].isEditing = false; // Set isEditing to false to show the text form
+      return updatedMembers;
+    });
+    setShowModal(false);
+  };
+  const handleDeleteMember = (index) => {
+    setBoardMembers((prevBoardMembers) => {
+      const updatedMembers = [...prevBoardMembers];
+      updatedMembers.splice(index, 1);
+      return updatedMembers;
+    });
+  };
+
+  const handleCloseModal = (currentMemberIndex) => {
+    if (currentMemberIndex === boardMembers.length - 1) {
+      const currentMember = boardMembers[currentMemberIndex];
+      if (
+        currentMember.name.trim() === "" &&
+        currentMember.gender.trim() === "" &&
+        currentMember.dinNumber.trim() === "" &&
+        currentMember.phoneNo.trim() === "" &&
+        currentMember.designation.trim() === ""
+      ) {
+        // Remove the current member from the boardMembers state
+        setBoardMembers((prevBoardMembers) =>
+          prevBoardMembers.slice(0, prevBoardMembers.length - 1)
+        );
+      }
+    }
+    setShowModal(false);
+  };
+
   useEffect(() => {
     const getStatesAndCompanyId = async () => {
       const fetchedStates = await fetchStates();
@@ -139,63 +245,8 @@ const EditNgoProfile = () => {
       setBoardMembers(defaultMembers);
     }
   }, [profileData]);
-  const handleAddMember = () => {
-    setBoardMembers((prevBoardMembers) => [
-      ...prevBoardMembers,
-      {
-        name: "",
-        gender: "",
-        dinNumber: "",
-        phoneNo: "",
-        designation: "",
-        isEditing: true, // Initially set to true to show the form fields
-      },
-    ]);
-  };
-  const handleMemberChange = (index, field, value) => {
-    setBoardMembers((prevBoardMembers) => {
-      const updatedMembers = [...prevBoardMembers];
-      updatedMembers[index][field] = value;
-      return updatedMembers;
-    });
-  };
 
-  const handleEditMember = (index) => {
-    setBoardMembers((prevBoardMembers) => {
-      const updatedMembers = [...prevBoardMembers];
-      updatedMembers[index].isEditing = true; // Set isEditing to true to show the form fields
-      return updatedMembers;
-    });
-  };
 
-  const handleSaveMember = (index) => {
-    const member = boardMembers[index];
-    if (
-      member.name.trim() === "" ||
-      member.gender.trim() === "" ||
-      member.dinNumber.trim() === "" ||
-      member.phoneNo.trim() === "" ||
-      member.designation.trim() === ""
-    ) {
-      toast({
-        title: "Please Fill all the Fields",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setLoading(false);
-      return;
-    } else {
-      // setAllfields(true);
-    }
-    setBoardMembers((prevBoardMembers) => {
-      const updatedMembers = [...prevBoardMembers];
-      updatedMembers[index].isEditing = false; // Set isEditing to false to show the text form
-      // console.log(boardMembers);
-      return updatedMembers;
-    });
-  };
   const handleChange = (event) => {
     setNgoSummary(event.target.value);
     const textareaLineHeight = 24; // Set the line height of the textarea
@@ -392,44 +443,57 @@ const EditNgoProfile = () => {
 
   return (
     // <allNgoFieldsContext.Provider value={allfields}>
-    <Container centerContent>
-      <NgoNavigation />
+    <Container
+      centerContent
+      style={{
+        zoom: "0.8",
+        width: "120vw",
+        backgroundImage: "url('../bg3.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        minWidth: "125vw",
+      }}
+    >
       <Box
         d="flex"
         textAlign="center"
         p={3}
         bg="#f2f2f2"
-        w={{ base: "100%", md: "80vw" }}
-        m="50px 0 10px 0"
-        borderRadius="10px"
+        w={{ base: "100%", md: "90vw" }}
+        m="50px 0 0px 0"
+        color={"White"}
+        bgColor={"skyblue"}
       >
         <Text fontSize="3xl" fontFamily="Work sans">
-          Edit Ngo Profile
+          Ngo Profile
         </Text>
       </Box>
       <Box
         d="flex"
         textAlign="center"
-        m="25px 0 10px 0"
+        m="0px 0 0px 0"
         p={3}
-        bg="#f2f2f2"
-        w={{ base: "100%", md: "80vw" }}
-        borderRadius="10px"
+        bg="white"
+        w={{ base: "100%", md: "90vw" }}
+        maxHeight="100vh" // Limit height to screen height
+        overflowY="auto"
       >
-        <VStack spacing={4} w="100%">
+        <VStack spacing={4} w="98%">
           <Flex
             flexWrap="wrap"
             justifyContent={{ base: "center", md: "flex-start" }}
             flex={5}
             w="95%"
           >
-            <Box mr={"1%"}>
+            <Box mr={"1%"} mt={"2%"}>
               <label htmlFor="profile-image">
                 <div
                   style={{
                     position: "relative",
-                    width: "100px",
-                    height: "100px",
+                    width: "70px",
+                    height: "70px",
+                    marginTop: "5",
                     borderRadius: "50%",
                     overflow: "hidden",
                   }}
@@ -449,8 +513,8 @@ const EditNgoProfile = () => {
                   <div
                     style={{
                       position: "absolute",
-                      bottom: "8px",
-                      right: "8px",
+                      bottom: "-4px",
+                      right: "-4px",
                       zIndex: 1, // Increase the z-index value
                     }}
                   >
@@ -458,7 +522,7 @@ const EditNgoProfile = () => {
                       <IconButton
                         component="span"
                         size={"xs"}
-                        colorScheme="green"
+                        colorScheme="blue"
                         color="primary"
                         aria-label="Add Photo"
                       >
@@ -470,7 +534,7 @@ const EditNgoProfile = () => {
               </label>
             </Box>
             <Box
-              w={{ base: "90%", md: "33.5vw" }}
+              w={{ base: "100%", md: "33.5vw" }}
               mr={{ base: 0, md: "34.5vw" }}
             >
               <FormControl id="Ngo" isRequired={true}>
@@ -478,7 +542,7 @@ const EditNgoProfile = () => {
                 <Input
                   type="text"
                   placeholder="Enter Ngo's Full Name"
-                  defaultValue={NgoName || ""}
+                  value={NgoName || ""}
                   onChange={(e) => setNgoName(e.target.value)}
                 />
               </FormControl>
@@ -494,7 +558,7 @@ const EditNgoProfile = () => {
               <FormLabel>Ngo Summary</FormLabel>
 
               <Textarea
-                defaultValue={NgoSummary}
+                value={NgoSummary}
                 rows={rows}
                 onChange={handleChange}
                 placeholder="Enter text..."
@@ -502,155 +566,6 @@ const EditNgoProfile = () => {
               ></Textarea>
             </FormControl>
           </Flex>
-          <br />
-          <Box flex={5} w="95%">
-            <FormControl isRequired={true}>
-              <FormLabel>Board Member's Of NGO</FormLabel>
-              <Wrap spacing={10}>
-                {boardMembers.map((member, index) => (
-                  <Box
-                    // ml={25}
-                    key={index}
-                    borderWidth="1px"
-                    borderRadius="md"
-                    p={4}
-                    width="350px"
-                  >
-                    {!member.isEditing && (
-                      <>
-                        <Text mb={2}>
-                          <strong>Member Name:</strong> {member.name}
-                        </Text>
-                        <Text mb={2}>
-                          <strong>Gender:</strong> {member.gender}
-                        </Text>
-                        <Text mb={2}>
-                          <strong>DIN:</strong> {member.dinNumber}
-                        </Text>
-                        <Text mb={2}>
-                          <strong>Phone:</strong> {member.phoneNo}
-                        </Text>
-                        <Text mb={2}>
-                          <strong>Designation:</strong> {member.designation}
-                        </Text>
-                        <Button
-                          colorScheme="teal"
-                          size="sm"
-                          onClick={() => handleEditMember(index)}
-                        >
-                          <EditIcon mr={1} /> Edit
-                        </Button>
-                      </>
-                    )}
-                  </Box>
-                ))}
-              </Wrap>
-
-              {boardMembers.map((member, index) => (
-                <Box
-                  key={index}
-                  textAlign="center"
-                  p={3}
-                  bg="#f2f2f2"
-                  w={{ base: "100%", md: "75vw" }}
-                  // m="10px 0 0 0"
-                >
-                  {member.isEditing && (
-                    <>
-                      <FormControl isRequired={true} mb={3}>
-                        <FormLabel>Name</FormLabel>
-                        <Input
-                          type="text"
-                          placeholder="Enter Name of Communication Person"
-                          value={member.name}
-                          onChange={(e) =>
-                            handleMemberChange(index, "name", e.target.value)
-                          }
-                        />
-                      </FormControl>
-                      <FormControl isRequired={true} mb={3}>
-                        <FormLabel>Gender</FormLabel>
-                        <RadioGroup
-                          value={member.gender}
-                          onChange={(value) =>
-                            handleMemberChange(index, "gender", value)
-                          }
-                        >
-                          <Stack direction="row">
-                            <Radio value="Male">Male</Radio>
-                            <Radio value="Female">Female</Radio>
-                            <Radio value="Others">Others</Radio>
-                          </Stack>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormControl isRequired={true} mb={3}>
-                        <FormLabel>DIN Number</FormLabel>
-                        <Input
-                          type="number"
-                          placeholder="DIN number"
-                          value={member.dinNumber}
-                          onChange={(e) =>
-                            handleMemberChange(
-                              index,
-                              "dinNumber",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </FormControl>
-                      <FormControl isRequired={true} mb={3}>
-                        <FormLabel>Phone No</FormLabel>
-                        <InputGroup>
-                          <InputLeftElement>
-                            <PhoneIcon color="gray.300" />
-                          </InputLeftElement>
-                          <Input
-                            type="tel"
-                            placeholder="Phone number"
-                            value={member.phoneNo}
-                            onChange={(e) =>
-                              handleMemberChange(
-                                index,
-                                "phoneNo",
-                                e.target.value
-                              )
-                            }
-                          />
-                        </InputGroup>
-                      </FormControl>
-                      <FormControl isRequired={true} mb={3}>
-                        <FormLabel>Designation</FormLabel>
-                        <Input
-                          type="text"
-                          placeholder="Enter Designation of Communication Person"
-                          value={member.designation}
-                          onChange={(e) =>
-                            handleMemberChange(
-                              index,
-                              "designation",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </FormControl>
-                      <Button
-                        colorScheme="blue"
-                        mt={4}
-                        onClick={() => handleSaveMember(index)}
-                        isLoading={memberloading}
-                      >
-                        Save
-                      </Button>
-                    </>
-                  )}
-                </Box>
-              ))}
-
-              <Button colorScheme="blue" onClick={handleAddMember}>
-                Add Member
-              </Button>
-            </FormControl>
-          </Box>
           <br />
 
           <Flex
@@ -668,7 +583,7 @@ const EditNgoProfile = () => {
                 <Input
                   type="number"
                   placeholder="CSR Budget"
-                  defaultValue={CSRBudget}
+                  value={CSRBudget}
                   onChange={(e) => {
                     setCSRBudget(e.target.value);
                   }}
@@ -710,7 +625,7 @@ const EditNgoProfile = () => {
                     <MenuList maxH="200px" overflowY="auto">
                       <CheckboxGroup
                         colorScheme="teal"
-                        defaultValue={selectedStates}
+                        value={selectedStates}
                         onChange={handleStateChange}
                       >
                         {states.map((state) => (
@@ -779,7 +694,7 @@ const EditNgoProfile = () => {
                     <MenuList maxH="200px" overflowY="auto">
                       <CheckboxGroup
                         colorScheme="teal"
-                        defaultValue={sector}
+                        value={sector}
                         onChange={handleSectorChange}
                       >
                         {sectorOptions.map((option) => (
@@ -816,16 +731,233 @@ const EditNgoProfile = () => {
             </Box>
           </Flex>
           <br />
-          <br />
-          <br />
+          <Box flex={5} w="95%">
+            <FormControl isRequired={true}>
+              <FormLabel>Board Member's Of NGO</FormLabel>
+              <div display={"flex"} justifyContent={"center"}>
+                <Box>
+                  {boardMembers.length !== 0 && (
+                    <Table size="sm" variant={"simple"} colorScheme="blue">
+                      <TableCaption>Member Details</TableCaption>
+                      <Thead
+                        style={{ background: "skyblue", marginBottom: "2rem" }}
+                      >
+                        <Tr>
+                          <Th>Sr. No.</Th>
+                          <Th>Member Name</Th>
+                          <Th>Gender</Th>
+                          <Th>DIN No.</Th>
+                          <Th>Phone No.</Th>
+                          <Th>Designation</Th>
+                          <Th>Action</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {boardMembers.map((member, index) => (
+                          <Tr>
+                            <Td className="divider">{index + 1}</Td>
+                            <Td className="divider">{member.name}</Td>
+                            <Td className="divider">{member.gender}</Td>
+                            <Td className="divider">{member.dinNumber}</Td>
+                            <Td className="divider">{member.phoneNo}</Td>
+                            <Td className="divider">{member.designation}</Td>
+                            <Td>
+                              <IconButton
+                                aria-label="View proposal"
+                                icon={<EditIcon />}
+                                marginLeft="0.5rem"
+                                variant={"ghost"}
+                                onClick={() => handleEditMember(index)}
+                                colorScheme="blue"
+                                color={"blue"}
+                              />
+                              <IconButton
+                                aria-label="Delete member"
+                                icon={<DeleteIcon />}
+                                marginLeft="0.5rem"
+                                variant={"ghost"}
+                                onClick={() => handleDeleteMember(index)}
+                                colorScheme="red"
+                                color={"red"}
+                              />
+                            </Td>
+                          </Tr>
+                        ))}
+                      </Tbody>
+                    </Table>
+                  )}
+                </Box>
+              </div>
+
+              {boardMembers.map((member, index) => (
+                <Box
+                  key={index}
+                  textAlign="center"
+                  p={3}
+                  bg="white"
+                  w={{ base: "100%", md: "75vw" }}
+                  m="10px 0 10px 0"
+                >
+                  {member.isEditing && index === currentMemberIndex && (
+                    <Modal
+                      isOpen={showModal}
+                      onClose={() => handleCloseModal(currentMemberIndex)}
+                      size={"sm"}
+                    >
+                      <ModalOverlay />
+                      <ModalContent>
+                        <ModalHeader>
+                          {currentMemberIndex !== null
+                            ? "Edit Member"
+                            : "Add Member"}
+                        </ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody style={{ zoom: "0.7" }}>
+                          <FormControl isRequired={true} mb={3}>
+                            <FormLabel>Name</FormLabel>
+                            <Input
+                              type="text"
+                              placeholder="Enter Name of Communication Person"
+                              value={
+                                currentMemberIndex !== null
+                                  ? boardMembers[currentMemberIndex].name
+                                  : ""
+                              }
+                              onChange={(e) =>
+                                handleMemberChange(
+                                  currentMemberIndex,
+                                  "name",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </FormControl>
+                          <FormControl isRequired={true} mb={3}>
+                            <FormLabel>Gender</FormLabel>
+                            <RadioGroup
+                              value={
+                                currentMemberIndex !== null
+                                  ? boardMembers[currentMemberIndex].gender
+                                  : ""
+                              }
+                              onChange={(value) =>
+                                handleMemberChange(
+                                  currentMemberIndex,
+                                  "gender",
+                                  value
+                                )
+                              }
+                            >
+                              <Stack direction="row">
+                                <Radio value="Male">Male</Radio>
+                                <Radio value="Female">Female</Radio>
+                                <Radio value="Others">Others</Radio>
+                              </Stack>
+                            </RadioGroup>
+                          </FormControl>
+                          <FormControl isRequired={true} mb={3}>
+                            <FormLabel>DIN Number</FormLabel>
+                            <Input
+                              type="number"
+                              placeholder="DIN number"
+                              value={
+                                currentMemberIndex !== null
+                                  ? boardMembers[currentMemberIndex].dinNumber
+                                  : ""
+                              }
+                              onChange={(e) =>
+                                handleMemberChange(
+                                  currentMemberIndex,
+                                  "dinNumber",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </FormControl>
+                          <FormControl isRequired={true} mb={3}>
+                            <FormLabel>Phone No</FormLabel>
+                            <InputGroup>
+                              <InputLeftElement>
+                                <PhoneIcon color="gray.300" />
+                              </InputLeftElement>
+                              <Input
+                                type="tel"
+                                placeholder="Phone number"
+                                value={
+                                  currentMemberIndex !== null
+                                    ? boardMembers[currentMemberIndex].phoneNo
+                                    : ""
+                                }
+                                onChange={(e) =>
+                                  handleMemberChange(
+                                    currentMemberIndex,
+                                    "phoneNo",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </InputGroup>
+                          </FormControl>
+                          <FormControl isRequired={true} mb={3}>
+                            <FormLabel>Designation</FormLabel>
+                            <Input
+                              type="text"
+                              placeholder="Enter Designation of Communication Person"
+                              value={
+                                currentMemberIndex !== null
+                                  ? boardMembers[currentMemberIndex].designation
+                                  : ""
+                              }
+                              onChange={(e) =>
+                                handleMemberChange(
+                                  currentMemberIndex,
+                                  "designation",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </FormControl>
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button
+                            colorScheme="blue"
+                            onClick={() => handleSaveMember(currentMemberIndex)}
+                          >
+                            Save
+                          </Button>
+                        </ModalFooter>
+                      </ModalContent>
+                    </Modal>
+                  )}
+                </Box>
+              ))}
+
+              <Button
+                colorScheme="blue"
+                bg="white"
+                color="skyblue"
+                boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+                _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+                _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
+                onClick={handleAddMember}
+              >
+                Add Member
+              </Button>
+            </FormControl>
+          </Box>
+
           <Button
-            colorScheme="teal"
-            variant="solid"
-            w={"10vw"}
+            // colorScheme="blue"
+            bg="skyblue"
+            color="white"
+            w={"15%"}
+            mr={"5%"}
+            boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+            _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+            _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
             onClick={submitHandler}
-            isLoading={loading}
           >
-            Save
+            save
           </Button>
         </VStack>
       </Box>
