@@ -7,18 +7,18 @@ body {
     margin: 0;
 }
 
-/* svg {
+svg {
     display: inline-block;
     vertical-align: middle;
     height: 600px;
     left: 25% !important;
-} */
+}
 
 /* responsive, form small screens, use 13px font size */
-/* @media (max-width: 1000px) {
+@media (max-width: 1000px) {
     svg {
         display: inline-block;
         vertical-align: middle;
         height: 600px;
     }
-} */
+}

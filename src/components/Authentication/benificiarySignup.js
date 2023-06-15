@@ -235,7 +235,7 @@ function BenificiarySignup() {
 
       {showOtpButton && (
         <Button
-          colorScheme="orange"
+          colorScheme="blue"
           w={"100%"}
           style={{ marginTop: 15 }}
           onClick={handleSendOtp}
@@ -260,7 +260,7 @@ function BenificiarySignup() {
 
       {showSignupButton && (
         <Button
-          colorScheme="orange"
+          colorScheme="blue"
           w={"100%"}
           style={{ marginTop: 15 }}
           onClick={submitHandler}

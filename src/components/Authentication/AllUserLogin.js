@@ -400,7 +400,7 @@ function AllUserLogin() {
 
       {showOtpButton && (
         <Button
-          colorScheme="orange"
+          colorScheme="blue"
           w={"100%"}
           style={{ marginTop: 15 }}
           onClick={handleSendOtp}
@@ -426,7 +426,7 @@ function AllUserLogin() {
 
       {showSignupButton && (
         <Button
-          colorScheme="orange"
+          colorScheme="blue"
           w={"100%"}
           style={{ marginTop: 15 }}
           onClick={submitHandler}

@@ -7,14 +7,18 @@
     padding: 20px;
     position: sticky;
     top: 0;
+    zoom: 0.8;
     background-color: #f2f2f2;
-    width: 100vw;
+    width: 125vw;
     z-index: 100;
 }
 
 .logo {
+    display: flex;
+    justify-content: flex-start;
     font-size: 20px;
     font-weight: bold;
+    height: 7vh;
 }
 
 .nav {
@@ -26,7 +30,16 @@
     margin: 0;
     padding: 0;
 }
-
+.navbutton{
+    list-style-type: none;
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    margin: 0;
+    margin-right: 2vw;
+    padding: 0;
+}
 .nav li {
     font-size: 16px;
 }
@@ -80,7 +93,7 @@
 
 /* Responsive Styles */
 
-@media screen and (max-width: 768px) {
+/* @media screen and (max-width: 768px) {
     .header {
         flex-direction: column;
         align-items: flex-start;
@@ -115,7 +128,7 @@
 
 /* Full Screen Styles */
 
-@media screen and (min-width: 1200px) {
+/* @media screen and (min-width: 1200px) {
     .header {
         padding: 20px 40px;
     }
@@ -123,4 +136,4 @@
     .nav {
         justify-content: flex-end;
     }
-}
+}  */

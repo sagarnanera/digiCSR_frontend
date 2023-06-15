@@ -275,42 +275,56 @@ const AddProfile = () => {
 
   return (
     // <allFieldsContext.Provider value={allfields}>
-    <Container centerContent>
+    <Container
+      centerContent
+      style={{
+        zoom: "0.8",
+        width: "120vw",
+        backgroundImage: "url('../bg3.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        minWidth: "125vw",
+      }}
+    >
       <Box
         d="flex"
         textAlign="center"
         p={3}
         bg="#f2f2f2"
-        w={{ base: "100%", md: "80vw" }}
-        m="50px 0 10px 0"
-        borderRadius="10px"
+        w={{ base: "100%", md: "90vw" }}
+        m="50px 0 0px 0"
+        color={"White"}
+        bgColor={"skyblue"}
       >
         <Text fontSize="3xl" fontFamily="Work sans">
-          Edit Company Profile
+          Company Profile
         </Text>
       </Box>
       <Box
         d="flex"
         textAlign="center"
-        m="25px 0 10px 0"
+        m="0px 0 0px 0"
         p={3}
-        bg="#f2f2f2"
-        w={{ base: "100%", md: "80vw" }}
-        borderRadius="10px"
+        bg="white"
+        w={{ base: "100%", md: "90vw" }}
+        maxHeight="100vh" // Limit height to screen height
+        overflowY="auto"
       >
         <VStack spacing={4} w="100%">
           <Flex
-            w="90%"
+            w="95%"
             flexWrap="wrap"
             justifyContent={{ base: "center", md: "flex-start" }}
           >
-            <div mr={"1%"}>
+            <Box mr={"1%"} mt={"2%"}>
               <label htmlFor="profile-image">
                 <div
                   style={{
                     position: "relative",
-                    width: "100px",
-                    height: "100px",
+                    width: "70px",
+                    height: "70px",
+                    marginTop: "5",
                     borderRadius: "50%",
                     overflow: "hidden",
                   }}
@@ -330,8 +344,8 @@ const AddProfile = () => {
                   <div
                     style={{
                       position: "absolute",
-                      bottom: "8px",
-                      right: "8px",
+                      bottom: "-4px",
+                      right: "-4px",
                       zIndex: 1, // Increase the z-index value
                     }}
                   >
@@ -339,7 +353,7 @@ const AddProfile = () => {
                       <IconButton
                         component="span"
                         size={"xs"}
-                        colorScheme="green"
+                        colorScheme="blue"
                         color="primary"
                         aria-label="Add Photo"
                       >
@@ -349,7 +363,7 @@ const AddProfile = () => {
                   </div>
                 </div>
               </label>
-            </div>
+            </Box>
 
             <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
               <FormControl id="companyname" isRequired={true}>
@@ -381,12 +395,12 @@ const AddProfile = () => {
               </FormControl>
             </Box>
           </Flex>
-          <br />
+          {/* <br /> */}
           <Flex
             flexWrap="wrap"
             justifyContent={{ base: "center", md: "flex-start" }}
             flex={5}
-            w="90%"
+            w="95%"
           >
             <FormControl id="Ngo" isRequired={true}>
               <FormLabel>Company Summary</FormLabel>
@@ -401,7 +415,7 @@ const AddProfile = () => {
             </FormControl>
           </Flex>
           <br />
-          <Box flex={5} w="90%">
+          <Box flex={5} w="95%">
             <FormControl isRequired={true}>
               <FormLabel>Location of the Company</FormLabel>
               <Flex
@@ -462,7 +476,7 @@ const AddProfile = () => {
             </FormControl>
           </Box>
           <br />
-          <Box flex={5} w="90%">
+          <Box flex={5} w="95%">
             <FormControl isRequired={true}>
               <FormLabel>Communication Person of the Company</FormLabel>
               <Flex
@@ -501,24 +515,6 @@ const AddProfile = () => {
                     </InputGroup>
                   </FormControl>
                 </Box>
-                <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
-                  <FormControl id="phoneno" isRequired={true}>
-                    <FormLabel>Phone No</FormLabel>
-                    <InputGroup>
-                      <InputLeftElement>
-                        <PhoneIcon color="gray.300" />
-                      </InputLeftElement>
-                      <Input
-                        type="tel"
-                        placeholder="Phone number"
-                        value={personPhone || null}
-                        onChange={(e) => setPersonPhone(e.target.value)}
-                        minLength={10}
-                        maxLength={10}
-                      />
-                    </InputGroup>
-                  </FormControl>
-                </Box>
               </Flex>
             </FormControl>
           </Box>
@@ -526,11 +522,30 @@ const AddProfile = () => {
             flexWrap="wrap"
             justifyContent={{ base: "center", md: "flex-start" }}
             flex={5}
-            w="90%"
+            w="95%"
           >
+            <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+              <FormControl id="phoneno" isRequired={true}>
+                <FormLabel>Phone No</FormLabel>
+                <InputGroup>
+                  <InputLeftElement>
+                    <PhoneIcon color="gray.300" />
+                  </InputLeftElement>
+                  <Input
+                    type="tel"
+                    placeholder="Phone number"
+                    value={personPhone || null}
+                    onChange={(e) => setPersonPhone(e.target.value)}
+                    minLength={10}
+                    maxLength={10}
+                  />
+                </InputGroup>
+              </FormControl>
+            </Box>
             <Box
-              w={{ base: "90%", md: "23.5vw" }}
-              mr={{ base: 0, md: "54.5vw" }}
+              flex={{ base: "100%", md: "5" }}
+              mr={{ base: 0, md: 10 }}
+              ml={{ base: 0, md: 10 }}
             >
               <FormControl id="designation" isRequired={true}>
                 <FormLabel>Designation of Communication Person</FormLabel>
@@ -544,7 +559,7 @@ const AddProfile = () => {
             </Box>
           </Flex>
           <br />
-          <Box flex={5} w="90%">
+          <Box flex={5} w="95%">
             <FormControl isRequired>
               <FormLabel>Sectors to provide CSR</FormLabel>
               <Checkbox
@@ -609,25 +624,14 @@ const AddProfile = () => {
             )}
           </Box>
           <br />
-          <Box flex={5} w="90%">
-            <FormControl id="certificate" isRequired>
-              <FormLabel>Company Registration Certificate</FormLabel>
-              <Input
-                type="file"
-                p={1.5}
-                accept="application/pdf"
-                onChange={handleFileChange}
-              />
-            </FormControl>
-          </Box>
-          <br />
-          <Box flex={5} w="90%">
+          <Box flex={5} w="95%">
             <FormControl id="taxeligibility" isRequired={true}>
               <FormLabel>Tax Compliance Eligibility</FormLabel>
               <CheckboxGroup
                 colorScheme="teal"
                 value={taxEligibility}
                 onChange={handleTaxEligibilityChange}
+                size={"sm"}
               >
                 <Stack spacing={[1, 3]} direction={["column", "row"]}>
                   <Checkbox value="80G">80 G (for 50% tax benefits)</Checkbox>
@@ -645,12 +649,26 @@ const AddProfile = () => {
             </FormControl>
           </Box>
           <br />
-          <br />
+          <Box flex={5} w="95%">
+            <FormControl id="certificate" isRequired>
+              <FormLabel>Company Registration Certificate</FormLabel>
+              <Input
+                type="file"
+                p={1.5}
+                accept="application/pdf"
+                onChange={handleFileChange}
+              />
+            </FormControl>
+          </Box>
           <br />
           <Button
-            colorScheme="teal"
-            variant="solid"
-            w={"10vw"}
+            colorScheme="blue"
+            bg="white"
+            color="skyblue"
+            width={"20%"}
+            boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+            _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+            _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
             onClick={submitHandler}
             isLoading={loading}
           >

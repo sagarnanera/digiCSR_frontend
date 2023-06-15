@@ -12,22 +12,28 @@ import {
   Button,
   ButtonGroup,
   Tooltip,
+  Box,
+  Input,
+  HStack,
 } from "@chakra-ui/react";
-import { FiEye } from "react-icons/fi";
+import { FiEye, FiTrash } from "react-icons/fi";
 import "../../../CSS/rfpTable.css";
 // import config from "../../config";
 import { useNavigate } from "react-router-dom";
 import CompanyNavigation from "../companyNavigation";
+import RaiseRFP from "./RaiseRFP";
 
 const TrackRFP = () => {
   const navigate = useNavigate();
   const [showRFPDetails, setShowRFPDetails] = useState(false);
   const [selectedRFPId, setSelectedRFPId] = useState(null);
-  const rowsPerPage = 10;
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  // const rowsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const [currentRows, setCurrentRows] = useState([]);
+  const [showRaiseRFPForm, setShowRaiseRFPForm] = useState(false);
   const pageCount = Math.ceil(20 / rowsPerPage);
   useEffect(() => {
     const fetchRFPs = async () => {
@@ -63,11 +69,11 @@ const TrackRFP = () => {
     fetchRFPs();
   }, [currentPage]);
 
-  // const handleRowsPerPageChange = (event) => {
-  //   const value = parseInt(event.target.value);
-  //   setRowsPerPage(value);
-  //   setCurrentPage(1);
-  // };
+  const handleRowsPerPageChange = (event) => {
+    const value = parseInt(event.target.value);
+    setRowsPerPage(value);
+    setCurrentPage(1);
+  };
 
   const handlePrevPage = () => {
     if (currentPage === 1) {
@@ -96,6 +102,8 @@ const TrackRFP = () => {
           <Button
             key={i}
             onClick={() => setCurrentPage(i)}
+            color={"skyblue"}
+            colorScheme="blue"
             variant={currentPage === i ? "solid" : "ghost"}
           >
             {i}
@@ -179,116 +187,178 @@ const TrackRFP = () => {
     // });
     setShowRFPDetails(true);
   };
+  const handleRaiseClick = () => {
+    setShowRaiseRFPForm(true);
+  };
   return (
-    <Container centerContent>
-      <CompanyNavigation />
+    <div
+      style={{
+        backgroundImage: "url('../bg.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        minWidth: "100vw",
+      }}
+    >
+      <Container centerContent>
+        <CompanyNavigation />
+        <Box
+          d="flex"
+          textAlign="center"
+          p={3}
+          bg="white"
+          w="100%"
+          m="6% 0 0px 0"
+          borderRadius="lg"
+          borderWidth="1px"
+          backgroundColor={"skyblue"}
+        >
+          <h1 className="title">List of Request for Proposals</h1>
+        </Box>
+        <div className="container">
+          <HStack w={"100%"} justifyContent="space-between">
+            <div className="input-container">
+              <Input
+                type="number"
+                min={1}
+                ml={"5vw"}
+                value={rowsPerPage}
+                onChange={handleRowsPerPageChange}
+                style={{ width: "120px", marginRight: "1rem" }}
+              />
+              <span className="label">Rows per page</span>
+            </div>
+            <div className="AddRFP">
+              <Button
+                bg="white"
+                color="skyblue"
+                w={"15vw"}
+                mr={"5vw"}
+                boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+                _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+                _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
+                onClick={() => {
+                  handleRaiseClick();
+                }}
+              >
+                Raise RFP
+              </Button>
+            </div>
+          </HStack>
 
-      <div className="container">
-        <h1 className="title">List of Request for Proposals</h1>
-        {/* <div className="input-container">
-          <Input
-            type="number"
-            min={1}
-            max={proposals.length}
-            value={rowsPerPage}
-            onChange={handleRowsPerPageChange}
-            style={{ width: "120px", marginRight: "1rem" }}
-          />
-          <span className="label">Rows per page</span>
-        </div> */}
-        <div className="table-container">
-          <Table variant="striped" colorScheme="gray" size="sm">
-            <Thead>
-              <Tr>
-                <Th>Sr. No.</Th>
-                <Th>Proposal Name</Th>
-                <Th>Development Sector</Th>
-                <Th>States</Th>
-                <Th>Action</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {currentRows.map((proposal, index) => (
-                <Tr key={proposal._id}>
-                  <Td>{indexOfFirstRow + index + 1}</Td>
-                  <Td>{proposal.title}</Td>
-                  <Td maxW={"20vw"}>
-                    {proposal.sectors && proposal.sectors.length > 5 ? (
-                      <Tooltip label={proposal.sectors.join(", ")}>
-                        <span>
-                          {proposal.sectors.slice(0, 5).join(", ")}
-                          {proposal.sectors.length > 5 ? ", ..+ more" : ""}
-                        </span>
-                      </Tooltip>
-                    ) : (
-                      <span>
-                        {proposal.sectors && proposal.sectors.join(", ")}
-                      </span>
-                    )}
-                  </Td>
-                  <Td>
-                    {proposal.states.length > 3 ? (
-                      <Tooltip label={proposal.states.join(", ")}>
-                        <span>
-                          {proposal.states.slice(0, 3).join(", ")}
-                          {", ..+" + (proposal.states.length - 3) + " more"}
-                        </span>
-                      </Tooltip>
-                    ) : (
-                      <span>
-                        {proposal.states.map((state, stateIndex) => (
-                          <span key={stateIndex}>
-                            {state}
-                            {stateIndex !== proposal.states.length - 1
-                              ? ", "
-                              : ""}
-                          </span>
-                        ))}
-                      </span>
-                    )}
-                  </Td>
-                  <Td>
-                    <IconButton
-                      aria-label="View proposal"
-                      icon={<FiEye />}
-                      marginRight="0.5rem"
-                      variant={"ghost"}
-                      onClick={() => {
-                        // setSelectedRFPId(proposal._id);
-                        handleShowDetails(proposal);
-                      }}
-                    />
-                  </Td>
+          <div className="table-container">
+            <Table variant="simple" colorScheme="blue" size="sm">
+              <Thead style={{ background: "skyblue", marginBottom: "1rem" }}>
+                <Tr>
+                  <Th>Sr. No.</Th>
+                  <Th>Proposal Name</Th>
+                  <Th>Development Sector</Th>
+                  <Th>States</Th>
+                  <Th>Action</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
-          {showRFPDetails &&
-            navigate("/Company/rfpdetails", {
-              state: { rfpID: selectedRFPId },
-            })}
+              </Thead>
+              <Tbody>
+                {currentRows.map((proposal, index) => (
+                  <Tr key={proposal._id}>
+                    <Td className="divider">{indexOfFirstRow + index + 1}</Td>
+                    <Td className="divider">{proposal.title}</Td>
+                    <Td className="divider" maxW={"20vw"}>
+                      {proposal.sectors && proposal.sectors.length > 5 ? (
+                        <Tooltip label={proposal.sectors.join(", ")}>
+                          <span>
+                            {proposal.sectors.slice(0, 5).join(", ")}
+                            {proposal.sectors.length > 5 ? ", ..+ more" : ""}
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        <span>
+                          {proposal.sectors && proposal.sectors.join(", ")}
+                        </span>
+                      )}
+                    </Td>
+                    <Td className="divider">
+                      {proposal.states.length > 3 ? (
+                        <Tooltip label={proposal.states.join(", ")}>
+                          <span>
+                            {proposal.states.slice(0, 3).join(", ")}
+                            {", ..+" + (proposal.states.length - 3) + " more"}
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        <span>
+                          {proposal.states.map((state, stateIndex) => (
+                            <span key={stateIndex}>
+                              {state}
+                              {stateIndex !== proposal.states.length - 1
+                                ? ", "
+                                : ""}
+                            </span>
+                          ))}
+                        </span>
+                      )}
+                    </Td>
+                    <Td>
+                      <IconButton
+                        aria-label="View proposal"
+                        icon={<FiEye />}
+                        marginLeft="0.5rem"
+                        variant={"ghost"}
+                        onClick={() => {
+                          // setSelectedRFPId(proposal._id);
+                          handleShowDetails(proposal);
+                        }}
+                        colorScheme="blue"
+                        color={"blue"}
+                      />
+                      <IconButton
+                        aria-label="View proposal"
+                        icon={<FiTrash />}
+                        marginLeft="0.5rem"
+                        // marginRight="0.5rem"
+                        variant={"ghost"}
+                        onClick={() => {}}
+                        colorScheme="blue"
+                        color={"blue"}
+                      />
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+            {showRaiseRFPForm && (
+              <RaiseRFP onClose={() => setShowRaiseRFPForm(false)} />
+            )}
+            {showRFPDetails &&
+              navigate("/Company/rfpdetails", {
+                state: { rfpID: selectedRFPId },
+              })}
+          </div>
+          <div className="pagination">
+            <ButtonGroup variant="outline" spacing="4">
+              <Button
+                disabled={currentPage === 1}
+                onClick={handlePrevPage}
+                variant={"ghost"}
+                color={"skyblue"}
+                colorScheme="blue"
+              >
+                Previous
+              </Button>
+              {renderPageNumbers()}
+              <Button
+                disabled={currentPage === pageCount}
+                onClick={handleNextPage}
+                variant={"ghost"}
+                color={"skyblue"}
+                colorScheme="blue"
+              >
+                Next
+              </Button>
+            </ButtonGroup>
+          </div>
         </div>
-        <div className="pagination">
-          <ButtonGroup variant="outline" spacing="4">
-            <Button
-              disabled={currentPage === 1}
-              onClick={handlePrevPage}
-              variant={"ghost"}
-            >
-              Previous
-            </Button>
-            {renderPageNumbers()}
-            <Button
-              disabled={currentPage === pageCount}
-              onClick={handleNextPage}
-              variant={"ghost"}
-            >
-              Next
-            </Button>
-          </ButtonGroup>
-        </div>
-      </div>
-    </Container>
+      </Container>
+    </div>
   );
 };
 

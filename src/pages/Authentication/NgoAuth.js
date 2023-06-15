@@ -6,7 +6,7 @@ import AllUserLogin from "../../components/Authentication/AllUserLogin";
 const NgoAuth = () => {
   return (
     <Box p={4} bg="white" w="100%" borderRadius="lg" borderWidth="1px">
-      <Tabs variant="soft-rounded" colorScheme="orange">
+      <Tabs variant="soft-rounded" colorScheme="blue">
         <TabList mb={"1em"}>
           <Tab w={"50%"}>Login</Tab>
           <Tab w={"50%"}>Sign Up</Tab>

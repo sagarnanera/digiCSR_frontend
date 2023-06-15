@@ -4,7 +4,6 @@ import {
   Button,
   Checkbox,
   CheckboxGroup,
-  Container,
   FormControl,
   FormLabel,
   Input,
@@ -17,20 +16,24 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  Text,
   Textarea,
   VStack,
   Tooltip,
   useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import { fetchStates } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
-import CompanyNavigation from "../companyNavigation";
-import jwt_decode from "jwt-decode";
+// import jwt_decode from "jwt-decode";
 
-function RaiseRFP() {
+function RaiseRFP({ onClose }) {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [amountRfp, setAmountRfp] = useState("");
@@ -45,16 +48,16 @@ function RaiseRFP() {
   const [selectedStatesText, setSelectedStatesText] = useState("");
   const [selectedSectorText, setSelectedSectorText] = useState("");
   const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
-  const [company, setCompany] = useState("");
+  // const [company, setCompany] = useState("");
   const toast = useToast();
 
   useEffect(() => {
     const getStatesAndCompanyId = async () => {
       const fetchedStates = await fetchStates();
       setStates(fetchedStates);
-      const token = localStorage.getItem("CompanyAuthToken");
-      const decodedToken = await jwt_decode(token);
-      setCompany(decodedToken._id);
+      // const token = localStorage.getItem("CompanyAuthToken");
+      // const decodedToken = await jwt_decode(token);
+      // setCompany(decodedToken._id);
     };
     getStatesAndCompanyId();
   }, []);
@@ -124,7 +127,6 @@ function RaiseRFP() {
           authorization: result,
         },
       };
-      console.log(result);
       const response = await fetch("http://localhost:4000/add-rfp", {
         method: "POST",
         headers: config.headers,
@@ -134,10 +136,11 @@ function RaiseRFP() {
           timeline,
           sectors: sector,
           states: selectedStates,
-          company, // Replace with the appropriate value
         }),
       });
+      console.log(1);
 
+      console.log(2);
       if (response.ok) {
         toast({
           title: "RFP Raised Successfully",
@@ -167,24 +170,16 @@ function RaiseRFP() {
   };
 
   return (
-    <div>
-      <CompanyNavigation />
-      <Container maxW="xl">
-        <Box
-          d="flex"
-          textAlign="center"
-          p={3}
-          bg="white"
-          w="100%"
-          m="70px 0 15px 0"
-          borderRadius="lg"
-          borderWidth="1px"
+    <Modal isOpen={true} onClose={onClose} size="sm">
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader display={"flex"} justifyContent={"center"}>Raise RFP Request</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody
+          style={{
+            zoom: "0.75",
+          }}
         >
-          <Text fontSize="4xl" fontFamily="Work sans">
-            Raise RFP Request
-          </Text>
-        </Box>
-        <Box p={4} bg="white" w="100%" borderRadius="lg" borderWidth="1px">
           <VStack spacing={5}>
             <FormControl id="RFPTitle" isRequired>
               <FormLabel>RFP Title</FormLabel>
@@ -257,7 +252,7 @@ function RaiseRFP() {
                 <Textarea
                   placeholder="Selected Sectors"
                   isReadOnly
-                  rows={2}
+                  rows={3}
                   height="fit-content"
                   textOverflow="ellipsis"
                   resize="none"
@@ -334,7 +329,7 @@ function RaiseRFP() {
                 <Textarea
                   placeholder="Selected States"
                   isReadOnly
-                  rows={2}
+                  rows={3}
                   height="fit-content"
                   textOverflow="ellipsis"
                   resize="none"
@@ -357,9 +352,9 @@ function RaiseRFP() {
               Raise Request
             </Button>
           </VStack>
-        </Box>
-      </Container>
-    </div>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 }
 
