@@ -63,7 +63,7 @@ const EditProfile = () => {
   const [selectedcities, setselectedCities] = useState([]);
   const [pincode, setPincode] = useState();
   const [selectedSectorText, setSelectedSectorText] = useState("");
-  const [isSectorTextAreaVisible, setIsSectorTextAreaVisible] = useState(false);
+  const isSectorTextAreaVisible = true;
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [profileData, setProfileData] = useState(null);
   // const [allfields, setAllfields] = useState(false);
@@ -84,73 +84,71 @@ const EditProfile = () => {
     getStates();
   }, []);
 
-  
- useEffect(() => {
-   const fetchCompanyProfile = async () => {
-     try {
-       const response = await fetch(
-         `http://localhost:4000/company/profile/${companyId}`
-       );
-       const data = await response.json();
-       if (data.success) {
-         setProfileData(data.data);
-       } else {
-         console.log(data.message);
-         throw new Error("Failed to Get Profile. Please Reload");
-       }
-     } catch (error) {
-       console.log(error.message);
-     }
-   };
+  useEffect(() => {
+    const fetchCompanyProfile = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/company/profile/${companyId}`
+        );
+        const data = await response.json();
+        if (data.success) {
+          setProfileData(data.data);
+        } else {
+          console.log(data.message);
+          throw new Error("Failed to Get Profile. Please Reload");
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
 
-   const fetchLogo = async () => {
-     try {
-       const response = await fetch(
-         `http://localhost:4000/company/logo/${companyId}`
-       );
+    const fetchLogo = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/company/logo/${companyId}`
+        );
 
-       const base64Data = await response.text();
+        const base64Data = await response.text();
 
-       const byteCharacters = atob(base64Data.split(",")[1]);
-       const byteNumbers = new Array(byteCharacters.length);
-       for (let i = 0; i < byteCharacters.length; i++) {
-         byteNumbers[i] = byteCharacters.charCodeAt(i);
-       }
-       const byteArray = new Uint8Array(byteNumbers);
+        const byteCharacters = atob(base64Data.split(",")[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
 
-       const blob = new Blob([byteArray], { type: "image/png" });
-       const imageUrl = URL.createObjectURL(blob);
-       setImage(imageUrl);
-     } catch (error) {
-       console.error(error);
-     }
-   };
+        const blob = new Blob([byteArray], { type: "image/png" });
+        const imageUrl = URL.createObjectURL(blob);
+        setImage(imageUrl);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-   if (companyId && companyId !== "") {
-     fetchLogo();
-     fetchCompanyProfile();
-   }
- }, [companyId]);
+    if (companyId && companyId !== "") {
+      fetchLogo();
+      fetchCompanyProfile();
+    }
+  }, [companyId]);
 
- useEffect(() => {
-   if (profileData) {
-     setCompanyName(profileData.company_name);
-     setPincode(profileData.profile.location.pincode);
-     setCompanySummary(profileData.profile.summary);
-     setEstablishmentYear(profileData.profile.establishment_year)
-     setPersonName(profileData.profile.comunication_person.cp_name);
-     setPersonEmail(profileData.profile.comunication_person.cp_email);
-     setPersonDesignation(
-       profileData.profile.comunication_person.cp_designation
-     );
-     setselectedStates(profileData.profile.location.state);
-     setselectedCities(profileData.profile.location.city);
-     setPersonPhone(profileData.profile.comunication_person.cp_phone);
-     setSector(profileData.profile.sectors);
-     setTaxEligibility(profileData.profile.tax_comp)
-   }
- }, [profileData]);
-
+  useEffect(() => {
+    if (profileData) {
+      setCompanyName(profileData.company_name);
+      setPincode(profileData.profile.location.pincode);
+      setCompanySummary(profileData.profile.summary);
+      setEstablishmentYear(profileData.profile.establishment_year);
+      setPersonName(profileData.profile.comunication_person.cp_name);
+      setPersonEmail(profileData.profile.comunication_person.cp_email);
+      setPersonDesignation(
+        profileData.profile.comunication_person.cp_designation
+      );
+      setselectedStates(profileData.profile.location.state);
+      setselectedCities(profileData.profile.location.city);
+      setPersonPhone(profileData.profile.comunication_person.cp_phone);
+      setSector(profileData.profile.sectors);
+      setTaxEligibility(profileData.profile.tax_comp);
+    }
+  }, [profileData]);
 
   const handleStateChange = async (stateId) => {
     const fetchedCities = await fetchCities(stateId);
@@ -171,12 +169,10 @@ const EditProfile = () => {
       setSector([]);
     }
   };
-  useEffect(() => {
-    setSelectedSectorText(Sector.join(", "));
-  }, [Sector]);
 
   const handleSectorChange = (selectedItems) => {
     setSector(selectedItems);
+    setSelectedSectorText(selectedItems.join(", "));
   };
 
   const handleTaxEligibilityChange = (selectedValues) => {
@@ -185,8 +181,8 @@ const EditProfile = () => {
 
   const handleToggleDropdown = () => {
     setIsDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
-    setIsSectorTextAreaVisible(!isSectorTextAreaVisible);
   };
+
   const handleChange = (event) => {
     setCompanySummary(event.target.value);
     const textareaLineHeight = 24; // Set the line height of the textarea
@@ -352,7 +348,7 @@ const EditProfile = () => {
 
   return (
     <div>
-      <CompanyNavigation/>
+      <CompanyNavigation />
       <Container
         centerContent
         style={{
@@ -693,11 +689,12 @@ const EditProfile = () => {
                     height="fit-content"
                     textOverflow="ellipsis"
                     resize="none"
-                  >
-                    {Sector.length <= 5
-                      ? selectedSectorText
-                      : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`}
-                  </Textarea>
+                    value={
+                      Sector.length <= 5
+                        ? selectedSectorText
+                        : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`
+                    }
+                  ></Textarea>
                 </Tooltip>
               )}
             </Box>

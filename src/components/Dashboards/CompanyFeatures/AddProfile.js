@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import jwt_decode from "jwt-decode";
+// import jwt_decode from "jwt-decode";
 import {
   Box,
   Container,
@@ -54,7 +54,6 @@ const AddProfile = () => {
   const [personEmail, setPersonEmail] = useState();
   const [personPhone, setPersonPhone] = useState();
   const [personDesignation, setPersonDesignation] = useState();
-  const [userId, setUserId] = useState("");
   const [certificate, setCertificate] = useState();
   const [Sector, setSector] = useState([]);
   const [taxEligibility, setTaxEligibility] = useState([]);
@@ -64,7 +63,7 @@ const AddProfile = () => {
   const [selectedcities, setselectedCities] = useState([]);
   const [pincode, setPincode] = useState();
   const [selectedSectorText, setSelectedSectorText] = useState("");
-  const [isSectorTextAreaVisible, setIsSectorTextAreaVisible] = useState(false);
+  const isSectorTextAreaVisible = true;
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   // const [allfields, setAllfields] = useState(false);
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
@@ -74,11 +73,6 @@ const AddProfile = () => {
       const fetchedStates = await fetchStates();
       setStates(fetchedStates);
     };
-    // Retrieve the user's ID from localStorage
-    const token = localStorage.getItem("CompanyAuthToken");
-    const decodedToken = jwt_decode(token);
-    // Set the user's ID in the state variable
-    setUserId(decodedToken._id);
     getStates();
   }, []);
 
@@ -106,13 +100,10 @@ const AddProfile = () => {
       setSector([]);
     }
   };
-  useEffect(() => {
-    setSelectedSectorText(Sector.join(", "));
-  }, [Sector]);
 
   const handleSectorChange = (selectedItems) => {
     setSector(selectedItems);
-    // console.log(selectedcities);
+    setSelectedSectorText(selectedItems.join(", "));
   };
 
   const handleTaxEligibilityChange = (selectedValues) => {
@@ -121,7 +112,7 @@ const AddProfile = () => {
 
   const handleToggleDropdown = () => {
     setIsDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
-    setIsSectorTextAreaVisible(!isSectorTextAreaVisible);
+    // setIsSectorTextAreaVisible(!isSectorTextAreaVisible);
   };
   const handleChange = (event) => {
     setCompanySummary(event.target.value);
@@ -592,7 +583,7 @@ const AddProfile = () => {
                   </MenuButton>
                   <MenuList maxH="200px" overflowY="auto">
                     <CheckboxGroup
-                      colorScheme="teal"
+                      colorScheme="blue"
                       value={Sector}
                       onChange={handleSectorChange}
                     >
@@ -608,30 +599,34 @@ const AddProfile = () => {
                 </Menu>
               </Box>
             </FormControl>
-            {/* {isSectorTextAreaVisible && ( */}
-            <Tooltip label={Sector.join(", ")} isDisabled={Sector.length <= 5}>
-              <Textarea
-                placeholder="Selected Sectors"
-                isReadOnly
-                // rows={rows}
-                onChange={handleChange}
-                // height="fit-content"
-                textOverflow="ellipsis"
-                resize="none"
+            {isSectorTextAreaVisible && (
+              <Tooltip
+                label={Sector.join(", ")}
+                isDisabled={Sector.length <= 5}
               >
-                {Sector.length <= 5
-                  ? selectedSectorText
-                  : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`}
-              </Textarea>
-            </Tooltip>
-            {/* )} */}
+                <Textarea
+                  placeholder="Selected Sectors"
+                  isReadOnly
+                  rows={rows}
+                  onChange={handleChange}
+                  height="fit-content"
+                  textOverflow="ellipsis"
+                  resize="none"
+                  value={
+                    Sector.length <= 5
+                      ? selectedSectorText
+                      : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`
+                  }
+                ></Textarea>
+              </Tooltip>
+            )}
           </Box>
           <br />
           <Box flex={5} w="95%">
             <FormControl id="taxeligibility" isRequired={true}>
               <FormLabel>Tax Compliance Eligibility</FormLabel>
               <CheckboxGroup
-                colorScheme="teal"
+                colorScheme="blue"
                 value={taxEligibility}
                 onChange={handleTaxEligibilityChange}
                 size={"sm"}

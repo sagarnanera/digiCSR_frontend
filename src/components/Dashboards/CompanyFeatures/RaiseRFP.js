@@ -42,8 +42,8 @@ function RaiseRFP({ onClose }) {
   const [states, setStates] = useState([]);
   const [selectedStates, setSelectedStates] = useState([]);
   const [isSectorDropdownOpen, setIsSectorDropdownOpen] = useState(false);
-  const [isTextAreaVisible, setIsTextAreaVisible] = useState(false);
-  const [isSectorTextAreaVisible, setIsSectorTextAreaVisible] = useState(false);
+  // const [isTextAreaVisible, setIsTextAreaVisible] = useState(false);
+  // const [isSectorTextAreaVisible, setIsSectorTextAreaVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedStatesText, setSelectedStatesText] = useState("");
   const [selectedSectorText, setSelectedSectorText] = useState("");
@@ -62,16 +62,9 @@ function RaiseRFP({ onClose }) {
     getStatesAndCompanyId();
   }, []);
 
-  useEffect(() => {
-    setSelectedStatesText(selectedStates.join(", "));
-  }, [selectedStates]);
-
-  useEffect(() => {
-    setSelectedSectorText(sector.join(", "));
-  }, [sector]);
-
   const handleStateChange = (selectedItems) => {
     setSelectedStates(selectedItems);
+    setSelectedStatesText(selectedItems.join(", "));
   };
 
   const handleAllChecked = (e) => {
@@ -86,16 +79,15 @@ function RaiseRFP({ onClose }) {
 
   const handleSectorChange = (selectedItems) => {
     setSector(selectedItems);
+    setSelectedSectorText(selectedItems.join(", "));
   };
 
   const handleToggleSectorDropdown = () => {
     setIsSectorDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
-    setIsSectorTextAreaVisible(!isSectorTextAreaVisible);
   };
 
   const handleToggleStateDropdown = () => {
     setIsStateDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
-    setIsTextAreaVisible(!isTextAreaVisible);
   };
 
   const submitHandler = async () => {
@@ -149,7 +141,7 @@ function RaiseRFP({ onClose }) {
           isClosable: true,
           position: "bottom",
         });
-        onClose();  
+        onClose();
         navigate("/Company/TrackRFP", { replace: true });
         setLoading(false);
       } else {
@@ -174,7 +166,9 @@ function RaiseRFP({ onClose }) {
     <Modal isOpen={true} onClose={onClose} size="sm">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader display={"flex"} justifyContent={"center"}>Raise RFP Request</ModalHeader>
+        <ModalHeader display={"flex"} justifyContent={"center"}>
+          Raise RFP Request
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody
           style={{
@@ -213,6 +207,7 @@ function RaiseRFP({ onClose }) {
                   <MenuButton
                     as={Button}
                     w="100%"
+                    mb={-5}
                     rightIcon={
                       isSectorDropdownOpen ? (
                         <ChevronUpIcon />
@@ -229,7 +224,7 @@ function RaiseRFP({ onClose }) {
                   </MenuButton>
                   <MenuList maxH="200px" overflowY="auto">
                     <CheckboxGroup
-                      colorScheme="teal"
+                      colorScheme="blue"
                       value={sector}
                       onChange={handleSectorChange}
                     >
@@ -245,25 +240,21 @@ function RaiseRFP({ onClose }) {
                 </Menu>
               </Box>
             </FormControl>
-            {isSectorTextAreaVisible && (
-              <Tooltip
-                label={sector.join(", ")}
-                isDisabled={sector.length <= 5}
-              >
-                <Textarea
-                  placeholder="Selected Sectors"
-                  isReadOnly
-                  rows={3}
-                  height="fit-content"
-                  textOverflow="ellipsis"
-                  resize="none"
-                >
-                  {sector.length <= 5
+            <Tooltip label={sector.join(", ")} isDisabled={sector.length <= 5}>
+              <Textarea
+                placeholder="Selected Sectors"
+                isReadOnly
+                rows={2}
+                height="fit-content"
+                textOverflow="ellipsis"
+                resize="none"
+                value={
+                  sector.length <= 5
                     ? selectedSectorText
-                    : `${sector.slice(0, 5)},..+${sector.length - 5} more`}
-                </Textarea>
-              </Tooltip>
-            )}
+                    : `${sector.slice(0, 5)},..+${sector.length - 5} more`
+                }
+              ></Textarea>
+            </Tooltip>
             <FormControl id="timeline" isRequired>
               <FormLabel>
                 Timeline for money utilization(least value should be of 12
@@ -289,6 +280,7 @@ function RaiseRFP({ onClose }) {
                   <MenuButton
                     as={Button}
                     w="100%"
+                    mb={-5}
                     rightIcon={
                       isStateDropdownOpen ? (
                         <ChevronUpIcon />
@@ -306,7 +298,7 @@ function RaiseRFP({ onClose }) {
 
                   <MenuList maxH="200px" overflowY="auto">
                     <CheckboxGroup
-                      colorScheme="teal"
+                      colorScheme="blue"
                       value={selectedStates}
                       onChange={handleStateChange}
                     >
@@ -322,27 +314,26 @@ function RaiseRFP({ onClose }) {
                 </Menu>
               </Box>
             </FormControl>
-            {isTextAreaVisible && (
-              <Tooltip
-                label={selectedStates.join(", ")}
-                isDisabled={selectedStates.length <= 6}
-              >
-                <Textarea
-                  placeholder="Selected States"
-                  isReadOnly
-                  rows={3}
-                  height="fit-content"
-                  textOverflow="ellipsis"
-                  resize="none"
-                >
-                  {selectedStates.length <= 6
+            <Tooltip
+              label={selectedStates.join(", ")}
+              isDisabled={selectedStates.length <= 6}
+            >
+              <Textarea
+                placeholder="Selected States"
+                isReadOnly
+                rows={2}
+                height="fit-content"
+                textOverflow="ellipsis"
+                resize="none"
+                value={
+                  selectedStates.length <= 6
                     ? selectedStatesText
                     : `${selectedStates.slice(0, 6)},..+${
                         selectedStates.length - 6
-                      } more`}
-                </Textarea>
-              </Tooltip>
-            )}
+                      } more`
+                }
+              ></Textarea>
+            </Tooltip>
             <Button
               type="submit"
               colorScheme="blue"
@@ -350,7 +341,6 @@ function RaiseRFP({ onClose }) {
               onClick={submitHandler}
               style={{ marginTop: 15 }}
               isLoading={loading}
-              
             >
               Raise Request
             </Button>
