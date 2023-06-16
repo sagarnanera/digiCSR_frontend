@@ -15,6 +15,7 @@ import {
   Tbody,
   Td,
   Flex,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
@@ -140,12 +141,12 @@ const ShowNgoProfile = () => {
                 mt={1}
                 borderWidth="1px"
                 p={4}
-                bg={"rgba(115, 190, 246, 0.4)"}
+                bg={"#f2f2f2"}
                 borderRadius="md"
                 boxShadow="md"
                 fontFamily={"serif"}
               >
-                <Box ml={"10"} mr={"10"}>
+                <Box ml={"0"} mr={"0"}>
                   <Text fontSize={{ base: "xl", md: "xl" }}>
                     <strong>Ngo Summary:</strong>{" "}
                   </Text>
@@ -179,23 +180,39 @@ const ShowNgoProfile = () => {
                       wrap={{ base: "wrap", md: "nowrap" }}
                       justifyContent={{ base: "center", md: "space-between" }}
                     >
-                      <div style={{ flex: 1, marginRight: "2%" }}>
-                        <Text fontSize="lg">
-                          <strong>Area of operation :</strong>{" "}
-                          <Divider height={"2"} borderColor={"transparent"} />
-                          <div
-                            style={{
-                              display: "grid",
-                              gridTemplateColumns:
-                                "repeat(3, minmax(20%, 1fr))",
-                              gap: "20px",
-                              whiteSpace: "wrap",
-                              maxWidth: "100%",
-                              overflow: "auto-fit",
-                              marginLeft: "0%",
-                            }}
-                          >
-                            {profileData.profile.operation_area.map((state) => (
+                      <div
+                        style={{
+                          flex: 1,
+                          marginRight: "2%",
+                          paddingLeft: "2%",
+                          paddingTop: "1%",
+                          paddingBottom: "1%",
+                          backgroundColor: "rgb(106, 200, 230, 0.05)",
+                          borderRadius: "10px",
+                          borderWidth: "1px",
+                          borderColor: "skyblue",
+                        }}
+                      >
+                        <strong>Work Location:</strong>
+                        <Divider
+                          height={"1"}
+                          mb={"2"}
+                          w={"95%"}
+                          borderColor={"skyblue"}
+                        />
+                        <div
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(3, minmax(20%, 1fr))",
+                            gap: "10px",
+                            whiteSpace: "wrap",
+                            maxWidth: "100%",
+                            overflow: "auto-fit",
+                            marginLeft: "0%",
+                          }}
+                        >
+                          {profileData.profile.operation_area.map(
+                            (state, index) => (
                               <p
                                 style={{
                                   cursor: "default",
@@ -203,28 +220,94 @@ const ShowNgoProfile = () => {
                                   fontSize: { base: "sm", md: "lg" },
                                 }}
                               >
-                                {state}
+                                {index % 3 !== 0 && (
+                                  <div
+                                    style={{
+                                      borderLeft: "1px solid black",
+                                      height: "120%",
+                                      // marginRight: "-15px",
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        marginLeft: "10px",
+                                      }}
+                                    >
+                                      <Tooltip
+                                        style={{ zoom: "0.8" }}
+                                        label={state.length > 20 ? state : ""}
+                                      >
+                                        <p
+                                          style={{
+                                            cursor: "default",
+                                            marginLeft: 0,
+                                            fontSize: { base: "sm", md: "lg" },
+                                          }}
+                                        >
+                                          {state.length > 20
+                                            ? `${state.slice(0, 20)}...`
+                                            : state}
+                                        </p>
+                                      </Tooltip>
+                                    </div>
+                                  </div>
+                                )}
+                                {index % 3 === 0 && (
+                                  <div>
+                                    <Tooltip
+                                      style={{ zoom: "0.8" }}
+                                      label={state.length > 20 ? state : ""}
+                                    >
+                                      <p
+                                        style={{
+                                          cursor: "default",
+                                          marginLeft: 0,
+                                          fontSize: { base: "sm", md: "lg" },
+                                        }}
+                                      >
+                                        {state.length > 20
+                                          ? `${state.slice(0, 20)}...`
+                                          : state}
+                                      </p>
+                                    </Tooltip>
+                                  </div>
+                                )}
                               </p>
-                            ))}
-                          </div>
-                        </Text>
+                            )
+                          )}
+                        </div>
                       </div>
-                      <div style={{ flex: 1, marginLeft: "2%" }}>
-                        <strong>Development Sector :</strong>
-                        <Divider height={"2"} borderColor={"transparent"} />
-
+                      <div
+                        style={{
+                          flex: 1,
+                          paddingLeft: "2%",
+                          paddingTop: "1%",
+                          paddingBottom: "1%",
+                          backgroundColor: "rgb(106, 200, 230, 0.05)",
+                          borderRadius: "10px",
+                          borderWidth: "1px",
+                          borderColor: "skyblue",
+                        }}
+                      >
+                        <strong>Cause Area (CSR Sectors):</strong>
+                        <Divider
+                          height={"1"}
+                          mb={"2"}
+                          w={"95%"}
+                          borderColor={"skyblue"}
+                        />{" "}
                         <div
                           style={{
                             display: "grid",
                             gridTemplateColumns: "repeat(3, minmax(20%, 1fr))",
-                            gap: "20px",
+                            gap: "10px",
                             whiteSpace: "wrap",
                             maxWidth: "100%",
                             overflow: "auto-fit",
                             marginLeft: "0%",
                           }}
                         >
-                          {profileData.profile.sectors.map((sector) => (
+                          {profileData.profile.sectors.map((sector, index) => (
                             <p
                               style={{
                                 cursor: "default",
@@ -232,7 +315,58 @@ const ShowNgoProfile = () => {
                                 fontSize: { base: "sm", md: "lg" },
                               }}
                             >
-                              {sector}
+                              {index % 3 !== 0 && (
+                                <div
+                                  style={{
+                                    borderLeft: "1px solid black",
+                                    height: "120%",
+                                    // marginRight: "10px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      marginLeft: "10px",
+                                    }}
+                                  >
+                                    <Tooltip
+                                      style={{ zoom: "0.8" }}
+                                      label={sector.length > 20 ? sector : ""}
+                                    >
+                                      <p
+                                        style={{
+                                          cursor: "default",
+                                          marginLeft: 0,
+                                          fontSize: { base: "sm", md: "lg" },
+                                        }}
+                                      >
+                                        {sector.length > 20
+                                          ? `${sector.slice(0, 20)}...`
+                                          : sector}
+                                      </p>
+                                    </Tooltip>
+                                  </div>
+                                </div>
+                              )}
+                              {index % 3 === 0 && (
+                                <div>
+                                  <Tooltip
+                                    style={{ zoom: "0.8" }}
+                                    label={sector.length > 20 ? sector : ""}
+                                  >
+                                    <p
+                                      style={{
+                                        cursor: "default",
+                                        marginLeft: 0,
+                                        fontSize: { base: "sm", md: "lg" },
+                                      }}
+                                    >
+                                      {sector.length > 20
+                                        ? `${sector.slice(0, 20)}...`
+                                        : sector}
+                                    </p>
+                                  </Tooltip>
+                                </div>
+                              )}
                             </p>
                           ))}
                         </div>
@@ -247,15 +381,14 @@ const ShowNgoProfile = () => {
                         {Array.isArray(profileData.profile.board_members) ? (
                           <Table
                             size="sm"
-                            variant={"striped"}
+                            variant={"simple"}
                             colorScheme="blue"
-                            borderRadius="md"
-                            overflow="hidden"
+                            overflow="auto"
                           >
                             <TableCaption>Member Details</TableCaption>
                             <Thead
                               style={{
-                                background: "#3580f1",
+                                background: "skyblue",
                                 marginBottom: "2rem",
                               }}
                             >
@@ -268,7 +401,7 @@ const ShowNgoProfile = () => {
                                 <Th>Designation</Th>
                               </Tr>
                             </Thead>
-                            <Tbody>
+                            <Tbody style={{ zoom: 1.2 }}>
                               {profileData.profile.board_members.map(
                                 (member, index) => (
                                   <Tr>

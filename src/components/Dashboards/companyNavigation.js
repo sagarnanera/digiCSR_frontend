@@ -326,6 +326,7 @@ const CompanyNavigation = () => {
                 icon={<FiBell />}
                 onClick={handleBellIconClick}
                 color={"skyblue"}
+                size={"lg"}
                 colorScheme="blue"
               />
               {unreadCount > 0 && (

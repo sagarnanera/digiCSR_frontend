@@ -10,6 +10,7 @@ import {
   Text,
   VStack,
   Wrap,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
@@ -40,7 +41,7 @@ const RFPCompanyDetails = () => {
       }
     };
     fetchRFPDetails();
-  }, [rfpDetails]);
+  }, [rfpID]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -123,7 +124,7 @@ const RFPCompanyDetails = () => {
               d="flex"
               m="px 0 10px 0"
               p={3}
-              bg={"rgba(255, 255, 255, 0.529)"}
+              bg="#f2f2f2"
               w={{ base: "100%", md: "95vw" }}
               // borderRadius="10px"
             >
@@ -162,21 +163,40 @@ const RFPCompanyDetails = () => {
                     width="98%"
                   />
                   <br />
-                  <div style={{ display: "flex" }}>
-                    <div style={{ flex: 1, marginRight: "2%" }}>
+                  <div style={{ display: "flex", marginBottom: "2%" }}>
+                    <div
+                      style={{
+                        flex: 1,
+                        paddingLeft: "2%",
+                        paddingTop: "1%",
+                        paddingBottom: "1%",
+                        backgroundColor: "rgb(106, 200, 230, 0.05)",
+                        borderRadius: "10px",
+                        marginRight: "2%",
+                        borderWidth: "1px",
+                        borderColor: "skyblue",
+                      }}
+                    >
                       <strong>Work Location:</strong>
+                      <Divider
+                        height={"1"}
+                        mb={"2"}
+                        w={"95%"}
+                        borderColor={"skyblue"}
+                      />
+
                       <div
                         style={{
                           display: "grid",
                           gridTemplateColumns: "repeat(3, minmax(20%, 1fr))",
-                          gap: "20px",
+                          gap: "10px",
                           whiteSpace: "wrap",
                           maxWidth: "100%",
                           overflow: "auto-fit",
                           marginLeft: "0%",
                         }}
                       >
-                        {rfpDetails.states.map((state) => (
+                        {rfpDetails.states.map((state, index) => (
                           <p
                             style={{
                               cursor: "default",
@@ -184,25 +204,93 @@ const RFPCompanyDetails = () => {
                               fontSize: { base: "sm", md: "lg" },
                             }}
                           >
-                            {state}
+                            {index % 3 !== 0 && (
+                              <div
+                                style={{
+                                  borderLeft: "1px solid black",
+                                  height: "120%",
+                                  // marginRight: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    marginLeft: "20px",
+                                  }}
+                                >
+                                  <Tooltip
+                                    style={{ zoom: "0.8" }}
+                                    label={state.length > 20 ? state : ""}
+                                  >
+                                    <p
+                                      style={{
+                                        cursor: "default",
+                                        marginLeft: 0,
+                                        fontSize: { base: "sm", md: "lg" },
+                                      }}
+                                    >
+                                      {state.length > 20
+                                        ? `${state.slice(0, 20)}...`
+                                        : state}
+                                    </p>
+                                  </Tooltip>
+                                </div>
+                              </div>
+                            )}
+                            {index % 3 === 0 && (
+                              <div>
+                                <Tooltip
+                                  style={{ zoom: "0.8" }}
+                                  label={state.length > 20 ? state : ""}
+                                >
+                                  <p
+                                    style={{
+                                      cursor: "default",
+                                      marginLeft: 0,
+                                      fontSize: { base: "sm", md: "lg" },
+                                    }}
+                                  >
+                                    {state.length > 20
+                                      ? `${state.slice(0, 20)}...`
+                                      : state}
+                                  </p>
+                                </Tooltip>
+                              </div>
+                            )}
                           </p>
                         ))}
                       </div>
                     </div>
-                    <div style={{ flex: 1, marginLeft: "2%" }}>
+                    <div
+                      style={{
+                        flex: 1,
+                        paddingLeft: "2%",
+                        paddingTop: "1%",
+                        paddingBottom: "1%",
+                        backgroundColor: "rgb(106, 200, 230, 0.05)",
+                        borderWidth: "1px",
+                        borderColor: "skyblue",
+                        borderRadius: "10px",
+                      }}
+                    >
                       <strong>Cause Area (CSR Sectors):</strong>
+                      <Divider
+                        height={"1"}
+                        mb={"2"}
+                        w={"95%"}
+                        borderColor={"skyblue"}
+                      />
                       <div
                         style={{
                           display: "grid",
                           gridTemplateColumns: "repeat(3, minmax(20%, 1fr))",
-                          gap: "20px",
+                          gap: "10px",
                           whiteSpace: "wrap",
                           maxWidth: "100%",
                           overflow: "auto-fit",
-                          marginLeft: "0%",
+                          marginRight: "5%",
                         }}
                       >
-                        {rfpDetails.sectors.map((sector) => (
+                        {rfpDetails.sectors.map((sector, index) => (
                           <p
                             style={{
                               cursor: "default",
@@ -210,7 +298,58 @@ const RFPCompanyDetails = () => {
                               fontSize: { base: "sm", md: "lg" },
                             }}
                           >
-                            {sector}
+                            {index % 3 !== 0 && (
+                              <div
+                                style={{
+                                  borderLeft: "1px solid black",
+                                  height: "120%",
+                                  // marginRight: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    marginLeft: "20px",
+                                  }}
+                                >
+                                  <Tooltip
+                                    style={{ zoom: "0.8" }}
+                                    label={sector.length > 20 ? sector : ""}
+                                  >
+                                    <p
+                                      style={{
+                                        cursor: "default",
+                                        marginLeft: 0,
+                                        fontSize: { base: "sm", md: "lg" },
+                                      }}
+                                    >
+                                      {sector.length > 20
+                                        ? `${sector.slice(0, 20)}...`
+                                        : sector}
+                                    </p>
+                                  </Tooltip>
+                                </div>
+                              </div>
+                            )}
+                            {index % 3 === 0 && (
+                              <div>
+                                <Tooltip
+                                  style={{ zoom: "0.8" }}
+                                  label={sector.length > 20 ? sector : ""}
+                                >
+                                  <p
+                                    style={{
+                                      cursor: "default",
+                                      marginLeft: 0,
+                                      fontSize: { base: "sm", md: "lg" },
+                                    }}
+                                  >
+                                    {sector.length > 20
+                                      ? `${sector.slice(0, 20)}...`
+                                      : sector}
+                                  </p>
+                                </Tooltip>
+                              </div>
+                            )}
                           </p>
                         ))}
                       </div>
