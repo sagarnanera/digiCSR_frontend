@@ -40,7 +40,7 @@ const RFPCompanyDetails = () => {
       }
     };
     fetchRFPDetails();
-  }, [rfpID]);
+  }, [rfpID,rfpDetails]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
