@@ -254,7 +254,7 @@ const RFPRequest = () => {
                   <Th>Action</Th>
                 </Tr>
               </Thead>
-              <Tbody>
+              <Tbody style={{ zoom: 0.85 }}>
                 {currentRows.map((proposal, index) => (
                   <Tr key={proposal._id}>
                     <Td className="divider">{indexOfFirstRow + index + 1}</Td>
@@ -334,7 +334,7 @@ const RFPRequest = () => {
             {showRFPDetails &&
               navigate("/Ngo/rfpdetails", {
                 state: {
-                  rfpID: selectedRFPId
+                  rfpID: selectedRFPId,
                 },
               })}
           </div>
