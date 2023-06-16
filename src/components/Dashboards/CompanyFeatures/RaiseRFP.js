@@ -149,6 +149,7 @@ function RaiseRFP({ onClose }) {
           isClosable: true,
           position: "bottom",
         });
+        onClose();  
         navigate("/Company/TrackRFP", { replace: true });
         setLoading(false);
       } else {
@@ -343,11 +344,13 @@ function RaiseRFP({ onClose }) {
               </Tooltip>
             )}
             <Button
+              type="submit"
               colorScheme="blue"
               w="100%"
               onClick={submitHandler}
               style={{ marginTop: 15 }}
               isLoading={loading}
+              
             >
               Raise Request
             </Button>
