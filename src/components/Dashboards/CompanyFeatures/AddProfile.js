@@ -214,7 +214,7 @@ const AddProfile = () => {
       return;
     }
     try {
-      const url = `http://localhost:4000/company/add-profile/${userId}`; // Replace with your API endpoint URL
+      const url = `http://localhost:4000/company/add-profile`; // Replace with your API endpoint URL
       const registrationCertificateFile = new File(
         [certificate],
         "registration_certificate.pdf"
@@ -230,8 +230,10 @@ const AddProfile = () => {
       formData.append("cp_name", personName);
       formData.append("cp_email", personEmail);
       formData.append("cp_designation", personDesignation);
-      formData.append("cp_phone", personPhone);
-      formData.append("tax_comp", taxEligibility);
+      formData.append("cp_phone", personPhone); 
+      taxEligibility.forEach((tx) => {
+        formData.append("tax_comp", tx);
+      });
       Sector.forEach((sectorItem) => {
         formData.append("sectors", sectorItem);
       });
@@ -240,9 +242,13 @@ const AddProfile = () => {
 
       const response = await fetch(url, {
         method: "POST",
+        headers: {
+          authorization: localStorage.getItem("CompanyAuthToken"),
+        },
         body: formData,
       });
       const data = await response.json();
+      console.warn(data);
       if (response.ok) {
         toast({
           title: "Profile Edited Successfully",
@@ -288,37 +294,37 @@ const AddProfile = () => {
       }}
     >
       <Box
-        d="flex"
-        textAlign="center"
+        d='flex'
+        textAlign='center'
         p={3}
-        bg="#f2f2f2"
+        bg='#f2f2f2'
         w={{ base: "100%", md: "90vw" }}
-        m="50px 0 0px 0"
+        m='50px 0 0px 0'
         color={"White"}
         bgColor={"skyblue"}
       >
-        <Text fontSize="3xl" fontFamily="Work sans">
+        <Text fontSize='3xl' fontFamily='Work sans'>
           Company Profile
         </Text>
       </Box>
       <Box
-        d="flex"
-        textAlign="center"
-        m="0px 0 0px 0"
+        d='flex'
+        textAlign='center'
+        m='0px 0 0px 0'
         p={3}
-        bg="white"
+        bg='white'
         w={{ base: "100%", md: "90vw" }}
-        maxHeight="100vh" // Limit height to screen height
-        overflowY="auto"
+        maxHeight='100vh' // Limit height to screen height
+        overflowY='auto'
       >
-        <VStack spacing={4} w="100%">
+        <VStack spacing={4} w='100%'>
           <Flex
-            w="95%"
-            flexWrap="wrap"
+            w='95%'
+            flexWrap='wrap'
             justifyContent={{ base: "center", md: "flex-start" }}
           >
             <Box mr={"1%"} mt={"2%"}>
-              <label htmlFor="profile-image">
+              <label htmlFor='profile-image'>
                 <div
                   style={{
                     position: "relative",
@@ -331,13 +337,13 @@ const AddProfile = () => {
                 >
                   <img
                     src={image || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
-                    alt="Profile"
+                    alt='Profile'
                     style={{ width: "100%", height: "100%" }}
                   />
                   <input
-                    type="file"
-                    id="profile-image"
-                    accept=".jpg,.jpeg,.png"
+                    type='file'
+                    id='profile-image'
+                    accept='.jpg,.jpeg,.png'
                     style={{ display: "none" }}
                     onChange={handleImageChange}
                   />
@@ -349,13 +355,13 @@ const AddProfile = () => {
                       zIndex: 1, // Increase the z-index value
                     }}
                   >
-                    <label htmlFor="profile-image">
+                    <label htmlFor='profile-image'>
                       <IconButton
-                        component="span"
+                        component='span'
                         size={"xs"}
-                        colorScheme="blue"
-                        color="primary"
-                        aria-label="Add Photo"
+                        colorScheme='blue'
+                        color='primary'
+                        aria-label='Add Photo'
                       >
                         <AddIcon />
                       </IconButton>
@@ -366,10 +372,10 @@ const AddProfile = () => {
             </Box>
 
             <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
-              <FormControl id="companyname" isRequired={true}>
+              <FormControl id='companyname' isRequired={true}>
                 <FormLabel>Company Name</FormLabel>
                 <Input
-                  type="text"
+                  type='text'
                   placeholder="Enter Company's Full Name"
                   value={companyName || ""}
                   onChange={(e) => setCompanyName(e.target.value)}
@@ -377,11 +383,11 @@ const AddProfile = () => {
               </FormControl>
             </Box>
             <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
-              <FormControl id="year" isRequired={true}>
+              <FormControl id='year' isRequired={true}>
                 <FormLabel>Year of Establishment</FormLabel>
                 <NumberInput>
                   <NumberInputField
-                    placeholder="yyyy"
+                    placeholder='yyyy'
                     value={establishmentyear || null}
                     onChange={(e) => setEstablishmentYear(e.target.value)}
                     maxLength={4}
@@ -397,40 +403,40 @@ const AddProfile = () => {
           </Flex>
           {/* <br /> */}
           <Flex
-            flexWrap="wrap"
+            flexWrap='wrap'
             justifyContent={{ base: "center", md: "flex-start" }}
             flex={5}
-            w="95%"
+            w='95%'
           >
-            <FormControl id="Ngo" isRequired={true}>
+            <FormControl id='Ngo' isRequired={true}>
               <FormLabel>Company Summary</FormLabel>
 
               <Textarea
                 value={CompanySummary}
                 rows={rows}
                 onChange={handleChange}
-                placeholder="Enter text..."
-                resize="none"
+                placeholder='Enter text...'
+                resize='none'
               ></Textarea>
             </FormControl>
           </Flex>
           <br />
-          <Box flex={5} w="95%">
+          <Box flex={5} w='95%'>
             <FormControl isRequired={true}>
               <FormLabel>Location of the Company</FormLabel>
               <Flex
-                w="100%"
-                flexWrap="wrap"
+                w='100%'
+                flexWrap='wrap'
                 justifyContent={{ base: "center", md: "flex-start" }}
               >
                 <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
                   <FormControl>
-                    <FormLabel htmlFor="state">State:</FormLabel>
+                    <FormLabel htmlFor='state'>State:</FormLabel>
                     <Select
-                      id="state"
+                      id='state'
                       onChange={(e) => handleStateChange(e.target.value)}
                     >
-                      <option value="">Select a state</option>
+                      <option value=''>Select a state</option>
                       {states.map((state) => (
                         <option key={state.geonameId} value={state.geonameId}>
                           {state.name}
@@ -445,12 +451,12 @@ const AddProfile = () => {
                   ml={{ base: 0, md: 10 }}
                 >
                   <FormControl>
-                    <FormLabel htmlFor="city">City:</FormLabel>
+                    <FormLabel htmlFor='city'>City:</FormLabel>
                     <Select
-                      id="city"
+                      id='city'
                       onChange={(e) => handlecityChange(e.target.value)}
                     >
-                      <option value="">Select a city</option>
+                      <option value=''>Select a city</option>
                       {cities.map((city) => (
                         <option key={city.geonameId} value={city.name}>
                           {city.name}
@@ -460,11 +466,11 @@ const AddProfile = () => {
                   </FormControl>
                 </Box>
                 <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
-                  <FormControl id="pincode" isRequired={true}>
+                  <FormControl id='pincode' isRequired={true}>
                     <FormLabel>Pincode</FormLabel>
                     <Input
-                      type="number"
-                      placeholder="Enter Pincode"
+                      type='number'
+                      placeholder='Enter Pincode'
                       value={pincode || null}
                       onChange={(e) => setPincode(e.target.value)}
                       minLength={5}
@@ -476,20 +482,20 @@ const AddProfile = () => {
             </FormControl>
           </Box>
           <br />
-          <Box flex={5} w="95%">
+          <Box flex={5} w='95%'>
             <FormControl isRequired={true}>
               <FormLabel>Communication Person of the Company</FormLabel>
               <Flex
-                w="100%"
-                flexWrap="wrap"
+                w='100%'
+                flexWrap='wrap'
                 justifyContent={{ base: "center", md: "flex-start" }}
               >
                 <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
-                  <FormControl id="name" isRequired={true}>
+                  <FormControl id='name' isRequired={true}>
                     <FormLabel>Name</FormLabel>
                     <Input
-                      type="text"
-                      placeholder="Enter Name of Communication Person"
+                      type='text'
+                      placeholder='Enter Name of Communication Person'
                       value={personName || ""}
                       onChange={(e) => setPersonName(e.target.value)}
                     />
@@ -500,15 +506,15 @@ const AddProfile = () => {
                   mr={{ base: 0, md: 10 }}
                   ml={{ base: 0, md: 10 }}
                 >
-                  <FormControl id="email" isRequired={true}>
+                  <FormControl id='email' isRequired={true}>
                     <FormLabel>Email</FormLabel>
                     <InputGroup>
                       <InputLeftElement>
-                        <EmailIcon color="gray.300" />
+                        <EmailIcon color='gray.300' />
                       </InputLeftElement>
                       <Input
-                        type="email"
-                        placeholder="Enter email of Communication Person"
+                        type='email'
+                        placeholder='Enter email of Communication Person'
                         value={personEmail || ""}
                         onChange={(e) => setPersonEmail(e.target.value)}
                       />
@@ -519,21 +525,21 @@ const AddProfile = () => {
             </FormControl>
           </Box>
           <Flex
-            flexWrap="wrap"
+            flexWrap='wrap'
             justifyContent={{ base: "center", md: "flex-start" }}
             flex={5}
-            w="95%"
+            w='95%'
           >
             <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
-              <FormControl id="phoneno" isRequired={true}>
+              <FormControl id='phoneno' isRequired={true}>
                 <FormLabel>Phone No</FormLabel>
                 <InputGroup>
                   <InputLeftElement>
-                    <PhoneIcon color="gray.300" />
+                    <PhoneIcon color='gray.300' />
                   </InputLeftElement>
                   <Input
-                    type="tel"
-                    placeholder="Phone number"
+                    type='tel'
+                    placeholder='Phone number'
                     value={personPhone || null}
                     onChange={(e) => setPersonPhone(e.target.value)}
                     minLength={10}
@@ -547,11 +553,11 @@ const AddProfile = () => {
               mr={{ base: 0, md: 10 }}
               ml={{ base: 0, md: 10 }}
             >
-              <FormControl id="designation" isRequired={true}>
+              <FormControl id='designation' isRequired={true}>
                 <FormLabel>Designation of Communication Person</FormLabel>
                 <Input
-                  type="text"
-                  placeholder="Enter Degignation of Communication Person"
+                  type='text'
+                  placeholder='Enter Degignation of Communication Person'
                   value={personDesignation || ""}
                   onChange={(e) => setPersonDesignation(e.target.value)}
                 />
@@ -559,13 +565,13 @@ const AddProfile = () => {
             </Box>
           </Flex>
           <br />
-          <Box flex={5} w="95%">
+          <Box flex={5} w='95%'>
             <FormControl isRequired>
               <FormLabel>Sectors to provide CSR</FormLabel>
               <Checkbox
                 isChecked={Sector.length === sectorOptions.length}
                 onChange={handleAllChecked}
-                w="100%"
+                w='100%'
               >
                 All Sectors
               </Checkbox>
@@ -573,20 +579,20 @@ const AddProfile = () => {
                 <Menu closeOnSelect={false}>
                   <MenuButton
                     as={Button}
-                    w="100%"
+                    w='100%'
                     rightIcon={
                       isDropdownOpen ? <ChevronUpIcon /> : <ChevronDownIcon />
                     }
                     onClick={handleToggleDropdown}
-                    display="flex"
-                    justifyContent="flex-start"
+                    display='flex'
+                    justifyContent='flex-start'
                     isOpen={isDropdownOpen.toString()}
                   >
                     Select Sector
                   </MenuButton>
-                  <MenuList maxH="200px" overflowY="auto">
+                  <MenuList maxH='200px' overflowY='auto'>
                     <CheckboxGroup
-                      colorScheme="teal"
+                      colorScheme='teal'
                       value={Sector}
                       onChange={handleSectorChange}
                     >
@@ -602,46 +608,43 @@ const AddProfile = () => {
                 </Menu>
               </Box>
             </FormControl>
-            {isSectorTextAreaVisible && (
-              <Tooltip
-                label={Sector.join(", ")}
-                isDisabled={Sector.length <= 5}
+            {/* {isSectorTextAreaVisible && ( */}
+            <Tooltip label={Sector.join(", ")} isDisabled={Sector.length <= 5}>
+              <Textarea
+                placeholder='Selected Sectors'
+                isReadOnly
+                // rows={rows}
+                onChange={handleChange}
+                // height="fit-content"
+                textOverflow='ellipsis'
+                resize='none'
               >
-                <Textarea
-                  placeholder="Selected Sectors"
-                  isReadOnly
-                  rows={rows}
-                  onChange={handleChange}
-                  height="fit-content"
-                  textOverflow="ellipsis"
-                  resize="none"
-                >
-                  {Sector.length <= 5
-                    ? selectedSectorText
-                    : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`}
-                </Textarea>
-              </Tooltip>
-            )}
+                {Sector.length <= 5
+                  ? selectedSectorText
+                  : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`}
+              </Textarea>
+            </Tooltip>
+            {/* )} */}
           </Box>
           <br />
-          <Box flex={5} w="95%">
-            <FormControl id="taxeligibility" isRequired={true}>
+          <Box flex={5} w='95%'>
+            <FormControl id='taxeligibility' isRequired={true}>
               <FormLabel>Tax Compliance Eligibility</FormLabel>
               <CheckboxGroup
-                colorScheme="teal"
+                colorScheme='teal'
                 value={taxEligibility}
                 onChange={handleTaxEligibilityChange}
                 size={"sm"}
               >
                 <Stack spacing={[1, 3]} direction={["column", "row"]}>
-                  <Checkbox value="80G">80 G (for 50% tax benefits)</Checkbox>
-                  <Checkbox value="35AC">
+                  <Checkbox value='80G'>80 G (for 50% tax benefits)</Checkbox>
+                  <Checkbox value='35AC'>
                     35 AC (for 100% tax benefits)
                   </Checkbox>
-                  <Checkbox value="12AA">
+                  <Checkbox value='12AA'>
                     12 AA (Tax exemption for NGO income)
                   </Checkbox>
-                  <Checkbox value="FCRA">
+                  <Checkbox value='FCRA'>
                     FCRA (Eligible for international funding)
                   </Checkbox>
                 </Stack>
@@ -649,24 +652,24 @@ const AddProfile = () => {
             </FormControl>
           </Box>
           <br />
-          <Box flex={5} w="95%">
-            <FormControl id="certificate" isRequired>
+          <Box flex={5} w='95%'>
+            <FormControl id='certificate' isRequired>
               <FormLabel>Company Registration Certificate</FormLabel>
               <Input
-                type="file"
+                type='file'
                 p={1.5}
-                accept="application/pdf"
+                accept='application/pdf'
                 onChange={handleFileChange}
               />
             </FormControl>
           </Box>
           <br />
           <Button
-            colorScheme="blue"
-            bg="white"
-            color="skyblue"
+            colorScheme='blue'
+            bg='white'
+            color='skyblue'
             width={"20%"}
-            boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+            boxShadow='0px 2px 4px rgba(0, 0, 0, 0.1)'
             _hover={{ boxShadow: "0px 4px 6px skyblue" }}
             _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
             onClick={submitHandler}

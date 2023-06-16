@@ -204,7 +204,7 @@ const ShowProfile = () => {
                       <Text fontSize={{ base: "lg", md: "lg" }}>
                         <strong>Tax Comp:</strong>{" "}
                         <span style={{ marginLeft: "13%" }}>
-                          {profileData.profile.tax_comp}
+                          {profileData.profile.tax_comp.join(",")}
                         </span>
                       </Text>
                       <Divider height={"2"} borderColor={"transparent"} />
@@ -270,7 +270,7 @@ const ShowProfile = () => {
                         marginLeft: "10%",
                       }}
                     >
-                      {JSON.parse(profileData.profile.sectors).map((sector) => (
+                      {profileData.profile.sectors.map((sector) => (
                         <p
                           style={{
                             cursor: "default",
