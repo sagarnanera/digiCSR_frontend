@@ -39,6 +39,12 @@ import {
   Thead,
   TableCaption,
   Table,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Select,
 } from "@chakra-ui/react";
 import {
   AddIcon,
@@ -48,7 +54,7 @@ import {
   EditIcon,
   PhoneIcon,
 } from "@chakra-ui/icons";
-import { fetchStates } from "../../geoData";
+import { fetchStates, fetchCities, fetchStateName } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
 import { useNavigate } from "react-router-dom";
 import NgoNavigation from "../ngoNavigation";
@@ -62,6 +68,7 @@ const EditNgoProfile = () => {
   const [states, setStates] = useState([]);
   const [sector, setSector] = useState([]);
   const [CSRBudget, setCSRBudget] = useState();
+  const [personPhone, setPersonPhone] = useState();
   const [userId, setUserId] = useState("");
   const [selectedStates, setSelectedStates] = useState([]);
   const [isSectorDropdownOpen, setIsSectorDropdownOpen] = useState(false);
@@ -74,11 +81,15 @@ const EditNgoProfile = () => {
   const toast = useToast();
   // const [allfields, setAllfields] = useState(false);
   const [isImageChanged, setIsImageChanged] = useState(false);
-
+  const [establishmentyear, setEstablishmentYear] = useState(1);
   const [boardMembers, setBoardMembers] = useState([]);
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
   const [showModal, setShowModal] = useState(false);
   const [currentMemberIndex, setCurrentMemberIndex] = useState(null);
+  const [locationState, setlocationState] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedcities, setselectedCities] = useState([]);
+  const [pincode, setPincode] = useState();
 
   const handleAddMember = () => {
     setShowModal(true);
@@ -230,6 +241,8 @@ const EditNgoProfile = () => {
       setCSRBudget(profileData.profile.csr_budget);
       setSector(profileData.profile.sectors);
       setSelectedStates(profileData.profile.operation_area);
+      setPersonPhone(profileData.profile.phone);
+      setPincode(profileData.profile.location.pincode);
       const defaultMembers = profileData.profile.board_members.map(
         (member) => ({
           name: member.bm_name,
@@ -244,6 +257,15 @@ const EditNgoProfile = () => {
     }
   }, [profileData]);
 
+  const handlelocationStateChange = async (stateId) => {
+    const fetchedCities = await fetchCities(stateId);
+    const fetchedstateName = await fetchStateName(stateId);
+    setlocationState(fetchedstateName);
+    setCities(fetchedCities);
+  };
+  const handlecityChange = async (cityId) => {
+    setselectedCities(cityId);
+  };
   const handleChange = (event) => {
     setNgoSummary(event.target.value);
     const textareaLineHeight = 24; // Set the line height of the textarea
@@ -258,12 +280,6 @@ const EditNgoProfile = () => {
       setRows(currentRows);
     }
   };
-
-  useEffect(() => {}, [selectedStates]);
-
-  useEffect(() => {
-    setSelectedSectorText(sector.join(", "));
-  }, [sector]);
 
   const handleStateChange = (selectedItems) => {
     setSelectedStates(selectedItems);
@@ -329,6 +345,11 @@ const EditNgoProfile = () => {
       !NgoSummary ||
       !sector ||
       !selectedStates ||
+      !locationState ||
+      !selectedcities ||
+      (establishmentyear && establishmentyear.length !== 4) ||
+      (personPhone && personPhone.length !== 10) ||
+      !(pincode && pincode.length <= 10 && pincode.length >= 5) ||
       boardMembers.length === 0
     ) {
       toast({
@@ -350,6 +371,11 @@ const EditNgoProfile = () => {
       formData.append("ngo_name", NgoName);
       formData.append("summary", NgoSummary);
       formData.append("csr_budget", CSRBudget);
+      formData.append("city", selectedcities);
+      formData.append("state", locationState);
+      formData.append("pincode", pincode);
+      formData.append("phone", personPhone);
+      formData.append("establishment_year", establishmentyear);
       selectedStates.forEach((state) => {
         formData.append("operation_area", state);
       });
@@ -453,10 +479,9 @@ const EditNgoProfile = () => {
       >
         <VStack spacing={4} w="98%">
           <Flex
+            w="95%"
             flexWrap="wrap"
             justifyContent={{ base: "center", md: "flex-start" }}
-            flex={5}
-            w="95%"
           >
             <Box mr={"1%"} mt={"2%"}>
               <label htmlFor="profile-image">
@@ -505,18 +530,34 @@ const EditNgoProfile = () => {
                 </div>
               </label>
             </Box>
-            <Box
-              w={{ base: "100%", md: "33.5vw" }}
-              mr={{ base: 0, md: "34.5vw" }}
-            >
-              <FormControl id="Ngo" isRequired={true}>
-                <FormLabel>Ngo Name</FormLabel>
+
+            <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+              <FormControl id="companyname" isRequired={true}>
+                <FormLabel>Company Name</FormLabel>
                 <Input
                   type="text"
-                  placeholder="Enter Ngo's Full Name"
+                  placeholder="Enter Company's Full Name"
                   value={NgoName || ""}
                   onChange={(e) => setNgoName(e.target.value)}
                 />
+              </FormControl>
+            </Box>
+            <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
+              <FormControl id="year" isRequired={true}>
+                <FormLabel>Year of Establishment</FormLabel>
+                <NumberInput>
+                  <NumberInputField
+                    placeholder="yyyy"
+                    value={establishmentyear || null}
+                    onChange={(e) => setEstablishmentYear(e.target.value)}
+                    maxLength={4}
+                    minLength={4}
+                  />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
               </FormControl>
             </Box>
           </Flex>
@@ -539,17 +580,13 @@ const EditNgoProfile = () => {
             </FormControl>
           </Flex>
           <br />
-
           <Flex
             flexWrap="wrap"
             justifyContent={{ base: "center", md: "flex-start" }}
             flex={5}
             w="95%"
           >
-            <Box
-              w={{ base: "90%", md: "33.5vw" }}
-              mr={{ base: 0, md: "34.5vw" }}
-            >
+            <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
               <FormControl id="AmountRfp" isRequired>
                 <FormLabel>CSR Budget of this year</FormLabel>
                 <Input
@@ -562,8 +599,89 @@ const EditNgoProfile = () => {
                 />
               </FormControl>
             </Box>
+            <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+              <FormControl id="phoneno" isRequired={true}>
+                <FormLabel>Phone No</FormLabel>
+                <InputGroup>
+                  <InputLeftElement>
+                    <PhoneIcon color="gray.300" />
+                  </InputLeftElement>
+                  <Input
+                    type="tel"
+                    placeholder="Phone number"
+                    value={personPhone || null}
+                    onChange={(e) => setPersonPhone(e.target.value)}
+                    minLength={10}
+                    maxLength={10}
+                  />
+                </InputGroup>
+              </FormControl>
+            </Box>
           </Flex>
           <br />
+          <Box flex={5} w="95%">
+            <FormControl isRequired={true}>
+              <FormLabel>Location of the Company</FormLabel>
+              <Flex
+                w="100%"
+                flexWrap="wrap"
+                justifyContent={{ base: "center", md: "flex-start" }}
+              >
+                <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+                  <FormControl>
+                    <FormLabel htmlFor="state">State:</FormLabel>
+                    <Select
+                      id="state"
+                      onChange={(e) =>
+                        handlelocationStateChange(e.target.value)
+                      }
+                    >
+                      <option value="">Select a state</option>
+                      {states.map((state) => (
+                        <option key={state.geonameId} value={state.geonameId}>
+                          {state.name}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Box
+                  flex={{ base: "100%", md: "5" }}
+                  mr={{ base: 0, md: 10 }}
+                  ml={{ base: 0, md: 10 }}
+                >
+                  <FormControl>
+                    <FormLabel htmlFor="city">City:</FormLabel>
+                    <Select
+                      id="city"
+                      onChange={(e) => handlecityChange(e.target.value)}
+                    >
+                      <option value="">Select a city</option>
+                      {cities.map((city) => (
+                        <option key={city.geonameId} value={city.name}>
+                          {city.name}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
+                  <FormControl id="pincode" isRequired={true}>
+                    <FormLabel>Pincode</FormLabel>
+                    <Input
+                      type="number"
+                      placeholder="Enter Pincode"
+                      value={pincode || null}
+                      onChange={(e) => setPincode(e.target.value)}
+                      minLength={5}
+                      maxLength={10}
+                    />
+                  </FormControl>
+                </Box>
+              </Flex>
+            </FormControl>
+          </Box>
+
           <Flex
             flexWrap="wrap"
             justifyContent={{ base: "center", md: "flex-start" }}

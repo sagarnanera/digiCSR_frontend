@@ -9,6 +9,7 @@ import {
   Icon,
   Divider,
   VStack,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
@@ -125,7 +126,12 @@ const ShowProfile = () => {
         >
           {profileData ? (
             <div>
-              <Box mr={"1%"} display={"flex"} justifyContent={"center"}>
+              <Box
+                mr={"1%"}
+                mt={"2%"}
+                display={"flex"}
+                justifyContent={"center"}
+              >
                 <label htmlFor="profile-image">
                   <div
                     style={{
@@ -159,20 +165,19 @@ const ShowProfile = () => {
               <Box
                 maxW="100vw"
                 mx="auto"
-                mt={1}
+                mt={4}
                 borderWidth="1px"
                 p={4}
-                bg={"rgba(115, 190, 246, 0.4)"}
+                bg="#f2f2f2"
                 borderRadius="md"
                 boxShadow="md"
                 fontFamily={"serif"}
+                overflow={"auto"}
               >
                 <Text fontSize={{ base: "xl", md: "xl" }}>
                   <strong>Company Summary:</strong>{" "}
                 </Text>
-                <Text ml={4} fontSize={{ base: "sm", md: "lg" }}>
-                  {profileData.profile.summary}
-                </Text>
+                <p style={{ padding: "1%" }}>{profileData.profile.summary}</p>
                 <br />
                 <Text fontSize={{ base: "xl", md: "xl" }}>
                   <strong>Company Info:</strong>{" "}
@@ -183,13 +188,21 @@ const ShowProfile = () => {
         <strong>Profile:</strong>
       </Text> */}
                   <HStack
-                    ml={{ base: "10%", md: "10%" }}
+                    ml={{ base: "5%", md: "5%" }}
                     display={"flex"}
                     justifyContent={"start"}
                     flexWrap={"wrap"}
-                    gap={{ base: "20%", md: "20%" }}
+                    // gap={{ base: "10%", md: "10%" }}
                   >
-                    <Box mr={{ base: "5%", md: "5%" }}>
+                    <Box
+                      mr={{ base: "4%", md: "4%" }}
+                      backgroundColor="rgb(106, 200, 230, 0.05)"
+                      borderWidth="1px"
+                      borderColor="skyblue"
+                      padding={"2% 11%"}
+                      ml={"1%"}
+                      borderRadius={"10px"}
+                    >
                       <Text fontSize={{ base: "lg", md: "lg" }}>
                         <strong>Establishment Year:</strong>{" "}
                         <span style={{ marginLeft: "5%" }}>
@@ -214,70 +227,109 @@ const ShowProfile = () => {
                         {`${profileData.profile.location.city}, ${profileData.profile.location.state}, ${profileData.profile.location.pincode}`}
                       </Text>
                     </Box>
-                    <Box mr={{ base: "10%", md: "10%" }}>
+                    <Box
+                      mr={{ base: "5%", md: "5%" }}
+                      backgroundColor="rgb(106, 200, 230, 0.05)"
+                      borderWidth="1px"
+                      borderColor="skyblue"
+                      padding={"2% 12%"}
+                      ml={"1%"}
+                      borderRadius={"10px"}
+                      fontSize={"lg"}
+                    >
                       <strong>Communication Person:</strong>{" "}
-                      <Text fontSize={{ base: "lg", md: "lg" }}>
-                        <Icon as={FiUser} boxSize={4} mr={5} />{" "}
-                        {`${profileData.profile.comunication_person.cp_name} (${profileData.profile.comunication_person.cp_designation})`}
-                      </Text>
-                      <Divider height={"2"} borderColor={"transparent"} />
-                      <Text fontSize={{ base: "lg", md: "lg" }}>
-                        <Icon as={FiMail} boxSize={4} mr={5} />{" "}
-                        {profileData.profile.comunication_person.cp_email}
-                      </Text>
-                      <Divider height={"2"} borderColor={"transparent"} />
-                      <Text fontSize={{ base: "lg", md: "lg" }}>
-                        <Icon as={FiPhone} boxSize={4} mr={5} />{" "}
-                        {profileData.profile.comunication_person.cp_phone}
-                      </Text>
+                      <Divider
+                        height={"1"}
+                        ml={"1%"}
+                        mb={"2"}
+                        w={"98%"}
+                        borderColor={"skyblue"}
+                      />
+                      <Box>
+                        <Text fontSize={{ base: "lg", md: "lg" }}>
+                          <Icon as={FiUser} boxSize={4} mr={5} />{" "}
+                          {`${profileData.profile.comunication_person.cp_name} (${profileData.profile.comunication_person.cp_designation})`}
+                        </Text>
+                        <Divider height={"2"} borderColor={"transparent"} />
+                        <Text fontSize={{ base: "lg", md: "lg" }}>
+                          <Icon as={FiMail} boxSize={4} mr={5} />{" "}
+                          {profileData.profile.comunication_person.cp_email}
+                        </Text>
+                        <Divider height={"2"} borderColor={"transparent"} />
+                        <Text fontSize={{ base: "lg", md: "lg" }}>
+                          <Icon as={FiPhone} boxSize={4} mr={5} />{" "}
+                          {profileData.profile.comunication_person.cp_phone}
+                        </Text>
+                      </Box>
                     </Box>
                   </HStack>
                   <br></br>
                   <Text fontSize={{ base: "lg", md: "lg" }}>
-                    <strong
-                      style={{ display: "flex", justifyContent: "center" }}
+                    <Box
+                      backgroundColor="rgb(106, 200, 230, 0.05)"
+                      borderWidth="1px"
+                      borderColor="skyblue"
+                      padding={"2%"}
+                      paddingTop={"1"}
+                      ml={"1%"}
+                      borderRadius={"10px"}
+                      width={"98%"}
                     >
-                      Sectors:
-                    </strong>
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                      <VStack>
-                        <Divider
-                          borderBottomWidth="10px"
-                          borderColor="skyblue"
-                          width={"115px"}
-                          mb="-9%" // Apply negative margin to remove the gap
-                          mt={"-12%"}
-                        />
-                        <Divider
-                          borderBottomWidth="2px"
-                          borderColor="blue"
-                          width={"115px"}
-                        />
-                      </VStack>
-                    </div>
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(2, minmax(20%, 1fr))",
-                        gap: "10px",
-                        whiteSpace: "wrap",
-                        maxWidth: "100%",
-                        overflow: "auto-fit",
-                        marginLeft: "10%",
-                      }}
-                    >
-                      {profileData.profile.sectors.map((sector) => (
-                        <p
-                          style={{
-                            cursor: "default",
-                            marginLeft: 0,
-                            fontSize: { base: "sm", md: "lg" },
-                          }}
-                        >
-                          {sector}
-                        </p>
-                      ))}
-                    </div>
+                      <Text
+                        style={{ display: "flex", justifyContent: "center" }}
+                      >
+                        <strong>Cause Area(CSR Sector Prefered):</strong>{" "}
+                      </Text>
+                      <Divider
+                        height={"1"}
+                        ml={"1%"}
+                        mb={"3"}
+                        w={"98%"}
+                        borderColor={"skyblue"}
+                      />
+                      <Box
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(3, minmax(20%, 1fr))",
+                          gap: "20px",
+                          whiteSpace: "wrap",
+                          maxWidth: "100%",
+                          overflow: "auto-fit",
+                          marginLeft: "0%",
+                        }}
+                      >
+                        {profileData.profile.sectors.map((sector, index) => (
+                          <Box key={sector} display="flex" alignItems="center">
+                            {index % 3 !== 0 && (
+                              <div
+                                style={{
+                                  borderLeft: "1px solid black",
+                                  height: "120%",
+                                  marginRight: "60px",
+                                  marginLeft: "10px",
+                                }}
+                              />
+                            )}
+                            <Tooltip
+                              style={{ zoom: "0.8" }}
+                              label={sector.length > 30 ? sector : ""}
+                            >
+                              <p
+                                style={{
+                                  cursor: "default",
+                                  marginLeft: 0,
+                                  fontSize: { base: "sm", md: "lg" },
+                                }}
+                              >
+                                {sector.length > 30
+                                  ? `${sector.slice(0, 30)}...`
+                                  : sector}
+                              </p>
+                            </Tooltip>
+                          </Box>
+                        ))}
+                      </Box>
+                    </Box>
                   </Text>
                   <br />
                   <HStack
@@ -294,6 +346,7 @@ const ShowProfile = () => {
                       _hover={{ boxShadow: "0px 4px 6px white" }}
                       _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
                       mt={4}
+                      mb={4}
                       onClick={fetchCertificate}
                     >
                       Show Certificate
@@ -303,7 +356,7 @@ const ShowProfile = () => {
                       color="skyblue"
                       w={"190px"}
                       boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
-                      _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+                      _hover={{ boxShadow: "0px 4px 6px rgb(45, 38, 38)" }}
                       _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
                       mt={4}
                       onClick={submitHandler}

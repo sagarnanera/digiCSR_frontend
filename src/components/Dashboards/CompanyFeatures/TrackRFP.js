@@ -265,12 +265,12 @@ const TrackRFP = () => {
             </div>
             <div className="AddRFP">
               <Button
-                bg="white"
-                color="skyblue"
+                bg="skyblue"
+                color="white"
                 w={"15vw"}
                 mr={"5vw"}
                 boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
-                _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+                _hover={{ boxShadow: "0px 4px 6px rgb(45, 38, 38)" }}
                 _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
                 onClick={() => {
                   handleRaiseClick();
