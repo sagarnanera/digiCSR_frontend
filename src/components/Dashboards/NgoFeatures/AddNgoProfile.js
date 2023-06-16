@@ -67,8 +67,6 @@ const AddNgoProfile = () => {
   const [userId, setUserId] = useState("");
   const [selectedStates, setSelectedStates] = useState([]);
   const [isSectorDropdownOpen, setIsSectorDropdownOpen] = useState(false);
-  const [isTextAreaVisible, setIsTextAreaVisible] = useState(false);
-  const [isSectorTextAreaVisible, setIsSectorTextAreaVisible] = useState(false);
   const [selectedStatesText, setSelectedStatesText] = useState("");
   const [selectedSectorText, setSelectedSectorText] = useState("");
   const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
@@ -193,16 +191,9 @@ const AddNgoProfile = () => {
     getStatesAndCompanyId();
   }, []);
 
-  useEffect(() => {
-    setSelectedStatesText(selectedStates.join(", "));
-  }, [selectedStates]);
-
-  useEffect(() => {
-    setSelectedSectorText(sector.join(", "));
-  }, [sector]);
-
   const handleStateChange = (selectedItems) => {
     setSelectedStates(selectedItems);
+    setSelectedStatesText(selectedItems.join(", "));
   };
 
   const handleAllChecked = (e) => {
@@ -217,16 +208,15 @@ const AddNgoProfile = () => {
 
   const handleSectorChange = (selectedItems) => {
     setSector(selectedItems);
+    setSelectedSectorText(selectedItems.join(", "));
   };
 
   const handleToggleSectorDropdown = () => {
     setIsSectorDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
-    setIsSectorTextAreaVisible(!isSectorTextAreaVisible);
   };
 
   const handleToggleStateDropdown = () => {
     setIsStateDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
-    setIsTextAreaVisible(!isTextAreaVisible);
   };
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -536,7 +526,7 @@ const AddNgoProfile = () => {
 
                     <MenuList maxH="200px" overflowY="auto">
                       <CheckboxGroup
-                        colorScheme="teal"
+                        colorScheme="blue"
                         value={selectedStates}
                         onChange={handleStateChange}
                       >
@@ -552,27 +542,26 @@ const AddNgoProfile = () => {
                   </Menu>
                 </Box>
               </FormControl>
-              {isTextAreaVisible && (
-                <Tooltip
-                  label={selectedStates.join(", ")}
-                  isDisabled={selectedStates.length <= 6}
-                >
-                  <Textarea
-                    placeholder="Selected States"
-                    isReadOnly
-                    rows={2}
-                    height="fit-content"
-                    textOverflow="ellipsis"
-                    resize="none"
-                  >
-                    {selectedStates.length <= 6
+              <Tooltip
+                label={selectedStates.join(", ")}
+                isDisabled={selectedStates.length <= 6}
+              >
+                <Textarea
+                  placeholder="Selected States"
+                  isReadOnly
+                  rows={2}
+                  height="fit-content"
+                  textOverflow="ellipsis"
+                  resize="none"
+                  value={
+                    selectedStates.length <= 6
                       ? selectedStatesText
                       : `${selectedStates.slice(0, 6)},..+${
                           selectedStates.length - 6
-                        } more`}
-                  </Textarea>
-                </Tooltip>
-              )}
+                        } more`
+                  }
+                ></Textarea>
+              </Tooltip>
             </Box>
             <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
               <FormControl isRequired={true}>
@@ -605,7 +594,7 @@ const AddNgoProfile = () => {
                     </MenuButton>
                     <MenuList maxH="200px" overflowY="auto">
                       <CheckboxGroup
-                        colorScheme="teal"
+                        colorScheme="blue"
                         value={sector}
                         onChange={handleSectorChange}
                       >
@@ -621,25 +610,24 @@ const AddNgoProfile = () => {
                   </Menu>
                 </Box>
               </FormControl>
-              {isSectorTextAreaVisible && (
-                <Tooltip
-                  label={sector.join(", ")}
-                  isDisabled={sector.length <= 5}
-                >
-                  <Textarea
-                    placeholder="Selected Sectors"
-                    isReadOnly
-                    rows={2}
-                    height="fit-content"
-                    textOverflow="ellipsis"
-                    resize="none"
-                  >
-                    {sector.length <= 5
+              <Tooltip
+                label={sector.join(", ")}
+                isDisabled={sector.length <= 5}
+              >
+                <Textarea
+                  placeholder="Selected Sectors"
+                  isReadOnly
+                  rows={2}
+                  height="fit-content"
+                  textOverflow="ellipsis"
+                  resize="none"
+                  value={
+                    sector.length <= 5
                       ? selectedSectorText
-                      : `${sector.slice(0, 5)},..+${sector.length - 5} more`}
-                  </Textarea>
-                </Tooltip>
-              )}
+                      : `${sector.slice(0, 5)},..+${sector.length - 5} more`
+                  }
+                ></Textarea>
+              </Tooltip>
             </Box>
           </Flex>
           <br />
