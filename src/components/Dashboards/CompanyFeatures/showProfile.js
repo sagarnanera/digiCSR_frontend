@@ -72,10 +72,6 @@ const ShowProfile = () => {
       fetchLogo();
       fetchCompanyProfile(); // runs when id is non-empty string
     }
-    // return () => {
-    //   // Clean up the created object URL
-    //   URL.revokeObjectURL(image);
-    // };
   }, [companyId]);
 
   const fetchCertificate = async () => {
@@ -175,7 +171,7 @@ const ShowProfile = () => {
                   <strong>Company Summary:</strong>{" "}
                 </Text>
                 <Text ml={4} fontSize={{ base: "sm", md: "lg" }}>
-                  {JSON.parse(profileData.profile.summary)}
+                  {profileData.profile.summary}
                 </Text>
                 <br />
                 <Text fontSize={{ base: "xl", md: "xl" }}>
@@ -270,7 +266,7 @@ const ShowProfile = () => {
                         marginLeft: "10%",
                       }}
                     >
-                      {JSON.parse(profileData.profile.sectors).map((sector) => (
+                      {profileData.profile.sectors.map((sector) => (
                         <p
                           style={{
                             cursor: "default",

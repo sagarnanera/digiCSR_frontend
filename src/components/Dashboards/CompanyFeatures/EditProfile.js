@@ -55,7 +55,6 @@ const EditProfile = () => {
   const [personEmail, setPersonEmail] = useState();
   const [personPhone, setPersonPhone] = useState();
   const [personDesignation, setPersonDesignation] = useState();
-  const [userId, setUserId] = useState("");
   const [Sector, setSector] = useState([]);
   const [taxEligibility, setTaxEligibility] = useState([]);
   const [states, setStates] = useState([]);
@@ -82,67 +81,76 @@ const EditProfile = () => {
       const fetchedStates = await fetchStates();
       setStates(fetchedStates);
     };
-    // Retrieve the user's ID from localStorage
-    const token = localStorage.getItem("CompanyAuthToken");
-    const decodedToken = jwt_decode(token);
-    // Set the user's ID in the state variable
-    setUserId(decodedToken._id);
     getStates();
   }, []);
 
-  const fetchCompanyProfile = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:4000/company/profile/${userId}`
-      );
-      const data = await response.json();
-      if (data.success) {
-        setProfileData(data.data);
-      } else {
-        console.log(data.message);
-        throw new Error("Failed to Get Profile.please Reload");
-      }
-      setCompanyName(profileData.company_name);
-      setPincode(profileData.profile.location.pincode);
-      setCompanySummary(JSON.parse(profileData.profile.summary));
-      setPersonName(profileData.profile.comunication_person.cp_name);
-      setPersonEmail(profileData.profile.comunication_person.cp_email);
-      setPersonDesignation(
-        profileData.profile.comunication_person.cp_designation
-      );
-      setPersonPhone(profileData.profile.comunication_person.cp_phone);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-  useEffect(() => {
-    const fetchLogo = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:4000/company/logo/${companyId}`
-        );
+  
+ useEffect(() => {
+   const fetchCompanyProfile = async () => {
+     try {
+       const response = await fetch(
+         `http://localhost:4000/company/profile/${companyId}`
+       );
+       const data = await response.json();
+       if (data.success) {
+         setProfileData(data.data);
+       } else {
+         console.log(data.message);
+         throw new Error("Failed to Get Profile. Please Reload");
+       }
+     } catch (error) {
+       console.log(error.message);
+     }
+   };
 
-        const base64Data = await response.text();
+   const fetchLogo = async () => {
+     try {
+       const response = await fetch(
+         `http://localhost:4000/company/logo/${companyId}`
+       );
 
-        const byteCharacters = atob(base64Data.split(",")[1]);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
+       const base64Data = await response.text();
 
-        const blob = new Blob([byteArray], { type: "image/png" });
-        const imageUrl = URL.createObjectURL(blob);
-        setImage(imageUrl);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    if (companyId && companyId !== "") {
-      fetchLogo();
-    }
-    fetchCompanyProfile();
-  });
+       const byteCharacters = atob(base64Data.split(",")[1]);
+       const byteNumbers = new Array(byteCharacters.length);
+       for (let i = 0; i < byteCharacters.length; i++) {
+         byteNumbers[i] = byteCharacters.charCodeAt(i);
+       }
+       const byteArray = new Uint8Array(byteNumbers);
+
+       const blob = new Blob([byteArray], { type: "image/png" });
+       const imageUrl = URL.createObjectURL(blob);
+       setImage(imageUrl);
+     } catch (error) {
+       console.error(error);
+     }
+   };
+
+   if (companyId && companyId !== "") {
+     fetchLogo();
+     fetchCompanyProfile();
+   }
+ }, [companyId]);
+
+ useEffect(() => {
+   if (profileData) {
+     setCompanyName(profileData.company_name);
+     setPincode(profileData.profile.location.pincode);
+     setCompanySummary(profileData.profile.summary);
+     setEstablishmentYear(profileData.profile.establishment_year)
+     setPersonName(profileData.profile.comunication_person.cp_name);
+     setPersonEmail(profileData.profile.comunication_person.cp_email);
+     setPersonDesignation(
+       profileData.profile.comunication_person.cp_designation
+     );
+     setselectedStates(profileData.profile.location.state);
+     setselectedCities(profileData.profile.location.city);
+     setPersonPhone(profileData.profile.comunication_person.cp_phone);
+     setSector(profileData.profile.sectors);
+     setTaxEligibility(profileData.profile.tax_comp)
+   }
+ }, [profileData]);
+
 
   const handleStateChange = async (stateId) => {
     const fetchedCities = await fetchCities(stateId);
@@ -280,11 +288,11 @@ const EditProfile = () => {
       return;
     }
     try {
-      const url = `http://localhost:4000/company/add-profile/${userId}`; // Replace with your API endpoint URL
+      const url = `http://localhost:4000/company/add-profile`; // Replace with your API endpoint URL
 
       const formData = new FormData();
       formData.append("company_name", companyName);
-      formData.append("summary", JSON.stringify(CompanySummary));
+      formData.append("summary", CompanySummary);
       formData.append("city", selectedcities);
       formData.append("state", selectedstates);
       formData.append("pincode", pincode);
@@ -293,14 +301,21 @@ const EditProfile = () => {
       formData.append("cp_email", personEmail);
       formData.append("cp_designation", personDesignation);
       formData.append("cp_phone", personPhone);
-      formData.append("tax_comp", taxEligibility);
-      formData.append("sectors", JSON.stringify(Sector));
+      taxEligibility.forEach((tax) => {
+        formData.append("tax_comp", tax);
+      });
+      Sector.forEach((sectorItem) => {
+        formData.append("sectors", sectorItem);
+      });
       if (isImageChanged) {
         const companyLogoFile = new File([image], "company_logo.jpg");
         formData.append("company_logo", companyLogoFile);
       }
       const response = await fetch(url, {
         method: "POST",
+        headers: {
+          authorization: `${localStorage.getItem("CompanyAuthToken")}`,
+        },
         body: formData,
       });
       const data = await response.json();

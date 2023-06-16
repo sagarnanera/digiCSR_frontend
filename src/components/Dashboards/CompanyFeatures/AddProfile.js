@@ -214,7 +214,7 @@ const AddProfile = () => {
       return;
     }
     try {
-      const url = `http://localhost:4000/company/add-profile/${userId}`; // Replace with your API endpoint URL
+      const url = `http://localhost:4000/company/add-profile`; // Replace with your API endpoint URL
       const registrationCertificateFile = new File(
         [certificate],
         "registration_certificate.pdf"
@@ -222,7 +222,7 @@ const AddProfile = () => {
       const companyLogoFile = new File([image], "company_logo.jpg");
       const formData = new FormData();
       formData.append("company_name", companyName);
-      formData.append("summary", JSON.stringify(CompanySummary));
+      formData.append("summary", CompanySummary);
       formData.append("city", selectedcities);
       formData.append("state", selectedstates);
       formData.append("pincode", pincode);
@@ -231,7 +231,9 @@ const AddProfile = () => {
       formData.append("cp_email", personEmail);
       formData.append("cp_designation", personDesignation);
       formData.append("cp_phone", personPhone);
-      formData.append("tax_comp", taxEligibility);
+      taxEligibility.forEach((tax) => {
+        formData.append("tax_comp", tax);
+      });
       Sector.forEach((sectorItem) => {
         formData.append("sectors", sectorItem);
       });
@@ -240,6 +242,9 @@ const AddProfile = () => {
 
       const response = await fetch(url, {
         method: "POST",
+        headers: {
+          authorization: `${localStorage.getItem("CompanyAuthToken")}`,
+        },
         body: formData,
       });
       const data = await response.json();

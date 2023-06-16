@@ -232,6 +232,8 @@ const EditNgoProfile = () => {
       setNgoName(profileData.NGO_name);
       setNgoSummary(profileData.profile.summary);
       setCSRBudget(profileData.profile.csr_budget);
+      setSector(profileData.profile.sectors);
+      setSelectedStates(profileData.profile.operation_area)
       const defaultMembers = profileData.profile.board_members.map(
         (member) => ({
           name: member.bm_name,
@@ -245,7 +247,6 @@ const EditNgoProfile = () => {
       setBoardMembers(defaultMembers);
     }
   }, [profileData]);
-
 
   const handleChange = (event) => {
     setNgoSummary(event.target.value);
@@ -348,26 +349,11 @@ const EditNgoProfile = () => {
     }
 
     try {
-      const url = `http://localhost:4000/NGO/add-profile/${userId}`;
+      const url = `http://localhost:4000/NGO/add-profile`;
 
-      // const formattedBoardMembers = boardMembers.map((member) => ({
-      //   bm_name: member.name,
-      //   bm_gender: member.gender,
-      //   bm_din: member.dinNumber,
-      //   bm_phone: member.phoneNo,
-      //   bm_designation: member.designation,
-      // }));
-      console.log(
-        NgoName,
-        NgoSummary,
-        // formattedBoardMembers,
-        CSRBudget,
-        selectedStates,
-        sector
-      );
       const formData = new FormData();
 
-      formData.append("NGO_name", NgoName);
+      formData.append("ngo_name", NgoName);
       formData.append("summary", NgoSummary);
       formData.append("csr_budget", CSRBudget);
       selectedStates.forEach((state) => {
@@ -396,18 +382,10 @@ const EditNgoProfile = () => {
 
       const response = await fetch(url, {
         method: "POST",
+        headers: {
+          authorization: `${localStorage.getItem("NgoAuthToken")}`,
+        },
         body: formData,
-        // headers: {
-        //   "Content-type": "application/json",
-        // },
-        // body: JSON.stringify({
-        //   NGO_name: NgoName,
-        //   summary: NgoSummary,
-        //   board_members: formattedBoardMembers,
-        //   csr_budget: CSRBudget,
-        //   operation_area: selectedStates,
-        //   sectors: sector,
-        // }),
       });
 
       const data = await response.json();

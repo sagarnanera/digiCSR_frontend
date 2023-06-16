@@ -282,11 +282,16 @@ const AddNgoProfile = () => {
       const formData = new FormData();
       const ngoLogoFile = new File([image], "ngo_logo.jpg");
 
-      formData.append("NGO_name", NgoName);
+      formData.append("ngo_name", NgoName);
       formData.append("summary", NgoSummary);
       formData.append("csr_budget", CSRBudget);
-      formData.append("operation_area", selectedStates);
-      formData.append("sectors", sector);
+      selectedStates.forEach((state) => {
+        formData.append("operation_area", state);
+      });
+
+      sector.forEach((sectorItem) => {
+        formData.append("sectors", sectorItem);
+      });
 
       // Append each board member as a separate form field
       boardMembers.forEach((member, index) => {
@@ -302,6 +307,9 @@ const AddNgoProfile = () => {
       formData.append("ngo_logo", ngoLogoFile);
       const response = await fetch(url, {
         method: "POST",
+        headers: {
+          authorization: `${localStorage.getItem("NgoAuthToken")}`,
+        },
         body: formData,
         // headers: {
         //   "Content-type": "application/json",
