@@ -22,10 +22,19 @@ import {
   Stack,
   Text,
   useDisclosure,
+  Heading,
 } from "@chakra-ui/react";
-import { ChevronDownIcon, ChevronUpIcon, FilterIcon } from "@chakra-ui/icons";
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  FilterIcon,
+  EmailIcon,
+  PhoneIcon,
+} from "@chakra-ui/icons";
 import { sectorOptions } from "../../sectorData";
 import { fetchStates } from "../../geoData";
+import { Icon } from "@chakra-ui/react";
+import { FiMapPin } from "react-icons/fi";
 const FilterableCardList = () => {
   const ngo = {
     ngoName: "Your NGO Name",
@@ -42,9 +51,32 @@ const FilterableCardList = () => {
     sectors: ["Sector 1", "Sector 2", "Sector 3", "Sector 4", "Sector 5"],
     ratings: 4.5,
   };
+  const [ngos, setNgos] = useState([]);
+  const [filteredResult, setResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filters, setFilters] = useState([]);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  useEffect(() => {
+    fetchNgos();
+  }, []);
+
+  const fetchNgos = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/NGO", {
+        headers: {
+          authorization: localStorage.getItem("CompanyAuthToken"), // Replace with your actual token
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setNgos(data.ngos);
+        setResult(data.ngos);
+      } else {
+        console.log("Error:", data.message);
+      }
+    } catch (error) {
+      console.log("Error:", error.message);
+    }
+  };
 
   // Function to handle search query changes
   const handleSearchQueryChange = (event) => {
@@ -52,48 +84,72 @@ const FilterableCardList = () => {
   };
 
   // Function to handle checkbox selection
-  const handleCheckboxChange = (selectedFilters) => {
-    setFilters(selectedFilters);
+  const handleCheckboxChange = (selectedSectors, selectedStates) => {
+    // console.warn(selectedSectors);
+    console.warn(selectedStates);
+    // Apply filters based on selected sectors and states
+    const filteredNgos = ngos.filter((ngo) => {
+      const sectorMatch =
+        selectedSectors.length === 0 ||
+        (ngo.profile.sectors &&
+          selectedSectors.some((sector) =>
+            ngo.profile.sectors.includes(sector)
+          ));
+      const stateMatch =
+        selectedStates.length === 0 ||
+        (ngo.profile.operation_area &&
+          selectedStates.some((state) =>
+            ngo.profile.operation_area.includes(state)
+          ));
+      console.log("State Match:", stateMatch);
+      return stateMatch && sectorMatch;
+    });
+
+    console.log("Filtered NGOs:", filteredNgos);
+    setResult(filteredNgos);
   };
 
   return (
-    <Box p={4}>
-      <InputGroup mb={4}>
-        <InputLeftElement pointerEvents='none' children={<SearchIcon />} />
-        <Input
-          type='text'
-          placeholder='Search'
-          value={searchQuery}
-          onChange={handleSearchQueryChange}
-        />
-      </InputGroup>
-      <Stack direction='row' spacing={4} mb={4}>
-        <FilterButton onOpen={onOpen} />
-      </Stack>
-      <Grid templateColumns='repeat(3, 1fr)' gap={3}>
-        {/* Replace the following dummy card components with your actual card components */}
-        <Card
-          ngoName={ngo.ngoName}
-          states={ngo.states}
-          sectors={ngo.sectors}
-          ratings={ngo.ratings}
-        />
-      </Grid>
+    <>
       <FilterDrawer isOpen={true} handleCheckboxChange={handleCheckboxChange} />
-    </Box>
-  );
-};
-
-const FilterButton = ({ onOpen }) => {
-  return (
-    <Button onClick={onOpen} colorScheme='blue'>
-      Open Filters
-    </Button>
+      <Box flex='1' p='4' marginLeft='auto'>
+        <InputGroup mb={4}>
+          <InputLeftElement pointerEvents='none' children={<SearchIcon />} />
+          <Input
+            type='text'
+            placeholder='Search'
+            value={searchQuery}
+            onChange={handleSearchQueryChange}
+          />
+        </InputGroup>
+        <Box display='flex' p='4'>
+          <Grid templateColumns='repeat(3, 1fr)' gap={3}>
+            {filteredResult
+              .filter((ngo) =>
+                ngo.ngo_name.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map((ngo) => (
+                <CardComponent
+                  key={ngo._id}
+                  name={ngo.ngo_name}
+                  email={ngo.email}
+                  phone={ngo.profile.phone}
+                  location={ngo.profile.location}
+                />
+              ))}
+          </Grid>
+        </Box>
+      </Box>
+    </>
   );
 };
 
 const FilterDrawer = ({ isOpen, onClose, handleCheckboxChange }) => {
   const [states, setStates] = useState([]);
+  const [selectedSectors, setSelectedSectors] = useState([]);
+  const [selectedStates, setSelectedStates] = useState([]);
+  const [isSectorDropdownOpen, setIsSectorDropdownOpen] = useState(false);
+  const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
 
   useEffect(() => {
     const getStates = async () => {
@@ -103,9 +159,6 @@ const FilterDrawer = ({ isOpen, onClose, handleCheckboxChange }) => {
     getStates();
   }, []);
 
-  const [isSectorDropdownOpen, setIsSectorDropdownOpen] = useState(false);
-  const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
-
   const handleToggleSectorDropdown = () => {
     setIsSectorDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
   };
@@ -113,163 +166,166 @@ const FilterDrawer = ({ isOpen, onClose, handleCheckboxChange }) => {
   const handleToggleStateDropdown = () => {
     setIsStateDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
   };
-  //   const btnCss = {};
+
+  const handleSectorChange = (selectedOptions) => {
+    setSelectedSectors(selectedOptions);
+  };
+
+  const handleStateChange = (selectedOptions) => {
+    setSelectedStates(selectedOptions);
+  };
+
+  const handleApplyFilters = () => {
+    handleCheckboxChange(selectedSectors, selectedStates);
+  };
 
   return (
-    <Drawer isOpen={isOpen} placement='left'>
-      <DrawerContent
+    <Box
+      left={0}
+      top={0}
+      h='100vh'
+      overflow='auto'
+      padding='1%'
+      w='45vh'
+      bg='linear-gradient(174.6deg, rgba(19, 15, 38, 0.6825) 1.74%, rgba(19, 15, 38, 0.75) 53.41%, rgba(19, 15, 38, 0.739748) 76.16%, rgba(19, 15, 38, 0.6075) 97.17%)'
+      boxShadow='md'
+    >
+      <Heading color='white' fontSize='4xl' marginBottom='0.7rem'>
+        Filters
+      </Heading>
+      <Button
+        alignContent='center'
+        w='90%'
+        rightIcon={
+          isSectorDropdownOpen ? <ChevronUpIcon /> : <ChevronDownIcon />
+        }
+        onClick={handleToggleSectorDropdown}
+        display='flex'
+        justifyContent='flex-start'
+        style={{ background: "rgba(255, 255, 255, 0.27)", color: "white" }}
+      >
+        Select Sector
+      </Button>
+      {isSectorDropdownOpen && (
+        <Stack
+          maxH='300px'
+          width='90%'
+          overflowY='auto'
+          spacing={2}
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.27)",
+            color: "white",
+            padding: "1rem",
+            marginTop: "0.5rem",
+            borderRadius: "5px",
+          }}
+        >
+          <CheckboxGroup
+            colorScheme='teal'
+            value={selectedSectors}
+            onChange={handleSectorChange}
+          >
+            {sectorOptions.map((option) => (
+              <Checkbox key={option.value} id={option.id} value={option.label}>
+                {option.label}
+              </Checkbox>
+            ))}
+          </CheckboxGroup>
+        </Stack>
+      )}
+      <Button
+        w='90%'
+        rightIcon={
+          isStateDropdownOpen ? <ChevronUpIcon /> : <ChevronDownIcon />
+        }
+        onClick={handleToggleStateDropdown}
+        display='flex'
+        justifyContent='flex-start'
         style={{
-          background:
-            "linear-gradient(174.6deg, rgba(19, 15, 38, 0.6825) 1.74%, rgba(19, 15, 38, 0.75) 53.41%, rgba(19, 15, 38, 0.739748) 76.16%, rgba(19, 15, 38, 0.6075) 97.17%)",
+          background: "rgba(255, 255, 255, 0.27)",
+          color: "white",
+          marginTop: "1rem",
         }}
       >
-        <DrawerHeader>Filters</DrawerHeader>
-        <DrawerBody>
-          <Button
-            w='100%'
-            rightIcon={
-              isSectorDropdownOpen ? <ChevronUpIcon /> : <ChevronDownIcon />
-            }
-            onClick={handleToggleSectorDropdown}
-            display='flex'
-            justifyContent='flex-start'
-            style={{ background: "rgba(255, 255, 255, 0.27)", color: "white" }}
-          >
-            Select Sector
-          </Button>
-          {isSectorDropdownOpen && (
-            <Stack
-              maxH='300px'
-              overflowY='auto'
-              spacing={2}
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.27)",
-                color: "white",
-                padding: "1rem",
-                marginTop: "0.5rem",
-                borderRadius: "5px",
-              }}
-            >
-              <CheckboxGroup
-                colorScheme='teal'
-                // value={sector}
-                // onChange={handleSectorChange}
-              >
-                {sectorOptions.map((option) => (
-                  <Checkbox
-                    key={option.value}
-                    id={option.id}
-                    value={option.label}
-                  >
-                    {option.label}
-                  </Checkbox>
-                ))}
-              </CheckboxGroup>
-            </Stack>
-          )}
-          <Button
-            w='100%'
-            rightIcon={
-              isStateDropdownOpen ? <ChevronUpIcon /> : <ChevronDownIcon />
-            }
-            onClick={handleToggleStateDropdown}
-            display='flex'
-            justifyContent='flex-start'
-            style={{
-              background: "rgba(255, 255, 255, 0.27)",
-              color: "white",
-              marginTop: "1rem",
-            }}
-          >
-            Select State
-          </Button>
+        Select State
+      </Button>
 
-          {isStateDropdownOpen && (
-            <Stack
-              maxH='400px'
-              overflowY='auto'
-              spacing={2}
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.27)",
-                color: "white",
-                padding: "1rem",
-                marginTop: "0.5rem",
-                borderRadius: "5px",
-              }}
-            >
-              <CheckboxGroup
-                colorScheme='teal'
-                // value={selectedStates}
-                // onChange={handleStateChange}
+      {isStateDropdownOpen && (
+        <Stack
+          maxH='400px'
+          overflowY='auto'
+          width='90%'
+          spacing={2}
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.27)",
+            color: "white",
+            padding: "1rem",
+            marginTop: "0.5rem",
+            borderRadius: "5px",
+          }}
+        >
+          <CheckboxGroup
+            colorScheme='teal'
+            value={selectedStates}
+            onChange={handleStateChange}
+          >
+            {states.map((state) => (
+              <Checkbox
+                key={state.adminCode1}
+                id={state.geonameId}
+                value={state.name}
               >
-                {states.map((state) => (
-                  <Checkbox
-                    key={state.adminCode1}
-                    id={state.geonameId}
-                    value={state.name}
-                  >
-                    {state.name}
-                  </Checkbox>
-                ))}
-              </CheckboxGroup>
-            </Stack>
-          )}
-        </DrawerBody>
-      </DrawerContent>
-    </Drawer>
+                {state.name}
+              </Checkbox>
+            ))}
+          </CheckboxGroup>
+        </Stack>
+      )}
+      <Button
+        w='90%'
+        display='flex'
+        justifyContent='center'
+        justifyItems='center'
+        style={{
+          background: "rgba(255, 255, 255, 0.27)",
+          color: "white",
+          marginTop: "1rem",
+        }}
+        onClick={handleApplyFilters}
+      >
+        Apply
+      </Button>
+    </Box>
   );
 };
 
-const Card = ({ ngoName, states, sectors, ratings }) => {
-  // Limiting states and sectors to at most 7
-  const truncatedStates = states.slice(0, 7);
-  const truncatedSectors = sectors.slice(0, 7);
-
-  // Checking if there are more states and sectors
-  const hasMoreStates = states.length > 7;
-  const hasMoreSectors = sectors.length > 7;
+const CardComponent = ({ name, email, phone, location }) => {
   return (
     <Box
-      width='25rem'
-      height='fit-content'
-      borderRadius='md'
-      bg='gray.200'
+      maxW='sm'
+      borderWidth='1px'
+      borderRadius='lg'
+      overflow='hidden'
       p={4}
-      display='flex'
-      flexDirection='column'
-      justifyContent='space-between'
+      marginLeft='0.1rem'
     >
-      <Text fontWeight='bold' fontSize='lg' mb={2}>
-        {ngoName}
+      <Text fontSize='xl' fontWeight='bold' mb={4}>
+        {name}
       </Text>
-
-      <Box mb={2}>
-        <Text fontSize='sm' fontWeight='bold' mb={1}>
-          States:
+      <Flex align='center' mb={2}>
+        <EmailIcon mr={2} />
+        <Text>{email}</Text>
+      </Flex>
+      <Flex align='center' mb={2}>
+        <PhoneIcon mr={2} />
+        <Text>{phone}</Text>
+      </Flex>
+      <Flex align='center'>
+        <Icon as={FiMapPin} mr={2} />
+        <Text>
+          {location.city} , {location.state} , {location.pincode}
         </Text>
-        <SimpleGrid columns={2} spacing={2}>
-          {truncatedStates.map((state, index) => (
-            <Text key={index}>{state}</Text>
-          ))}
-        {hasMoreStates && <Text>more...</Text>}
-        </SimpleGrid>
-      </Box>
-
-      <Box mb={2}>
-        <Text fontSize='sm' fontWeight='bold' mb={1}>
-          Sectors:
-        </Text>
-        <SimpleGrid columns={2} spacing={2}>
-          {truncatedSectors.map((sector, index) => (
-            <Text key={index}>{sector}</Text>
-          ))}
-        {hasMoreSectors && <Text>more...</Text>}
-        </SimpleGrid>
-      </Box>
-
-      <Text fontWeight='bold' fontSize='lg'>
-        Ratings: {ratings}
-      </Text>
+      </Flex>
     </Box>
   );
 };
@@ -294,106 +350,3 @@ const SearchIcon = () => {
 };
 
 export default FilterableCardList;
-
-/* Rectangle 1194 */
-
-// position: absolute;
-// width: 340px;
-// height: 892px;
-// left: 31px;
-// top: 136px;
-
-// background: linear-gradient(174.6deg, rgba(19, 15, 38, 0.6825) 1.74%, rgba(19, 15, 38, 0.75) 53.41%, rgba(19, 15, 38, 0.739748) 76.16%, rgba(19, 15, 38, 0.6075) 97.17%);
-// backdrop-filter: blur(100px);
-// /* Note: backdrop-filter has minimal browser support */
-// border-radius: 23px 0px 0px 26px;
-
-/* Button */
-
-// box-sizing: border-box;
-
-// /* Auto layout */
-// display: flex;
-// flex-direction: row;
-// align-items: center;
-// padding: 5px 16px;
-// gap: 80px;
-
-// width: 285px;
-// height: 63px;
-
-// background: rgba(255, 255, 255, 0.27);
-// border: 2px solid rgba(255, 255, 255, 0.42);
-// border-radius: 8px;
-
-// /* Inside auto layout */
-// flex: none;
-// order: 1;
-// flex-grow: 0;
-
-// /* Frame 2351 */
-
-// /* Auto layout */
-// display: flex;
-// flex-direction: row;
-// align-items: center;
-// padding: 0px;
-// gap: 101px;
-
-// width: 256px;
-// height: 53px;
-
-// /* Inside auto layout */
-// flex: none;
-// order: 0;
-// align-self: stretch;
-// flex-grow: 0;
-
-// /* Label */
-
-// width: 131px;
-// height: 20px;
-
-// font-family: 'Poppins';
-// font-style: normal;
-// font-weight: 400;
-// font-size: 20px;
-// line-height: 20px;
-// /* identical to box height, or 100% */
-
-// color: rgba(255, 255, 255, 0.65);
-
-// /* Inside auto layout */
-// flex: none;
-// order: 0;
-// flex-grow: 0;
-
-// /* Icon */
-
-// width: 24px;
-// height: 24px;
-
-// opacity: 0.5;
-
-// /* Inside auto layout */
-// flex: none;
-// order: 1;
-// flex-grow: 0;
-
-// /* Group */
-
-// position: absolute;
-// left: 16.67%;
-// right: 16.67%;
-// top: 37.5%;
-// bottom: 29.17%;
-
-// /* Vector */
-
-// position: absolute;
-// left: 16.67%;
-// right: 16.67%;
-// top: 37.5%;
-// bottom: 29.17%;
-
-// border: 5px solid #FFFFFF;
