@@ -220,7 +220,7 @@ const RFPDetails = () => {
                     </strong>
                     <Divider borderBottomWidth="4px" borderColor="blue" />
                   </Box>
-                  <p>{JSON.parse(companyDetails.profile.summary)}</p>
+                  <p>{companyDetails.profile.summary}</p>
                   {/* <br /> */}
                   <VStack mt={4} align="flex-start" spacing={2}>
                     <Text>
@@ -245,7 +245,7 @@ const RFPDetails = () => {
                         marginLeft: "5%",
                       }}
                     >
-                      {JSON.parse(companyDetails.profile.sectors).map(
+                      {companyDetails.profile.sectors.map(
                         (sector) => (
                           <p
                             style={{
