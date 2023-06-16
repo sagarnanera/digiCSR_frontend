@@ -15,6 +15,7 @@ import {
   Box,
   Input,
   HStack,
+  useToast,
 } from "@chakra-ui/react";
 import { FiEye, FiTrash } from "react-icons/fi";
 import "../../../CSS/rfpTable.css";
@@ -35,39 +36,41 @@ const TrackRFP = () => {
   const [currentRows, setCurrentRows] = useState([]);
   const [showRaiseRFPForm, setShowRaiseRFPForm] = useState(false);
   const pageCount = Math.ceil(20 / rowsPerPage);
-  useEffect(() => {
-    const fetchRFPs = async () => {
-      try {
-        const result = localStorage.getItem("CompanyAuthToken");
-        const config = {
-          headers: {
-            "Content-type": "application/json",
-            authorization: result,
-          },
-        };
-        const response = await fetch(
-          `http://localhost:4000/company/rfp?page=${currentPage}`,
-          { headers: config.headers }
-        );
+  const toast = useToast();
+  const fetchRFPs = async () => {
+    try {
+      const result = localStorage.getItem("CompanyAuthToken");
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          authorization: result,
+        },
+      };
+      const response = await fetch(
+        `http://localhost:4000/company/rfp?page=${currentPage}`,
+        { headers: config.headers }
+      );
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch RFPs.");
-        }
-
-        const data = await response.json();
-
-        if (data.length === 0) {
-          setCurrentPage(currentPage === 1 ? currentPage : currentPage - 1);
-        }
-        console.log(data);
-        setCurrentRows(data);
-      } catch (error) {
-        console.log(error);
+      if (!response.ok) {
+        throw new Error("Failed to fetch RFPs.");
       }
-    };
 
-    fetchRFPs();
-  }, [currentPage]);
+      const data = await response.json();
+
+      if (data.length === 0) {
+        setCurrentPage(currentPage === 1 ? currentPage : currentPage - 1);
+      }
+      console.log(data);
+      setCurrentRows(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    if (currentPage) {
+      fetchRFPs();
+    }
+  }, [currentPage]  );
 
   const handleRowsPerPageChange = (event) => {
     const value = parseInt(event.target.value);
@@ -187,6 +190,38 @@ const TrackRFP = () => {
     // });
     setShowRFPDetails(true);
   };
+  const handleDeleteRFP = async (rfp) => {
+    const rfpID = rfp._id;
+    console.log(rfpID);
+    try {
+      const response = await fetch(
+        `http://localhost:4000/rfp/delete/${rfpID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `${localStorage.getItem("CompanyAuthToken")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+      if (response.ok) {
+        toast({
+          title: "RFP Deleted Successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        fetchRFPs();
+      } else {
+        console.error("Failed to delete RFP:", data.message);
+      }
+    } catch (error) {
+      console.error("Failed to delete RFP:", error);
+    }
+  };
   const handleRaiseClick = () => {
     setShowRaiseRFPForm(true);
   };
@@ -257,7 +292,7 @@ const TrackRFP = () => {
                   <Th>Action</Th>
                 </Tr>
               </Thead>
-              <Tbody style={{zoom: 0.85}}>
+              <Tbody style={{ zoom: 0.85 }}>
                 {currentRows.map((proposal, index) => (
                   <Tr key={proposal._id}>
                     <Td className="divider">{indexOfFirstRow + index + 1}</Td>
@@ -314,9 +349,10 @@ const TrackRFP = () => {
                         aria-label="View proposal"
                         icon={<FiTrash />}
                         marginLeft="0.5rem"
-                        // marginRight="0.5rem"
                         variant={"ghost"}
-                        onClick={() => {}}
+                        onClick={() => {
+                          handleDeleteRFP(proposal);
+                        }}
                         colorScheme="blue"
                         color={"blue"}
                       />
@@ -326,7 +362,10 @@ const TrackRFP = () => {
               </Tbody>
             </Table>
             {showRaiseRFPForm && (
-              <RaiseRFP onClose={() => setShowRaiseRFPForm(false)} />
+              <RaiseRFP
+                onClose={() => setShowRaiseRFPForm(false)}
+                onRFPRaised={fetchRFPs}
+              />
             )}
             {showRFPDetails &&
               navigate("/Company/rfpdetails", {

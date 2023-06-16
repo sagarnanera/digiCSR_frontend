@@ -33,7 +33,7 @@ import { fetchStates } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
 // import jwt_decode from "jwt-decode";
 
-function RaiseRFP({ onClose }) {
+function RaiseRFP({ onClose, onRFPRaised }) {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [amountRfp, setAmountRfp] = useState("");
@@ -142,6 +142,7 @@ function RaiseRFP({ onClose }) {
           position: "bottom",
         });
         onClose();
+        onRFPRaised();
         navigate("/Company/TrackRFP", { replace: true });
         setLoading(false);
       } else {
