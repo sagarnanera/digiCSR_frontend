@@ -40,7 +40,7 @@ const RFPCompanyDetails = () => {
       }
     };
     fetchRFPDetails();
-  }, [rfpID,rfpDetails]);
+  }, [rfpDetails]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -61,7 +61,7 @@ const RFPCompanyDetails = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          authorization: `${localStorage.getItem("CompanyAuthToken")}`,
+          authorization: localStorage.getItem("CompanyAuthToken"),
         },
         body: JSON.stringify({
           rfpID: rfpID,
