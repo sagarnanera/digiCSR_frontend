@@ -243,11 +243,12 @@ const AddProfile = () => {
       const response = await fetch(url, {
         method: "POST",
         headers: {
-          authorization: `${localStorage.getItem("CompanyAuthToken")}`,
+          authorization: localStorage.getItem("CompanyAuthToken"),
         },
         body: formData,
       });
       const data = await response.json();
+      console.warn(data);
       if (response.ok) {
         toast({
           title: "Profile Edited Successfully",
@@ -607,26 +608,23 @@ const AddProfile = () => {
                 </Menu>
               </Box>
             </FormControl>
-            {isSectorTextAreaVisible && (
-              <Tooltip
-                label={Sector.join(", ")}
-                isDisabled={Sector.length <= 5}
+            {/* {isSectorTextAreaVisible && ( */}
+            <Tooltip label={Sector.join(", ")} isDisabled={Sector.length <= 5}>
+              <Textarea
+                placeholder="Selected Sectors"
+                isReadOnly
+                // rows={rows}
+                onChange={handleChange}
+                // height="fit-content"
+                textOverflow="ellipsis"
+                resize="none"
               >
-                <Textarea
-                  placeholder="Selected Sectors"
-                  isReadOnly
-                  rows={rows}
-                  onChange={handleChange}
-                  height="fit-content"
-                  textOverflow="ellipsis"
-                  resize="none"
-                >
-                  {Sector.length <= 5
-                    ? selectedSectorText
-                    : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`}
-                </Textarea>
-              </Tooltip>
-            )}
+                {Sector.length <= 5
+                  ? selectedSectorText
+                  : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`}
+              </Textarea>
+            </Tooltip>
+            {/* )} */}
           </Box>
           <br />
           <Box flex={5} w="95%">
