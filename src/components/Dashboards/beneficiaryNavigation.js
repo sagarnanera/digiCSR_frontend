@@ -28,6 +28,14 @@ const BenificiaryNavigation = () => {
           </li>
           <li>
             <Link
+              to="/ngos"
+              className={location.pathname === "/ngos" ? "active" : ""}
+            >
+              NGOs
+            </Link>
+          </li>
+          <li>
+            <Link
               to="/Beneficiary/NGOBlogs"
               className={
                 location.pathname === "/Beneficiary/NGOBlogs"

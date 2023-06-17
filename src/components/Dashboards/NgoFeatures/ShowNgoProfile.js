@@ -20,7 +20,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import NgoNavigation from "../ngoNavigation";
-import { FiMail } from "react-icons/fi";
+import { FiMail, FiMapPin, FiPhone } from "react-icons/fi";
 import "../../../CSS/rfpTable.css";
 
 const ShowNgoProfile = () => {
@@ -141,9 +141,11 @@ const ShowNgoProfile = () => {
                 mt={1}
                 borderWidth="1px"
                 p={4}
-                bg={"#f2f2f2"}
+                bg={"rgba(255, 255, 255)"}
                 borderRadius="md"
-                boxShadow="md"
+                boxShadow="2px 4px 6px black"
+                borderColor={"skyblue"}
+
                 fontFamily={"serif"}
               >
                 <Box ml={"0"} mr={"0"}>
@@ -160,20 +162,52 @@ const ShowNgoProfile = () => {
                   <Divider height={"2"} borderColor={"transparent"} />
                   <Divider height={"2"} borderColor={"transparent"} />
                   <Box ml={"5"}>
-                    <Box mr={{ base: "10%", md: "5%" }}>
-                      <Text fontSize={{ base: "lg", md: "lg" }}>
-                        <strong>CSR Budget of this year:</strong>{" "}
-                        <span style={{ marginLeft: "5%" }}>
-                          {profileData.profile.csr_budget}
-                        </span>
-                      </Text>
-                      <Divider height={"2"} borderColor={"transparent"} />
-                      <Divider height={"2"} borderColor={"transparent"} />
-                      <Text fontSize={{ base: "xl", md: "xl" }}>
-                        <Icon as={FiMail} boxSize={4} mr={5} />
-                        {profileData.email}
-                      </Text>
-                    </Box>
+                    <HStack
+                      ml={{ base: "5%", md: "5%" }}
+                      display={"flex"}
+                      justifyContent={"start"}
+                      flexWrap={"wrap"}
+                      // gap={{ base: "10%", md: "10%" }}
+                    >
+                      <Box
+                        mr={{ base: "2%", md: "2%" }}
+                        // borderWidth="1px"
+                        padding={"2% 13%"}
+                        ml={"1.5%"}
+                        borderRadius={"10px"}
+                      >
+                        <Text fontSize={{ base: "lg", md: "lg" }}>
+                          <strong>Establishment Year:</strong>{" "}
+                          <span style={{ marginLeft: "0%" }}>
+                            {profileData.profile.establishment_year}
+                          </span>
+                        </Text>
+                        <Divider height={"2"} borderColor={"transparent"} />
+                        <Text fontSize={{ base: "lg", md: "lg" }}>
+                          <Icon as={FiPhone} boxSize={4} mr={5} />{" "}
+                          {profileData.profile.phone}
+                        </Text>
+                      </Box>
+                      <Box
+                        mr={{ base: "5%", md: "5%" }}
+                        borderLeft="1px"
+                        padding={"2% 13%"}
+                        ml={"1.5%"}
+                        fontSize={"lg"}
+                      >
+                        <Box>
+                          <Text fontSize={{ base: "lg", md: "lg" }}>
+                            <Icon as={FiMapPin} boxSize={4} mr={5} />{" "}
+                            {`${profileData.profile.location.city}, ${profileData.profile.location.state}, ${profileData.profile.location.pincode}`}
+                          </Text>
+                          <Divider height={"2"} borderColor={"transparent"} />
+                          <Text fontSize={{ base: "lg", md: "lg" }}>
+                            <Icon as={FiMail} boxSize={4} mr={5} />{" "}
+                            {profileData.email}
+                          </Text>
+                        </Box>
+                      </Box>
+                    </HStack>
                     <br></br>
                     <Flex
                       direction={{ base: "column", md: "row" }}
@@ -401,7 +435,7 @@ const ShowNgoProfile = () => {
                                 <Th>Designation</Th>
                               </Tr>
                             </Thead>
-                            <Tbody style={{ zoom: 1.2 }}>
+                            <Tbody style={{ zoom: 0.8 }}>
                               {profileData.profile.board_members.map(
                                 (member, index) => (
                                   <Tr>

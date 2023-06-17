@@ -369,6 +369,7 @@ const NgoNavigation = () => {
                 icon={<FiBell />}
                 onClick={handleBellIconClick}
                 color={"skyblue"}
+                size={"lg"}
                 colorScheme="blue"
               />
               {unreadCount > 0 && (
@@ -436,7 +437,7 @@ const NgoNavigation = () => {
                           return -1; // Place unread notifications before read notifications
                         } else {
                           // Sort by timestamp if read statuses are the same
-                          return b.timestamp - a.timestamp;
+                          return a.timestamp - b.timestamp;
                         }
                       })
                       .map((notification) => (
@@ -448,6 +449,7 @@ const NgoNavigation = () => {
                           mb={4}
                           boxSize={"sm"}
                           maxW={"100%"}
+                          h={"fit-content"}
                         >
                           {notification.read ? (
                             <>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "../../../CSS/RFPDetails.css";
 import {
   Box,
@@ -20,28 +20,34 @@ const RFPCompanyDetails = () => {
   const location = useLocation();
   const rfpID = location.state?.rfpID;
   const [rfpDetails, setRfpDetails] = useState(null);
+  const [initialFetchDone, setInitialFetchDone] = useState(false);
+
+  const fetchRFPDetails = useCallback(async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/rfp/${rfpID}`, {
+        headers: {
+          authorization: `${localStorage.getItem("CompanyAuthToken")}`,
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      if (response.ok) {
+        setRfpDetails(data.rfp);
+        setInitialFetchDone(true);
+      } else {
+        console.error("Failed to fetch RFP details:", data.message);
+      }
+    } catch (error) {
+      console.error("Failed to fetch RFP details:", error);
+    }
+  }, [rfpID]);
 
   useEffect(() => {
-    const fetchRFPDetails = async () => {
-      try {
-        const response = await fetch(`http://localhost:4000/rfp/${rfpID}`, {
-          headers: {
-            authorization: `${localStorage.getItem("CompanyAuthToken")}`,
-          },
-        });
-        const data = await response.json();
-        console.log(data);
-        if (response.ok) {
-          setRfpDetails(data.rfp);
-        } else {
-          console.error("Failed to fetch RFP details:", data.message);
-        }
-      } catch (error) {
-        console.error("Failed to fetch RFP details:", error);
-      }
-    };
-    fetchRFPDetails();
-  }, [rfpID]);
+    if (!initialFetchDone) {
+      fetchRFPDetails();
+    }
+  }, [rfpID, fetchRFPDetails, initialFetchDone]);
+
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -82,6 +88,7 @@ const RFPCompanyDetails = () => {
           updatedRfpDetails.donations[donationIndex].status = action;
           setRfpDetails(updatedRfpDetails);
         }
+        fetchRFPDetails();
       } else {
         console.error("Failed to manage donation:", data.message);
       }

@@ -16,6 +16,9 @@ import {
   Input,
   HStack,
   useToast,
+  VStack,
+  Select,
+  Text,
 } from "@chakra-ui/react";
 import { FiEye, FiTrash } from "react-icons/fi";
 import "../../../CSS/rfpTable.css";
@@ -23,20 +26,41 @@ import "../../../CSS/rfpTable.css";
 import { useNavigate } from "react-router-dom";
 import CompanyNavigation from "../companyNavigation";
 import RaiseRFP from "./RaiseRFP";
+import { fetchStateName, fetchStates } from "../../geoData";
+import { sectorOptions } from "../../sectorData";
 
 const TrackRFP = () => {
   const navigate = useNavigate();
   const [showRFPDetails, setShowRFPDetails] = useState(false);
   const [selectedRFPId, setSelectedRFPId] = useState(null);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  // const rowsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentRows, setCurrentRows] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [documentCount, setDocumentCount] = useState(1);
+  const pageCount = Math.ceil(documentCount / rowsPerPage);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const [currentRows, setCurrentRows] = useState([]);
   const [showRaiseRFPForm, setShowRaiseRFPForm] = useState(false);
-  const pageCount = Math.ceil(20 / rowsPerPage);
   const toast = useToast();
+  const [states, setStates] = useState([]);
+  const [selectedstates, setselectedStates] = useState("");
+  const [selectedsector, setselectedSector] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+
+  useEffect(() => {
+    const getStates = async () => {
+      const fetchedStates = await fetchStates();
+      setStates(fetchedStates);
+    };
+    getStates();
+  }, []);
+  const handleStateChange = async (stateId) => {
+    const fetchedstateName = await fetchStateName(stateId);
+    setselectedStates(fetchedstateName);
+  };
+  const handleSectorChange = async (selectedSector) => {
+    setselectedSector(selectedSector);
+  };
   const fetchRFPs = async () => {
     try {
       const result = localStorage.getItem("CompanyAuthToken");
@@ -46,31 +70,54 @@ const TrackRFP = () => {
           authorization: result,
         },
       };
-      const response = await fetch(
-        `http://localhost:4000/company/rfp?page=${currentPage}`,
-        { headers: config.headers }
-      );
+      const response = await fetch(`http://localhost:4000/company/rfp`, {
+        headers: config.headers,
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch RFPs.");
       }
-
       const data = await response.json();
 
-      if (data.length === 0) {
-        setCurrentPage(currentPage === 1 ? currentPage : currentPage - 1);
+      // Apply filtering based on selected state and sector
+      setFilteredData(data);
+      if (selectedstates !== "") {
+        console.log(selectedstates);
+        setFilteredData(
+          filteredData.filter((proposal) =>
+            proposal.states.includes(selectedstates)
+          )
+        );
       }
-      console.log(data);
-      setCurrentRows(data);
+      if (selectedsector !== "") {
+        console.log(selectedsector);
+        setFilteredData(
+          filteredData.filter((proposal) =>
+            proposal.sectors.includes(selectedsector)
+          )
+        );
+      }
+
+      if (filteredData.length === 0) {
+        setCurrentPage((prevPage) =>
+          prevPage === 1 ? prevPage : prevPage - 1
+        );
+      }
+      setDocumentCount(filteredData.length);
+      setCurrentRows(
+        filteredData.slice(
+          (currentPage - 1) * rowsPerPage,
+          currentPage * rowsPerPage
+        )
+      );
+      console.log(filteredData);
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
-    if (currentPage) {
-      fetchRFPs();
-    }
-  }, [currentPage]  );
+    fetchRFPs();
+  }, [currentPage, rowsPerPage, selectedsector, selectedstates]);
 
   const handleRowsPerPageChange = (event) => {
     const value = parseInt(event.target.value);
@@ -82,15 +129,16 @@ const TrackRFP = () => {
     if (currentPage === 1) {
       return;
     } else {
-      setCurrentPage(currentPage - 1);
+      setCurrentPage((prevPage) => prevPage - 1);
     }
   };
 
   const handleNextPage = () => {
-    if (currentRows.length < 10) {
+    const remainingData = documentCount - currentPage * rowsPerPage;
+    if (remainingData <= 0) {
       return;
     } else {
-      setCurrentPage(currentPage + 1);
+      setCurrentPage((prevPage) => prevPage + 1);
     }
   };
 
@@ -105,8 +153,6 @@ const TrackRFP = () => {
           <Button
             key={i}
             onClick={() => setCurrentPage(i)}
-            color={"skyblue"}
-            colorScheme="blue"
             variant={currentPage === i ? "solid" : "ghost"}
           >
             {i}
@@ -139,7 +185,7 @@ const TrackRFP = () => {
       // Display ellipsis before the first visible page number
       if (startPage > 2) {
         pageNumbers.push(
-          <Button key="ellipsis-prev" variant={"ghost"}>
+          <Button key="ellipsis-prev" variant="ghost">
             ...
           </Button>
         );
@@ -161,7 +207,7 @@ const TrackRFP = () => {
       // Display ellipsis after the last visible page number
       if (endPage < pageCount - 1) {
         pageNumbers.push(
-          <Button key="ellipsis-next" variant={"ghost"}>
+          <Button key="ellipsis-next" variant="ghost">
             ...
           </Button>
         );
@@ -263,6 +309,48 @@ const TrackRFP = () => {
               />
               <span className="label">Rows per page</span>
             </div>
+            <Box>
+              <HStack
+                mt={"-5"}
+                display={"flex"}
+                justifyContent={"center"}
+                flexWrap={"wrap"}
+              >
+                <VStack>
+                  <Text ml={"-18vw"}> State Filter </Text>
+                  <Select
+                    id="state"
+                    onChange={(e) => handleStateChange(e.target.value)}
+                    size={"sm"}
+                    style={{ maxWidth: "20rem" }}
+                  >
+                    <option value="">Select a state</option>
+                    {states.map((state) => (
+                      <option key={state.geonameId} value={state.geonameId}>
+                        {state.name}
+                      </option>
+                    ))}
+                  </Select>
+                </VStack>
+                <VStack>
+                  <Text ml={"-18vw"}> Sector Filter </Text>
+                  <Select
+                    id="sector"
+                    onChange={(e) => handleSectorChange(e.target.value)}
+                    size="sm"
+                    style={{ maxWidth: "20rem" }}
+                    value={selectedsector}
+                  >
+                    <option value="">Select a sector</option>
+                    {sectorOptions.map((option) => (
+                      <option key={option.id} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Select>
+                </VStack>
+              </HStack>
+            </Box>
             <div className="AddRFP">
               <Button
                 bg="skyblue"

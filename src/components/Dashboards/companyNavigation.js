@@ -307,12 +307,22 @@ const CompanyNavigation = () => {
               </li>
               <li>
                 <Link
+                  to="/ngos"
+                  className={
+                    location.pathname === "/ngos" ? "active" : ""
+                  }
+                >
+                  NGOs
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/Company/NGOReviews"
                   className={
                     location.pathname === "/Company/NGOReviews" ? "active" : ""
                   }
                 >
-                  NGO Reviews
+                  NGO Media 
                 </Link>
               </li>
               {/* Rest of the navigation links */}
@@ -394,7 +404,7 @@ const CompanyNavigation = () => {
                           return -1; // Place unread notifications before read notifications
                         } else {
                           // Sort by timestamp if read statuses are the same
-                          return b.timestamp - a.timestamp;
+                          return a.timestamp - b.timestamp;
                         }
                       })
                       .map((notification) => (
@@ -406,6 +416,7 @@ const CompanyNavigation = () => {
                           mb={4}
                           boxSize={"sm"}
                           maxW={"100%"}
+                          h={"fit-content"}
                         >
                           {notification.read ? (
                             <>

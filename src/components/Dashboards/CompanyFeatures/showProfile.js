@@ -196,10 +196,8 @@ const ShowProfile = () => {
                   >
                     <Box
                       mr={{ base: "4%", md: "4%" }}
-                      backgroundColor="rgb(106, 200, 230, 0.05)"
-                      borderWidth="1px"
-                      borderColor="skyblue"
-                      padding={"2% 11%"}
+                      // borderLeft="1px"
+                      padding={"2% 9%"}
                       ml={"1%"}
                       borderRadius={"10px"}
                     >
@@ -229,12 +227,9 @@ const ShowProfile = () => {
                     </Box>
                     <Box
                       mr={{ base: "5%", md: "5%" }}
-                      backgroundColor="rgb(106, 200, 230, 0.05)"
-                      borderWidth="1px"
-                      borderColor="skyblue"
+                      borderLeft="1px"
                       padding={"2% 12%"}
                       ml={"1%"}
-                      borderRadius={"10px"}
                       fontSize={"lg"}
                     >
                       <strong>Communication Person:</strong>{" "}
