@@ -190,6 +190,7 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                         size="md"
                         mr={2}
                         onClick={(e) => handleDeleteBlog(blog._id, e)}
+                        title='Delete Post'
                     />
                     <IconButton
                         icon={<EditIcon />}
@@ -199,11 +200,12 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                         aria-label="Edit"
                         size="md"
                         onClick={(e) => handleEditBlog(blog._id, e)}
+                        title='Edit Post'
                     />
                 </Flex>
             }
 
-            <Heading as="h2" size="lg" mb={2} noOfLines={1} textOverflow={"ellipsis"}>
+            <Heading as="h2" size="lg" mb={2} noOfLines={1} textOverflow={"ellipsis"} title={`${blog.title}`}>
                 {blog.title}
             </Heading>
             <Text color="gray.600" mb={2}>

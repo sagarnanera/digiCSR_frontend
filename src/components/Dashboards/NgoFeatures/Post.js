@@ -282,6 +282,7 @@ const Post = ({ userType }) => {
                                 size="md"
                                 mr={2}
                                 onClick={() => handleDeleteBlog(blog._id)}
+                                title='Delete Post'
                             />
                             <IconButton
                                 icon={<EditIcon />}
@@ -291,6 +292,7 @@ const Post = ({ userType }) => {
                                 aria-label="Edit"
                                 size="md"
                                 onClick={() => handleEditBlog(blog._id)}
+                                title='Edit Post'
                             />
                         </Flex>
                     }
