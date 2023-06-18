@@ -28,7 +28,7 @@ import BenificiaryNavigation from "../beneficiaryNavigation";
 
 const ShowNgoProfile = () => {
   const location = useLocation();
-  const ngoID = location.state?.ngoID;
+  let ngoID = location.state?.ngoID;
   const userType = location.state?.userType;
   const navigate = useNavigate();
   const [profileData, setProfileData] = useState(null);
@@ -95,7 +95,7 @@ const ShowNgoProfile = () => {
           const data = await response.json();
           if (data.success) {
             setProfileData(data.data);
-            console.log(data.data);
+            // console.log(data.data);
           } else {
             console.log(data.message);
             throw new Error("Failed to Get Profile.please Reload");
@@ -563,7 +563,9 @@ const ShowNgoProfile = () => {
       {userType === "company" || userType === "beneficiary" ? (
         <ReviewComponent ngoID={ngoID} userType={userType} />
       ) : (
-        <ReviewComponent ngoID={ngoId} userType={"ngo"} />
+        <>
+          <ReviewComponent ngoID={ngoId} userType={"ngo"} />
+        </>
       )}
     </div>
   );

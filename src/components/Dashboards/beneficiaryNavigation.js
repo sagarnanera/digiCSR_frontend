@@ -133,7 +133,7 @@ const BenificiaryNavigation = () => {
                     : ""
                 }
               >
-                Media Section
+                Media
               </Link>
             </li>
             {/* Rest of the navigation links */}

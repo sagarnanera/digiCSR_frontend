@@ -3,6 +3,8 @@ import NgoNavigation from "../NgoNavigation";
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import PostCard from "./PostCard";
+import CompanyNavigation from "../companyNavigation";
+import BenificiaryNavigation from "../beneficiaryNavigation";
 
 const MediaSection = ({ userType }) => {
   const [blogs, setBlogs] = useState([]);
@@ -54,7 +56,13 @@ const MediaSection = ({ userType }) => {
   if (!blogs || blogs.length === 0) {
     return (
       <div>
-        <NgoNavigation />
+        {userType !== "company" && userType !== "beneficiary" ? (
+          <NgoNavigation />
+        ) : userType === "company" ? (
+          <CompanyNavigation />
+        ) : (
+          <BenificiaryNavigation />
+        )}
         <Box
           maxWidth={{ base: "95vw", lg: "80vw" }}
           mx="auto"

@@ -262,7 +262,7 @@ const CompanyNavigation = () => {
                                 : ""
                             }
                           >
-                            Track RFPs
+                            RFPs
                           </Link>
                         </li>
                         <li>
@@ -274,7 +274,7 @@ const CompanyNavigation = () => {
                                 : ""
                             }
                           >
-                            NGO Reviews
+                            Media
                           </Link>
                         </li>
                         {/* Rest of the navigation links */}
@@ -302,7 +302,7 @@ const CompanyNavigation = () => {
                     location.pathname === "/Company/TrackRFP" ? "active" : ""
                   }
                 >
-                  Track RFPs
+                  RFPs
                 </Link>
               </li>
               <li>
@@ -317,12 +317,12 @@ const CompanyNavigation = () => {
               </li>
               <li>
                 <Link
-                  to="/Company/NGOReviews"
+                  to="/Company/media"
                   className={
-                    location.pathname === "/Company/NGOReviews" ? "active" : ""
+                    location.pathname === "/Company/media" ? "active" : ""
                   }
                 >
-                  NGO Media 
+                  Media 
                 </Link>
               </li>
               {/* Rest of the navigation links */}

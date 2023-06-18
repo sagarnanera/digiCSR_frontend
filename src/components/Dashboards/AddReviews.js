@@ -19,6 +19,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { StarIcon } from "@chakra-ui/icons";
+// import jwt_decode from "jwt-decode";
 
 const ReviewComponent = ({ ngoID, userType }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,10 +31,17 @@ const ReviewComponent = ({ ngoID, userType }) => {
     Array.from({ length: 5 }, () => 0)
   );
   const toast = useToast();
+  // const [ngoId, setNgoId] = useState("");
+  const [showAllReviews, setShowAllReviews] = useState(false);
 
+  const handleViewAllReviews = () => {
+    setShowAllReviews(true);
+  };
+
+  const displayedReviews = showAllReviews ? reviews : reviews.slice(0, 3);
   useEffect(() => {
     fetchReviews();
-  }, []);
+  }, [ngoID, userType]);
 
   const fetchReviews = async () => {
     var options;
@@ -58,25 +66,27 @@ const ReviewComponent = ({ ngoID, userType }) => {
           authorization: token,
         },
       };
+      console.log(options);
+      // setNgoId(jwt_decode(token)._id);
     }
     try {
+      console.log(ngoID);
       const response = await fetch(
         `http://localhost:4000/get-reviews/${ngoID}`,
         {
           method: "GET",
           headers: options.headers,
-          // Pass the ngoID or relevant data for fetching the reviews
         }
       );
+      const data = await response.json();
       if (!response.ok) {
+        console.log(data);
         throw new Error("Failed to fetch the reviews.");
       }
-      const data = await response.json();
       setReviews(data.reviews);
       calculateAverageRating(data.reviews);
     } catch (error) {
       console.log(error);
-      // Handle the error (e.g., display an error message)
     }
   };
 
@@ -260,20 +270,20 @@ const ReviewComponent = ({ ngoID, userType }) => {
             </Box>
           </Box>
           <VStack>
-            <Text mr={"50%"}>
+            <Text mr={"40vw"}>
               <strong>Top Reviews:</strong>
             </Text>
             <Box>
-              {reviews.map((review) => (
+              {displayedReviews.map((review) => (
                 <Box
                   key={review._id}
                   borderWidth="1px"
-                  borderRadius={"10px"}
-                  bgColor={"rgba(135, 206, 235, 0.05)"}
-                  borderColor={"skyblue"}
+                  borderRadius="10px"
+                  bgColor="rgba(135, 206, 235, 0.05)"
+                  borderColor="skyblue"
                   p="4"
                   my="2"
-                  w={"280%"}
+                  w="50vw"
                 >
                   <HStack>
                     {Array.from({ length: 5 }).map((_, index) => (
@@ -286,25 +296,28 @@ const ReviewComponent = ({ ngoID, userType }) => {
                   <Text
                     fontSize="13"
                     color="gray.500"
-                    display={"flex"}
-                    justifyContent={"flex-start"}
+                    display="flex"
+                    justifyContent="flex-start"
                   >
                     {review.companyReviewer ? "by company" : "by beneficiary"}
                   </Text>
                   <Text>{review.review}</Text>
                 </Box>
               ))}
-              <Button
-                bg="skyblue"
-                color="white"
-                w={"fit-content"}
-                boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
-                _hover={{ boxShadow: "0px 4px 6px skyblue" }}
-                _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
-                mt={5}
-              >
-                View All Reviews
-              </Button>
+              {!showAllReviews && (
+                <Button
+                  bg="skyblue"
+                  color="white"
+                  w="fit-content"
+                  boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+                  _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+                  _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
+                  mt={5}
+                  onClick={handleViewAllReviews}
+                >
+                  View All Reviews
+                </Button>
+              )}
             </Box>
           </VStack>
         </HStack>

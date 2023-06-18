@@ -1,0 +1,27 @@
+.hex-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0px, 1.3fr));
+  grid-gap: 5px;
+  /* grid-row: inherit; */
+  left: 5% !important;
+}
+
+.hex-item {
+  /* margin-right: -20vw; */
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background-color: skyblue;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+.hex-item:nth-child(2n + 2),
+.hex-item:nth-child(4n + 4) {
+  margin-left: 50px;
+}
+/* Add any additional styling or customization as needed */

@@ -1,24 +1,44 @@
 html {
-    font-family: system-ui, sans-serif;
-    font-size: 1.25rem;
+  font-family: system-ui, sans-serif;
+  font-size: 1.25rem;
+}
+.pie {
+  display: flex;
+  /* justify-content: center; */
+  /* align-items: center; */
+  gap: 10vw;
+  /* size: 20%; */
+  max-height: 20vh;
+  margin-top: -5%;
+  margin-bottom: 20%;
+  margin-left: 5%;
+  /* margin-bottom: 5%; */
+}
+body {
+  margin: 0;
+  display: flex;
+  margin-left: 10;
 }
 
-body {
-    margin: 0;
+.mapchart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 75%; /* Adjust the width as needed */
+  /* margin-top: 50%; */
 }
 
 svg {
-    display: inline-block;
-    vertical-align: middle;
-    height: 600px;
-    left: 25% !important;
+  display: inline-block;
+  vertical-align: middle;
+  height: 600px;
+  top: 110vh !important;
+  left: 5% !important;
 }
 
-/* responsive, form small screens, use 13px font size */
+/* responsive, for small screens, use 13px font size */
 @media (max-width: 1000px) {
-    svg {
-        display: inline-block;
-        vertical-align: middle;
-        height: 600px;
-    }
+  svg {
+    height: 400px;
+  }
 }

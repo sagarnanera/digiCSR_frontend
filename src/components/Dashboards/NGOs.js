@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
+  Flex,
   Grid,
+  HStack,
   Input,
   InputGroup,
   InputLeftElement,
 } from "@chakra-ui/react";
 import { CardComponent, FilterDrawer } from "./NGOsCompanent";
 import { SearchIcon } from "@chakra-ui/icons";
+import CompanyNavigation from "./companyNavigation";
+import BenificiaryNavigation from "./beneficiaryNavigation";
 
-const NGOs = ({userType}) => {
+const NGOs = ({ userType }) => {
   const [ngos, setNgos] = useState([]);
   const [filteredResult, setResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchNgos();
-  },[userType]);
+  }, [userType]);
 
   const fetchNgos = async () => {
     var options;
@@ -25,10 +29,10 @@ const NGOs = ({userType}) => {
       const token =
         userType === "company"
           ? localStorage.getItem("CompanyAuthToken")
-          : (localStorage.getItem("BenificiaryAuthToken"));
+          : localStorage.getItem("BenificiaryAuthToken");
 
-          options = {
-            headers: {
+      options = {
+        headers: {
           "Content-type": "application/json",
           authorization: token,
         },
@@ -81,39 +85,48 @@ const NGOs = ({userType}) => {
   };
 
   return (
-    <>
-      <FilterDrawer isOpen={true} handleCheckboxChange={handleCheckboxChange} />
-      <Box flex="1" p="4" marginLeft="auto">
-        <InputGroup mb={4}>
-          <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
-          <Input
-            type="text"
-            placeholder="Search"
-            value={searchQuery}
-            onChange={handleSearchQueryChange}
-          />
-        </InputGroup>
-        <Box display="flex" p="4">
-          <Grid templateColumns="repeat(3, 1fr)" gap={3}>
-            {filteredResult
-              .filter((ngo) =>
-                ngo.ngo_name.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-              .map((ngo) => (
-                <CardComponent
-                  userType={userType}
-                  ngoId={ngo._id}
-                  name={ngo.ngo_name}
-                  email={ngo.email}
-                  phone={ngo.profile.phone}
-                  location={ngo.profile.location}
-                />
-              ))}
-            
-          </Grid>
+    <Box>
+      {userType === "company" ? (
+        <CompanyNavigation />
+      ) : (
+        <BenificiaryNavigation />
+      )}
+      <Flex>
+        <FilterDrawer
+          isOpen={true}
+          handleCheckboxChange={handleCheckboxChange}
+        />
+        <Box flex="1" p="4" marginLeft="auto">
+          <InputGroup mb={4}>
+            <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
+            <Input
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={handleSearchQueryChange}
+            />
+          </InputGroup>
+          <Box display="flex" p="4">
+            <Grid templateColumns="repeat(3, 1fr)" gap={3}>
+              {filteredResult
+                .filter((ngo) =>
+                  ngo.ngo_name.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+                .map((ngo) => (
+                  <CardComponent
+                    userType={userType}
+                    ngoId={ngo._id}
+                    name={ngo.ngo_name}
+                    email={ngo.email}
+                    phone={ngo.profile.phone}
+                    location={ngo.profile.location}
+                  />
+                ))}
+            </Grid>
+          </Box>
         </Box>
-      </Box>
-    </>
+      </Flex>
+    </Box>
   );
 };
 

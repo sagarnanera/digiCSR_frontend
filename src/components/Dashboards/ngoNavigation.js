@@ -262,7 +262,7 @@ const NgoNavigation = () => {
                                 : ""
                             }
                           >
-                            RFP Requests
+                            RFP
                           </Link>
                         </li>
                         {/* <li>
@@ -275,7 +275,7 @@ const NgoNavigation = () => {
               Post Success
             </Link>
           </li> */}
-                        <li>
+                        {/* <li>
                           <Link
                             to="/Ngo/acceptedRFPs"
                             className={
@@ -286,7 +286,7 @@ const NgoNavigation = () => {
                           >
                             Accepted RFPs
                           </Link>
-                        </li>
+                        </li> */}
                         <li>
                           <Link
                             to="/Ngo/media"
@@ -296,7 +296,7 @@ const NgoNavigation = () => {
                                 : ""
                             }
                           >
-                            Media Section
+                            Media
                           </Link>
                         </li>
                         {/* Rest of the navigation links */}
@@ -324,7 +324,7 @@ const NgoNavigation = () => {
                     location.pathname === "/Ngo/RFPs" ? classes.active : ""
                   }
                 >
-                  RFP Requests
+                  RFP
                 </Link>
               </li>
               {/* <li>
@@ -337,7 +337,7 @@ const NgoNavigation = () => {
               Post Success
             </Link>
           </li> */}
-              <li>
+              {/* <li>
                 <Link
                   to="/Ngo/acceptedRFPs"
                   className={
@@ -348,7 +348,7 @@ const NgoNavigation = () => {
                 >
                   Accepted RFPs
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   to="/Ngo/media"
@@ -356,7 +356,7 @@ const NgoNavigation = () => {
                     location.pathname === "/Ngo/media" ? classes.active : ""
                   }
                 >
-                  Media Section
+                  Media
                 </Link>
               </li>
             </ul>
