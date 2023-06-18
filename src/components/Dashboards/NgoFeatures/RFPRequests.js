@@ -21,7 +21,7 @@ import {
 import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import "../../../CSS/rfpTable.css";
-import NgoNavigation from "../ngoNavigation";
+import NgoNavigation from "../NgoNavigation";
 import { fetchStateName, fetchStates } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
 // import config from "../../config";
@@ -73,6 +73,7 @@ const RFPRequest = () => {
 
         // Apply filtering based on selected state and sector
         setFilteredData(data);
+        // console.log(data);
         if (selectedstates !== "") {
           console.log(selectedstates);
           setFilteredData(
@@ -109,7 +110,7 @@ const RFPRequest = () => {
     };
 
     fetchData();
-  }, [currentPage, rowsPerPage, selectedsector, selectedstates]);
+  }, [currentPage, rowsPerPage, selectedsector, selectedstates, filteredData]);
 
   const handleRowsPerPageChange = (event) => {
     const value = parseInt(event.target.value);

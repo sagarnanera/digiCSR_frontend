@@ -12,7 +12,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
-import NgoNavigation from "../ngoNavigation";
+import NgoNavigation from "../NgoNavigation";
 import RequestAmount from "./requestAmount";
 
 const RFPDetails = () => {
@@ -360,9 +360,7 @@ const RFPDetails = () => {
                     <Divider borderBottomWidth="4px" borderColor="blue" />
                   </Box>
                   <Box mt={"5"}>
-                    <strong>
-                      Company Summary:
-                    </strong>
+                    <strong>Company Summary:</strong>
                   </Box>
                   <p style={{ padding: "1%" }}>
                     {companyDetails.profile.summary}

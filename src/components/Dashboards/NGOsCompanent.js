@@ -2,27 +2,13 @@ import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
-  // Badge,
   Flex,
   Checkbox,
   CheckboxGroup,
-  // Drawer,
-  // DrawerBody,
-  // DrawerContent,
-  // DrawerHeader,
-  // DrawerOverlay,
-  Grid,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  // MenuButton,
-  // SimpleGrid,
-  // MenuList,
-  // MenuItem,
   Stack,
   Text,
-  // useDisclosure,
   Heading,
+  Divider,
 } from "@chakra-ui/react";
 import {
   ChevronDownIcon,
@@ -31,120 +17,13 @@ import {
   EmailIcon,
   PhoneIcon,
 } from "@chakra-ui/icons";
-import { sectorOptions } from "../../sectorData";
-import { fetchStates } from "../../geoData";
+import { sectorOptions } from "../sectorData";
+import { fetchStates } from "../geoData";
 import { Icon } from "@chakra-ui/react";
 import { FiMapPin } from "react-icons/fi";
-const FilterableCardList = () => {
-  // const ngo = {
-  //   ngoName: "Your NGO Name",
-  //   states: [
-  //     "Andaman and Nicobar",
-  //     "Goa",
-  //     "Gujarat",
-  //     "Gujarat",
-  //     "Gujarat",
-  //     "Gujarat",
-  //     "Gujarat",
-  //     "Gujarat",
-  //   ],
-  //   sectors: ["Sector 1", "Sector 2", "Sector 3", "Sector 4", "Sector 5"],
-  //   ratings: 4.5,
-  // };
-  const [ngos, setNgos] = useState([]);
-  const [filteredResult, setResult] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+import { useNavigate } from "react-router-dom";
 
-  useEffect(() => {
-    fetchNgos();
-  }, []);
-
-  const fetchNgos = async () => {
-    try {
-      const response = await fetch("http://localhost:4000/NGO", {
-        headers: {
-          authorization: localStorage.getItem("CompanyAuthToken"), // Replace with your actual token
-        },
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setNgos(data.ngos);
-        setResult(data.ngos);
-      } else {
-        console.log("Error:", data.message);
-      }
-    } catch (error) {
-      console.log("Error:", error.message);
-    }
-  };
-
-  // Function to handle search query changes
-  const handleSearchQueryChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
-
-  // Function to handle checkbox selection
-  const handleCheckboxChange = (selectedSectors, selectedStates) => {
-    // console.warn(selectedSectors);
-    console.warn(selectedStates);
-    // Apply filters based on selected sectors and states
-    const filteredNgos = ngos.filter((ngo) => {
-      const sectorMatch =
-        selectedSectors.length === 0 ||
-        (ngo.profile.sectors &&
-          selectedSectors.some((sector) =>
-            ngo.profile.sectors.includes(sector)
-          ));
-      const stateMatch =
-        selectedStates.length === 0 ||
-        (ngo.profile.operation_area &&
-          selectedStates.some((state) =>
-            ngo.profile.operation_area.includes(state)
-          ));
-      console.log("State Match:", stateMatch);
-      return stateMatch && sectorMatch;
-    });
-
-    console.log("Filtered NGOs:", filteredNgos);
-    setResult(filteredNgos);
-  };
-
-  return (
-    <>
-      <FilterDrawer isOpen={true} handleCheckboxChange={handleCheckboxChange} />
-      <Box flex="1" p="4" marginLeft="auto">
-        <InputGroup mb={4}>
-          <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
-          <Input
-            type="text"
-            placeholder="Search"
-            value={searchQuery}
-            onChange={handleSearchQueryChange}
-          />
-        </InputGroup>
-        <Box display="flex" p="4">
-          <Grid templateColumns="repeat(3, 1fr)" gap={3}>
-            {filteredResult
-              .filter((ngo) =>
-                ngo.ngo_name.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-              .map((ngo) => (
-                <CardComponent
-                  key={ngo._id}
-                  name={ngo.ngo_name}
-                  email={ngo.email}
-                  phone={ngo.profile.phone}
-                  location={ngo.profile.location}
-                />
-              ))}
-          </Grid>
-        </Box>
-      </Box>
-    </>
-  );
-};
-
-const FilterDrawer = ({ isOpen, onClose, handleCheckboxChange }) => {
+export const FilterDrawer = ({ isOpen, onClose, handleCheckboxChange }) => {
   const [states, setStates] = useState([]);
   const [selectedSectors, setSelectedSectors] = useState([]);
   const [selectedStates, setSelectedStates] = useState([]);
@@ -299,7 +178,32 @@ const FilterDrawer = ({ isOpen, onClose, handleCheckboxChange }) => {
   );
 };
 
-const CardComponent = ({ name, email, phone, location }) => {
+export const CardComponent = ({
+  userType,
+  ngoId,
+  name,
+  email,
+  phone,
+  location,
+}) => {
+  const navigate = useNavigate();
+  const ShowProfile = () => {
+    if (userType === "company") {
+      navigate(`/Company/ngo-profile/${ngoId}`, {
+        state: {
+          ngoID: ngoId,
+          userType: userType,
+        },
+      });
+    } else {
+      navigate(`/Beneficiary/ngo-profile/${ngoId}`, {
+        state: {
+          ngoID: ngoId,
+          userType: userType,
+        },
+      });
+    }
+  };
   return (
     <Box
       maxW="sm"
@@ -307,11 +211,17 @@ const CardComponent = ({ name, email, phone, location }) => {
       borderRadius="lg"
       overflow="hidden"
       p={4}
-      marginLeft="0.1rem"
+      //   bg={"rgba(135, 206, 235, 0.8)"}
+      bg={"whiteAlpha.900"}
+      fontFamily={"serif"}
+      borderColor={"skyblue"}
+      marginLeft="0.5rem"
+      mr={"2rem"}
     >
-      <Text fontSize="xl" fontWeight="bold" mb={4}>
+      <Text fontSize="xl" fontWeight="bold" mt={"-3"} align={"center"}>
         {name}
-      </Text>
+          </Text>
+          <Divider width={"80%"} ml={"10%"} mb={"3"}></Divider>
       <Flex align="center" mb={2}>
         <EmailIcon mr={2} />
         <Text>{email}</Text>
@@ -326,11 +236,28 @@ const CardComponent = ({ name, email, phone, location }) => {
           {location.city} , {location.state} , {location.pincode}
         </Text>
       </Flex>
+      <Box display="flex" justifyContent="flex-end">
+        <Button
+          bg="skyblue"
+          color="white"
+          w={"fit-content"}
+          boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+          size={"sm"}
+          fontSize={"xs"}
+          _hover={{ boxShadow: "0px 4px 6px skyblue", color: "red.500" }}
+          _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
+          onClick={() => {
+            ShowProfile();
+          }}
+        >
+          View More
+        </Button>
+      </Box>
     </Box>
   );
 };
 
-const SearchIcon = () => {
+export const SearchIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -348,5 +275,3 @@ const SearchIcon = () => {
     </svg>
   );
 };
-
-export default FilterableCardList;

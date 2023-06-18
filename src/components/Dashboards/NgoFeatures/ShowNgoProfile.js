@@ -17,13 +17,19 @@ import {
   Flex,
   Tooltip,
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import jwt_decode from "jwt-decode";
-import NgoNavigation from "../ngoNavigation";
+import NgoNavigation from "../NgoNavigation";
 import { FiMail, FiMapPin, FiPhone } from "react-icons/fi";
 import "../../../CSS/rfpTable.css";
+import ReviewComponent from "../AddReviews";
+import CompanyNavigation from "../companyNavigation";
+import BenificiaryNavigation from "../beneficiaryNavigation";
 
 const ShowNgoProfile = () => {
+  const location = useLocation();
+  const ngoID = location.state?.ngoID;
+  const userType = location.state?.userType;
   const navigate = useNavigate();
   const [profileData, setProfileData] = useState(null);
   const [ngoId, setNgoId] = useState("");
@@ -36,48 +42,96 @@ const ShowNgoProfile = () => {
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
 
   useEffect(() => {
-    const fetchCompanyProfile = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:4000/NGO/profile/${ngoId}`
-        );
-        const data = await response.json();
-        if (data.success) {
-          setProfileData(data.data);
-          console.log(data.data);
-        } else {
-          console.log(data.message);
-          throw new Error("Failed to Get Profile.please Reload");
+    if (userType === "company" || userType === "beneficiary") {
+      const fetchCompanyProfile = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:4000/NGO/profile/${ngoID}`
+          );
+          const data = await response.json();
+          if (data.success) {
+            setProfileData(data.data);
+            console.log(data.data);
+          } else {
+            console.log(data.message);
+            throw new Error("Failed to Get Profile.please Reload");
+          }
+        } catch (error) {
+          console.log(error.message);
         }
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-    const fetchLogo = async () => {
-      try {
-        const response = await fetch(`http://localhost:4000/NGO/logo/${ngoId}`);
+      };
+      const fetchLogo = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:4000/NGO/logo/${ngoID}`
+          );
 
-        const base64Data = await response.text();
+          const base64Data = await response.text();
 
-        const byteCharacters = atob(base64Data.split(",")[1]);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
+          const byteCharacters = atob(base64Data.split(",")[1]);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+
+          const blob = new Blob([byteArray], { type: "image/png" });
+          const imageUrl = URL.createObjectURL(blob);
+          setImage(imageUrl);
+        } catch (error) {
+          console.error(error);
         }
-        const byteArray = new Uint8Array(byteNumbers);
-
-        const blob = new Blob([byteArray], { type: "image/png" });
-        const imageUrl = URL.createObjectURL(blob);
-        setImage(imageUrl);
-      } catch (error) {
-        console.error(error);
+      };
+      if (ngoID && ngoID !== "") {
+        fetchLogo();
+        fetchCompanyProfile();
       }
-    };
-    if (ngoId && ngoId !== "") {
-      fetchLogo();
-      fetchCompanyProfile();
+    } else {
+      const fetchCompanyProfile = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:4000/NGO/profile/${ngoId}`
+          );
+          const data = await response.json();
+          if (data.success) {
+            setProfileData(data.data);
+            console.log(data.data);
+          } else {
+            console.log(data.message);
+            throw new Error("Failed to Get Profile.please Reload");
+          }
+        } catch (error) {
+          console.log(error.message);
+        }
+      };
+      const fetchLogo = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:4000/NGO/logo/${ngoId}`
+          );
+
+          const base64Data = await response.text();
+
+          const byteCharacters = atob(base64Data.split(",")[1]);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+
+          const blob = new Blob([byteArray], { type: "image/png" });
+          const imageUrl = URL.createObjectURL(blob);
+          setImage(imageUrl);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      if (ngoId && ngoId !== "") {
+        fetchLogo();
+        fetchCompanyProfile();
+      }
     }
-  }, [ngoId]);
+  }, [ngoId, ngoID, userType]);
 
   const submitHandler = async () => {
     navigate("/Ngo/editprofile", { replace: true });
@@ -93,7 +147,13 @@ const ShowNgoProfile = () => {
       }}
     >
       <Box>
-        <NgoNavigation />
+        {userType !== "company" && userType !== "beneficiary" ? (
+          <NgoNavigation />
+        ) : userType === "company" ? (
+          <CompanyNavigation />
+        ) : (
+          <BenificiaryNavigation />
+        )}
 
         <div
           style={{
@@ -104,7 +164,13 @@ const ShowNgoProfile = () => {
         >
           {profileData ? (
             <div>
-              <Box mr={"1%"} display={"flex"} justifyContent={"center"}>
+              <Box
+                mr={"1%"}
+                mt={"1%"}
+                mb={"1%"}
+                display={"flex"}
+                justifyContent={"center"}
+              >
                 <label htmlFor="profile-image">
                   <div
                     style={{
@@ -145,7 +211,6 @@ const ShowNgoProfile = () => {
                 borderRadius="md"
                 boxShadow="2px 4px 6px black"
                 borderColor={"skyblue"}
-
                 fontFamily={"serif"}
               >
                 <Box ml={"0"} mr={"0"}>
@@ -172,7 +237,6 @@ const ShowNgoProfile = () => {
                       <Box
                         mr={{ base: "2%", md: "2%" }}
                         // borderWidth="1px"
-                        padding={"2% 13%"}
                         ml={"1.5%"}
                         borderRadius={"10px"}
                       >
@@ -187,25 +251,15 @@ const ShowNgoProfile = () => {
                           <Icon as={FiPhone} boxSize={4} mr={5} />{" "}
                           {profileData.profile.phone}
                         </Text>
-                      </Box>
-                      <Box
-                        mr={{ base: "5%", md: "5%" }}
-                        borderLeft="1px"
-                        padding={"2% 13%"}
-                        ml={"1.5%"}
-                        fontSize={"lg"}
-                      >
-                        <Box>
-                          <Text fontSize={{ base: "lg", md: "lg" }}>
-                            <Icon as={FiMapPin} boxSize={4} mr={5} />{" "}
-                            {`${profileData.profile.location.city}, ${profileData.profile.location.state}, ${profileData.profile.location.pincode}`}
-                          </Text>
-                          <Divider height={"2"} borderColor={"transparent"} />
-                          <Text fontSize={{ base: "lg", md: "lg" }}>
-                            <Icon as={FiMail} boxSize={4} mr={5} />{" "}
-                            {profileData.email}
-                          </Text>
-                        </Box>
+                        <Text fontSize={{ base: "lg", md: "lg" }}>
+                          <Icon as={FiMapPin} boxSize={4} mr={5} />{" "}
+                          {`${profileData.profile.location.city}, ${profileData.profile.location.state}, ${profileData.profile.location.pincode}`}
+                        </Text>
+                        <Divider height={"2"} borderColor={"transparent"} />
+                        <Text fontSize={{ base: "lg", md: "lg" }}>
+                          <Icon as={FiMail} boxSize={4} mr={5} />{" "}
+                          {profileData.email}
+                        </Text>
                       </Box>
                     </HStack>
                     <br></br>
@@ -435,7 +489,7 @@ const ShowNgoProfile = () => {
                                 <Th>Designation</Th>
                               </Tr>
                             </Thead>
-                            <Tbody style={{ zoom: 0.8 }}>
+                            <Tbody style={{ zoom: 1.2 }}>
                               {profileData.profile.board_members.map(
                                 (member, index) => (
                                   <Tr>
@@ -468,21 +522,23 @@ const ShowNgoProfile = () => {
                       justifyContent={"center"}
                       flexWrap={"wrap"}
                     >
-                      <Button
-                        bg="white"
-                        color="skyblue"
-                        w={"190px"}
-                        // mr={"5%"}
-                        boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
-                        _hover={{ boxShadow: "0px 4px 6px skyblue" }}
-                        _active={{
-                          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-                        }}
-                        mt={4}
-                        onClick={submitHandler}
-                      >
-                        Edit Profile
-                      </Button>
+                      {userType !== "company" && userType !== "beneficiary" && (
+                        <Button
+                          bg="white"
+                          color="skyblue"
+                          w={"190px"}
+                          // mr={"5%"}
+                          boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+                          _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+                          _active={{
+                            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                          }}
+                          mt={4}
+                          onClick={submitHandler}
+                        >
+                          Edit Profile
+                        </Button>
+                      )}
                     </HStack>
                   </Box>
                 </Box>
@@ -504,6 +560,11 @@ const ShowNgoProfile = () => {
           )}
         </div>
       </Box>
+      {userType === "company" || userType === "beneficiary" ? (
+        <ReviewComponent ngoID={ngoID} userType={userType} />
+      ) : (
+        <ReviewComponent ngoID={ngoId} userType={"ngo"} />
+      )}
     </div>
   );
 };

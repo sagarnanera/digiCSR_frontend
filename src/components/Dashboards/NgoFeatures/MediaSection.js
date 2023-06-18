@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NgoNavigation from "../ngoNavigation";
+import NgoNavigation from "../NgoNavigation";
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import PostCard from "./PostCard";
@@ -13,32 +13,31 @@ const MediaSection = ({ userType }) => {
   useEffect(() => {
     // Fetch all blogs when the component mounts
     const fetchBlogs = async () => {
-
-      const url = "http://localhost:4000/media/posts";;
+      const url = "http://localhost:4000/media/posts";
       var options;
 
       if (userType === "company" || userType === "Beneficiary") {
-        const token = userType === "company"
-          ? localStorage.getItem("CompanyAuthToken")
-          : localStorage.getItem("NgoAuthToken");
+        const token =
+          userType === "company"
+            ? localStorage.getItem("CompanyAuthToken")
+            : localStorage.getItem("BenificiaryAuthToken");
 
         options = {
           headers: {
             "Content-type": "application/json",
-            "Authorization": token,
-          }
-        }
-      }
-      else {
+            Authorization: token,
+          },
+        };
+      } else {
         const token = localStorage.getItem("NgoAuthToken");
 
         options = {
           headers: {
             "Content-type": "application/json",
-            "Authorization": token,
-          }
-        }
-      };
+            Authorization: token,
+          },
+        };
+      }
 
       try {
         const res = await fetch(url, options);

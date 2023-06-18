@@ -117,7 +117,7 @@ const TrackRFP = () => {
   };
   useEffect(() => {
     fetchRFPs();
-  }, [currentPage, rowsPerPage, selectedsector, selectedstates]);
+  }, [currentPage, rowsPerPage, selectedsector, selectedstates,filteredData]);
 
   const handleRowsPerPageChange = (event) => {
     const value = parseInt(event.target.value);

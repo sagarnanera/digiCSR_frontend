@@ -1,0 +1,265 @@
+        *{
+            padding: 0px;
+            margin: 0px;
+            box-sizing: border-box;
+        }
+        .home-page-container{
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        .background-img{
+            width: 100vw;
+            height: 100vh;
+            box-sizing: border-box;
+            position:absolute;
+        
+        }
+        .block-about-container{
+            width: 600px;
+            height: 558px;
+            
+            position:absolute;
+            margin-top: 125px;
+            margin-left: 100px;
+        }
+        .main-header{
+            font-family: 'Hind Vadodara';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 50px;
+        line-height: 60px;
+        letter-spacing: 0.8px;
+        text-transform: capitalize;
+
+        color: #000000;
+
+        }
+        .second-header{
+        font-size: 50px;
+        font-family: 'Hind Vadodara';
+        font-style: normal;
+        }
+        .font-header{
+        margin-top: 50px;
+        }
+        .buttonsss{
+            margin-top: 50px;
+            gap:20px;
+        }
+
+        #button-p{
+            width: 200px;
+            height: 50px;
+            background: linear-gradient(95.41deg, #37ADEF 0.59%, #00A3FF 51.4%, #46B2EF 100%);
+            border-radius: 5px;
+            margin-left: 10px;
+            border: 1px solid  #00A3FF;
+        }
+        #button-s{
+            width: 200px;
+            height: 50px;
+            border: 1px solid #00A3FF;
+            border-radius: 5px;
+            font-family: 'Hind Vadodara';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 15px;
+        line-height: 137.3%;
+        margin-left: 25px;
+        /* identical to box height, or 32px */
+
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+
+        color: #29ACF6;
+            filter: drop-shadow(0px 4px 20px rgba(55, 173, 239, 0.5));
+        }
+        .second-part{
+            width: 100vw;
+            height: 35vh;
+           
+            position: relative;
+        }
+        .second-part img{
+            position: absolute;
+            width: 100vw;
+            height: 35vh;
+        }
+        .font{
+            display: flex;
+            position: absolute;
+            margin-top: 29px;
+                   
+        /* identical to box height, or 100% */
+
+
+
+        }
+
+
+        .font1{
+            font-family: 'Hind Vadodara';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 30px;
+        
+            padding-left: 50px;
+        }
+        .font2{
+            font-size: 30px;
+            padding-left: 5px;
+            line-height: 40px;
+            font-weight: 100;
+        }
+        .card {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* Adjust the number of columns as needed */
+  gap: 10px; /* Adjust the gap between columns if desired */
+  width: 90vw;
+  height: auto; /* Change the height as needed */
+
+  position: absolute;
+  margin-top: 100px;
+  margin-left: 50px;
+}
+
+.card1 {
+  width: 80%; /* Take up full width of the grid column */
+  height: 100px; /* Adjust the height as needed */
+
+  background: #FFFFFF;
+  box-shadow: 0px 4px 45px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-cards {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 34px;
+  letter-spacing: 2px;
+  color: #14142A;
+
+  text-align: center; /* Center the text horizontally */
+}
+
+.text-cards2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2px;
+  text-align: center; /* Center the text horizontally */
+}
+
+.about-img{
+  width: 100vw;
+    height: 32vh;
+    position: absolute;
+}
+.section-3{
+    position: relative;
+}
+.textus{
+    position: absolute;
+    font-family: 'Hind Vadodara';
+font-style: normal;
+font-weight: 200;
+font-size: 30px;
+line-height: 137.3%;
+/* identical to box height, or 66px */
+
+
+color: #000000;
+padding-top: 40px;
+padding-left: 50px;
+}
+.text-t{
+
+   padding-top: 83px;
+    padding-left: 47px;
+}
+.text-y{
+    width: 70vw;
+    height: 33vh;
+  
+    position: absolute;
+}
+.about-img2{
+    position: absolute;
+    display: flex;
+    width: 400px;
+    height: 400px;
+    right: -60px;
+    top: -80px;
+}
+.section-4{
+    position: relative;
+}
+.about-img3{
+    position: absolute;
+    top: 265px;
+    width: 100vw;
+    height: 32vh;
+}
+.about4{
+position: relative;
+margin-top: 65px;
+}
+.about5{
+    position: absolute;
+    width: 90vw;
+    height: 30vh;
+   
+    top: 280px;
+    display: flex;
+}
+.about-first-part{
+    width: 16vw;
+    height: 30vh;
+
+}
+.about-first-second{
+    width: 80vw;
+    height: 30vh;
+   
+    display: flex;
+}
+.about-third{
+    width: 30vw;
+    height: 30vh;
+
+
+}
+.about-thirds{
+    width: 30vw;
+    height: 30vh;
+    
+    display: flex;
+    flex-direction: column;
+   
+    padding: 60px;
+    padding-left: 190px;
+    
+    list-style: none;
+    
+}
+.about-i{
+    display: flex;
+    gap: 15px;
+}
+.about-third-images2{
+    padding: 60px;
+}
+.about-third{
+    padding: 58px;
+}
+.hj{
+    padding-bottom: 10px;;
+}
+

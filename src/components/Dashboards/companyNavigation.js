@@ -307,9 +307,9 @@ const CompanyNavigation = () => {
               </li>
               <li>
                 <Link
-                  to="/ngos"
+                  to="/Company/ngos"
                   className={
-                    location.pathname === "/ngos" ? "active" : ""
+                    location.pathname === "/Company/ngos" ? "active" : ""
                   }
                 >
                   NGOs

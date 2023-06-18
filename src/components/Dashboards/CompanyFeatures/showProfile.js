@@ -8,7 +8,6 @@ import {
   HStack,
   Icon,
   Divider,
-  VStack,
   Tooltip,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
