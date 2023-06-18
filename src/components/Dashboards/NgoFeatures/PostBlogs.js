@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import NgoNavigation from "../ngoNavigation";
+import NgoNavigation from "../NgoNavigation";
 import {
   Box,
   Button,
@@ -7,7 +7,7 @@ import {
   FormLabel,
   Input,
   Flex,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import PostEditor from "../../PostEditor";
@@ -20,7 +20,6 @@ const PostBlogs = () => {
   const toast = useToast();
 
   const handleSubmit = async () => {
-
     let errorMessage = "";
 
     if (!title.trim() && !content.trim()) {
@@ -37,7 +36,7 @@ const PostBlogs = () => {
         status: "warning",
         duration: 5000,
         isClosable: true,
-        position: "top-right"
+        position: "top-right",
       });
       return;
     }
@@ -53,9 +52,9 @@ const PostBlogs = () => {
         method: "POST",
         headers: {
           "Content-type": "application/json",
-          "Authorization": token,
+          Authorization: token,
         },
-        body: JSON.stringify({ title, content })
+        body: JSON.stringify({ title, content }),
       });
 
       if (response.ok) {
@@ -67,14 +66,13 @@ const PostBlogs = () => {
           status: "success",
           duration: 5000,
           isClosable: true,
-          position: "top-right"
+          position: "top-right",
         });
         // Reset form fields
         setTitle("");
         setContent("");
 
         navigate(`/Ngo/media/${createdPost._id}`);
-
       } else {
         console.log("Post creation failed");
         // Handle error case
@@ -85,9 +83,8 @@ const PostBlogs = () => {
           status: "warning",
           duration: 5000,
           isClosable: true,
-          position: "top-right"
+          position: "top-right",
         });
-
       }
     } catch (error) {
       console.error("Error creating post:", error);
@@ -99,7 +96,7 @@ const PostBlogs = () => {
         status: "error",
         duration: 5000,
         isClosable: true,
-        position: "top-right"
+        position: "top-right",
       });
     }
 
@@ -128,7 +125,7 @@ const PostBlogs = () => {
       >
         <FormControl>
           <FormLabel>Title</FormLabel>
-          <Input value={title} onChange={e => setTitle(e.target.value)} />
+          <Input value={title} onChange={(e) => setTitle(e.target.value)} />
         </FormControl>
 
         <FormControl mt={4}>

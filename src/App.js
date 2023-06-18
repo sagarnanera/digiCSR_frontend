@@ -1,12 +1,7 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import ChooseUserComponent from "./components/chooseUserComponent";
-import {
-  Route,
-  Routes,
-  Navigate,
-  useNavigate,
-} from "react-router-dom";
+import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import CompanyDashboard from "./pages/Dashboards/CompanyDashboard";
 import TrackRFP from "./components/Dashboards/CompanyFeatures/TrackRFP";
 import FundingStats from "./components/Dashboards/CompanyFeatures/FundingStats";
@@ -32,6 +27,7 @@ import ShowBenificiaryprofile from "./components/Dashboards/BeneficiaryFeatures.
 import EditBeneficiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/editprofile";
 import AddBeneficiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/addprofile";
 import UpdateBlog from "./components/Dashboards/NgoFeatures/UpdateBlog";
+import NGOs from "./components/Dashboards/NGOs";
 
 function App() {
   const authToken = localStorage.getItem("CompanyAuthToken");
@@ -43,7 +39,7 @@ function App() {
   const isBeneficiaryAuthenticated = BeneficiaryauthToken !== null;
 
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (
       !isCompanyAuthenticated &&
@@ -61,7 +57,6 @@ function App() {
 
   return (
     <div className="App">
-
       <Routes>
         <Route path="/" element={<ChooseUserComponent />} />
         {isCompanyAuthenticated && (
@@ -81,8 +76,19 @@ function App() {
             <Route path="/Company/editprofile" element={<EditProfile />} />
             <Route path="/Company/rfpdetails" element={<RFPCompanyDetails />} />
             <Route path="/Company/profile" element={<ShowProfile />} />
-            <Route path="/Company/media" element={<MediaSection userType={"company"} />} />
-            <Route path="/Company/media/:id" element={<Post userType={"company"} />} />
+            <Route
+              path="/Company/media"
+              element={<MediaSection userType={"company"} />}
+            />
+            <Route
+              path="/Company/media/:id"
+              element={<Post userType={"company"} />}
+            />
+            <Route
+              path="/Company/ngos"
+              element={<NGOs userType={"company"} />}
+            />
+            <Route path="/Company/ngo-profile/:id" element={<ShowNgoProfile />} />
           </>
         )}
         {isNgoAuthenticated && (
@@ -90,7 +96,10 @@ function App() {
             <Route path="/Ngo/RFPs" element={<RFPRequests />} />
             <Route path="/Ngo/acceptedRFPs" element={<AcceptedRFP />} />
 
-            <Route path="/Ngo/media" element={<MediaSection userType={"ngo"} />} />
+            <Route
+              path="/Ngo/media"
+              element={<MediaSection userType={"ngo"} />}
+            />
             <Route path="/Ngo/media/create" element={<PostBlogs />} />
             <Route path="/Ngo/media/:id" element={<Post userType={"ngo"} />} />
             <Route path="/Ngo/media/update/:id" element={<UpdateBlog />} />
@@ -125,6 +134,11 @@ function App() {
               path="/Beneficiary/media/:id"
               element={<MediaSection userType={"beneficiary"} />}
             />
+            <Route
+              path="/Beneficiary/ngos"
+              element={<NGOs userType={"beneficiary"} />}
+            />
+            <Route path="/Beneficiary/ngo-profile/:id" element={<ShowNgoProfile />} />
           </>
         )}
         <Route path="*" element={<Navigate to="/" />} />

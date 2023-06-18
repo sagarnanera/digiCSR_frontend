@@ -1,10 +1,29 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import classes from "../../CSS/ComCss.module.css";
-import { Avatar, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import {
+  Avatar,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+  HStack,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  useMediaQuery,
+} from "@chakra-ui/react";
+import { FiMenu } from "react-icons/fi";
+import { useState } from "react";
 
 const BenificiaryNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isMobile] = useMediaQuery("(max-width: 800px)");
+  const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
 
   const handleClick = () => {
     localStorage.removeItem("BeneficiaryAuthToken");
@@ -13,40 +32,119 @@ const BenificiaryNavigation = () => {
 
   return (
     <header className={classes.header}>
-      <div className={classes.logo}>Company Dashboard</div>
-      <nav>
-        <ul className={classes.nav}>
-          <li>
-            <Link
-              to="/Beneficiary"
-              className={
-                location.pathname === "/Beneficiary" ? classes.active : ""
-              }
+      <div className={classes.logo}>
+        <img src={"/image 7.png"} alt="Company Logo" />
+      </div>
+      <HStack>
+        {isMobile ? ( // Render menu drawer for mobile screens
+          <>
+            <IconButton
+              aria-label="Open menu"
+              icon={<FiMenu />}
+              variant={"ghost"}
+              color={"black"}
+              colorScheme="blue"
+              onClick={() => setIsMenuDrawerOpen(true)}
+            />
+
+            <Drawer
+              isOpen={isMenuDrawerOpen}
+              placement="right"
+              onClose={() => setIsMenuDrawerOpen(false)}
             >
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/Beneficiary/NGOBlogs"
-              className={
-                location.pathname === "/Beneficiary/NGOBlogs"
-                  ? classes.active
-                  : ""
-              }
-            >
-              Media Section
-            </Link>
-          </li>
+              <DrawerOverlay>
+                <DrawerContent>
+                  <DrawerCloseButton />
+                  <DrawerHeader>Menu</DrawerHeader>
+                  <DrawerBody>
+                    <ul className={classes.nav}>
+                      <li>
+                        <Link
+                          to="/Beneficiary"
+                          className={
+                            location.pathname === "/Beneficiary"
+                              ? classes.active
+                              : ""
+                          }
+                        >
+                          Home
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/Beneficiary/ngos"
+                          className={
+                            location.pathname === "/Beneficiary/ngos"
+                              ? "active"
+                              : ""
+                          }
+                        >
+                          NGOs
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/Beneficiary/NGOBlogs"
+                          className={
+                            location.pathname === "/Beneficiary/NGOBlogs"
+                              ? classes.active
+                              : ""
+                          }
+                        >
+                          Media Section
+                        </Link>
+                      </li>
+                      {/* Rest of the navigation links */}
+                    </ul>
+                  </DrawerBody>
+                </DrawerContent>
+              </DrawerOverlay>
+            </Drawer>
+          </>
+        ) : (
+          // Render regular navigation for larger screens
+          <ul className={classes.nav}>
+            <li>
+              <Link
+                to="/Beneficiary"
+                className={
+                  location.pathname === "/Beneficiary" ? classes.active : ""
+                }
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/Beneficiary/ngos"
+                className={
+                  location.pathname === "/Beneficiary/ngos" ? "active" : ""
+                }
+              >
+                NGOs
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/Beneficiary/NGOBlogs"
+                className={
+                  location.pathname === "/Beneficiary/NGOBlogs"
+                    ? classes.active
+                    : ""
+                }
+              >
+                Media
+              </Link>
+            </li>
+            {/* Rest of the navigation links */}
+          </ul>
+        )}
+        <ul className={classes.navbutton}>
           <li>
             <Menu>
-              <MenuButton
-                as={Avatar}
-                size="sm"
-                src="https://bit.ly/broken-link"
-              />
+              <MenuButton as={Avatar} size="sm" src={"/user-avatar"} />
               <MenuList>
-                <Link to="/Beneficiary/profile">
+                <Link to="/Company/profile">
                   <MenuItem>Show Company Profile</MenuItem>
                 </Link>
                 <MenuItem onClick={handleClick}>Logout</MenuItem>
@@ -54,7 +152,7 @@ const BenificiaryNavigation = () => {
             </Menu>
           </li>
         </ul>
-      </nav>
+      </HStack>
     </header>
   );
 };

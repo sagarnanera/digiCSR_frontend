@@ -365,7 +365,7 @@ function AllUserLogin() {
             position: "bottom",
           });
           const { result } = data;
-          localStorage.setItem("BeneficiaryAuthToken", result);
+          localStorage.setItem("BenificiaryAuthToken", result);
           setLoading(false);
           navigate("/Beneficiary/addprofile", { replace: true });
         } else {
@@ -400,7 +400,7 @@ function AllUserLogin() {
 
       {showOtpButton && (
         <Button
-          colorScheme="orange"
+          colorScheme="blue"
           w={"100%"}
           style={{ marginTop: 15 }}
           onClick={handleSendOtp}
@@ -426,7 +426,7 @@ function AllUserLogin() {
 
       {showSignupButton && (
         <Button
-          colorScheme="orange"
+          colorScheme="blue"
           w={"100%"}
           style={{ marginTop: 15 }}
           onClick={submitHandler}

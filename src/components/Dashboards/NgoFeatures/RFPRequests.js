@@ -8,90 +8,130 @@ import {
   Td,
   IconButton,
   Container,
-  // Input,
   Button,
   ButtonGroup,
   Tooltip,
+  HStack,
+  Input,
+  Box,
+  Select,
+  VStack,
+  Text,
 } from "@chakra-ui/react";
-import { FiEye, FiShare } from "react-icons/fi";
+import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import "../../../CSS/rfpTable.css";
-import RequestAmount from "./requestAmount";
-import NgoNavigation from "../ngoNavigation";
+import NgoNavigation from "../NgoNavigation";
+import { fetchStateName, fetchStates } from "../../geoData";
+import { sectorOptions } from "../../sectorData";
 // import config from "../../config";
 
 const RFPRequest = () => {
   const navigate = useNavigate();
-  const rowsPerPage = 10;
+  // const rowsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentRows, setCurrentRows] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [documentCount, setDocumentCount] = useState(1);
+  const pageCount = Math.ceil(documentCount / rowsPerPage);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const [currentRows, setCurrentRows] = useState([]);
-  const [showShareForm, setShowShareForm] = useState(false);
   const [showRFPDetails, setShowRFPDetails] = useState(false);
-
-  const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRFPId, setSelectedRFPId] = useState(null);
-  // const [documentCount, setDocumentCount] = useState(0);
-  const pageCount = Math.ceil(20 / rowsPerPage);
+  const [states, setStates] = useState([]);
+  const [selectedstates, setselectedStates] = useState("");
+  const [selectedsector, setselectedSector] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+
+  useEffect(() => {
+    const getStates = async () => {
+      const fetchedStates = await fetchStates();
+      setStates(fetchedStates);
+    };
+    getStates();
+  }, []);
+  const handleStateChange = async (stateId) => {
+    const fetchedstateName = await fetchStateName(stateId);
+    setselectedStates(fetchedstateName);
+  };
+  const handleSectorChange = async (selectedSector) => {
+    setselectedSector(selectedSector);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:4000/rfps?page=${currentPage}`,
-          {
-            headers: {
-              authorization: `${localStorage.getItem("NgoAuthToken")}`,
-            },
-          }
-        );
-        const data = await response.json();
-        if (data === []) {
-          setCurrentPage(currentPage === 1 ? currentPage : currentPage - 1);
+        const response = await fetch("http://localhost:4000/rfps", {
+          headers: {
+            authorization: `${localStorage.getItem("NgoAuthToken")}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch RFPs.");
         }
-        setCurrentRows(data);
-        console.log(data);
+        const data = await response.json();
+
+        // Apply filtering based on selected state and sector
+        setFilteredData(data);
+        // console.log(data);
+        if (selectedstates !== "") {
+          console.log(selectedstates);
+          setFilteredData(
+            filteredData.filter((proposal) =>
+              proposal.states.includes(selectedstates)
+            )
+          );
+        }
+        if (selectedsector !== "") {
+          console.log(selectedsector);
+          setFilteredData(
+            filteredData.filter((proposal) =>
+              proposal.sectors.includes(selectedsector)
+            )
+          );
+        }
+
+        if (filteredData.length === 0) {
+          setCurrentPage((prevPage) =>
+            prevPage === 1 ? prevPage : prevPage - 1
+          );
+        }
+        setDocumentCount(filteredData.length);
+        setCurrentRows(
+          filteredData.slice(
+            (currentPage - 1) * rowsPerPage,
+            currentPage * rowsPerPage
+          )
+        );
+        console.log(filteredData);
       } catch (error) {
         console.log(error);
       }
     };
 
     fetchData();
-  }, [currentPage]);
-  // useEffect(() => {
-  //   const fetchDocumentCount = async () => {
-  //     try {
-  //       const response = await fetch("http://localhost:4000/rfp-count");
-  //       const data = await response.json();
-  //       setDocumentCount(data.count);
-  //       console.log(documentCount);
-  //     } catch (error) {
-  //       console.error("Error fetching document count:", error);
-  //     }
-  //   };
+  }, [currentPage, rowsPerPage, selectedsector, selectedstates, filteredData]);
 
-  //   fetchDocumentCount();
-  // });
-  // const handleRowsPerPageChange = (event) => {
-  //   const value = parseInt(event.target.value);
-  //   setRowsPerPage(value);
-  //   setCurrentPage(1);
-  // };
+  const handleRowsPerPageChange = (event) => {
+    const value = parseInt(event.target.value);
+    setRowsPerPage(value);
+    setCurrentPage(1);
+  };
 
   const handlePrevPage = () => {
     if (currentPage === 1) {
       return;
     } else {
-      setCurrentPage(currentPage - 1);
+      setCurrentPage((prevPage) => prevPage - 1);
     }
   };
 
   const handleNextPage = () => {
-    if (currentRows.length < 10) {
+    const remainingData = documentCount - currentPage * rowsPerPage;
+    if (remainingData <= 0) {
       return;
     } else {
-      setCurrentPage(currentPage + 1);
+      setCurrentPage((prevPage) => prevPage + 1);
     }
   };
 
@@ -138,7 +178,7 @@ const RFPRequest = () => {
       // Display ellipsis before the first visible page number
       if (startPage > 2) {
         pageNumbers.push(
-          <Button key="ellipsis-prev" variant={"ghost"}>
+          <Button key="ellipsis-prev" variant="ghost">
             ...
           </Button>
         );
@@ -160,7 +200,7 @@ const RFPRequest = () => {
       // Display ellipsis after the last visible page number
       if (endPage < pageCount - 1) {
         pageNumbers.push(
-          <Button key="ellipsis-next" variant={"ghost"}>
+          <Button key="ellipsis-next" variant="ghost">
             ...
           </Button>
         );
@@ -181,13 +221,6 @@ const RFPRequest = () => {
     return pageNumbers;
   };
 
-  const handleShareClick = (rowData) => {
-    setSelectedRowData(rowData);
-    setSelectedRFPId(rowData._id);
-    console.log(selectedRFPId);
-    setShowShareForm(true);
-  };
-
   const handleShowDetails = (rowData) => {
     setSelectedRFPId(rowData._id);
     console.log(selectedRFPId);
@@ -198,131 +231,192 @@ const RFPRequest = () => {
     setShowRFPDetails(true);
   };
   return (
-    <Container centerContent>
-      <NgoNavigation />
-      <div className="container">
-        <h1 className="title">List of Request for Proposals</h1>
-        {/* <div className="input-container">
-          <Input
-            type="number"
-            min={1}
-            max={proposals.length}
-            value={rowsPerPage}
-            onChange={handleRowsPerPageChange}
-            style={{ width: "120px", marginRight: "1rem" }}
-          />
-          <span className="label">Rows per page</span>
-        </div> */}
-        <div className="table-container">
-          <Table variant="striped" colorScheme="gray" size="sm">
-            <Thead>
-              <Tr>
-                <Th>Sr. No.</Th>
-                <Th>Proposal Name</Th>
-                <Th>Development Sector</Th>
-                <Th>States</Th>
-                <Th>Company</Th>
-                <Th>Action</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {currentRows.map((proposal, index) => (
-                <Tr key={proposal._id}>
-                  <Td>{indexOfFirstRow + index + 1}</Td>
-                  <Td>{proposal.title}</Td>
-                  <Td maxW={"20vw"}>
-                    {proposal.sectors && proposal.sectors.length > 5 ? (
-                      <Tooltip label={proposal.sectors.join(", ")}>
-                        <span>
-                          {proposal.sectors.slice(0, 5).join(", ")}
-                          {proposal.sectors.length > 5 ? ", ..+ more" : ""}
-                        </span>
-                      </Tooltip>
-                    ) : (
-                      <span>
-                        {proposal.sectors && proposal.sectors.join(", ")}
-                      </span>
-                    )}
-                  </Td>
-                  <Td>
-                    {proposal.states.length > 3 ? (
-                      <Tooltip label={proposal.states.join(", ")}>
-                        <span>
-                          {proposal.states.slice(0, 3).join(", ")}
-                          {", ..+" + (proposal.states.length - 3) + " more"}
-                        </span>
-                      </Tooltip>
-                    ) : (
-                      <span>
-                        {proposal.states.map((state, stateIndex) => (
-                          <span key={stateIndex}>
-                            {state}
-                            {stateIndex !== proposal.states.length - 1
-                              ? ", "
-                              : ""}
-                          </span>
-                        ))}
-                      </span>
-                    )}
-                  </Td>
-                  <Td>{proposal.company_name}</Td>
-                  <Td>
-                    <IconButton
-                      aria-label="View proposal"
-                      icon={<FiEye />}
-                      marginRight="0.5rem"
-                      variant={"ghost"}
-                      onClick={() => {
-                        // setSelectedRFPId(proposal._id);
-                        handleShowDetails(proposal);
-                      }}
-                    />
-                    <IconButton
-                      aria-label="Share proposal"
-                      variant={"ghost"}
-                      icon={<FiShare />}
-                      onClick={() => {
-                        handleShareClick(proposal);
-                      }}
-                    />
-                  </Td>
+    <div
+      style={{
+        backgroundImage: "url('../bg.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        minWidth: "100vw",
+      }}
+    >
+      <Container centerContent>
+        <NgoNavigation />
+        <Box
+          d="flex"
+          textAlign="center"
+          p={3}
+          bg="white"
+          w="100%"
+          m="6% 0 0px 0"
+          borderRadius="lg"
+          borderWidth="1px"
+          backgroundColor={"skyblue"}
+        >
+          <h1 className="title">List of Request for Proposals</h1>
+        </Box>
+        <div className="container">
+          <HStack w={"90%"} justifyContent="space-between" mb={"1%"}>
+            <div className="input-container">
+              <Input
+                type="number"
+                min={1}
+                ml={"5vw"}
+                value={rowsPerPage}
+                onChange={handleRowsPerPageChange}
+                style={{ width: "120px", marginRight: "1rem" }}
+              />
+              <span className="label">Rows per page</span>
+            </div>
+            <Box>
+              <HStack
+                mt={"-5"}
+                display={"flex"}
+                justifyContent={"center"}
+                flexWrap={"wrap"}
+              >
+                <VStack>
+                  <Text ml={"-18vw"}> State Filter </Text>
+                  <Select
+                    id="state"
+                    onChange={(e) => handleStateChange(e.target.value)}
+                    size={"sm"}
+                    style={{ maxWidth: "20rem" }}
+                    value={selectedstates}
+                  >
+                    <option value="">Select a state</option>
+                    {states.map((state) => (
+                      <option key={state.geonameId} value={state.geonameId}>
+                        {state.name}
+                      </option>
+                    ))}
+                  </Select>
+                </VStack>
+                <VStack>
+                  <Text ml={"-18vw"}> Sector Filter </Text>
+                  <Select
+                    id="sector"
+                    onChange={(e) => handleSectorChange(e.target.value)}
+                    size="sm"
+                    style={{ maxWidth: "20rem" }}
+                    value={selectedsector}
+                  >
+                    <option value="">Select a sector</option>
+                    {sectorOptions.map((option) => (
+                      <option key={option.id} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Select>
+                </VStack>
+              </HStack>
+            </Box>
+          </HStack>
+
+          <div className="table-container">
+            <Table variant="simple" colorScheme="blue" size="sm">
+              <Thead style={{ background: "skyblue", marginBottom: "1rem" }}>
+                <Tr>
+                  <Th>Sr. No.</Th>
+                  <Th>Proposal Name</Th>
+                  <Th>Development Sector</Th>
+                  <Th>States</Th>
+                  <Th>Company Name</Th>
+                  <Th>Action</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
-          {showShareForm && (
-            <RequestAmount
-              rfpID={selectedRFPId}
-              rowData={selectedRowData}
-              onClose={() => setShowShareForm(false)}
-            />
-          )}
-          {showRFPDetails &&
-            navigate("/Ngo/rfpdetails", {
-              state: { rfpID: selectedRFPId },
-            })}
+              </Thead>
+              <Tbody style={{ zoom: 0.85 }}>
+                {currentRows.map((proposal, index) => (
+                  <Tr key={proposal._id}>
+                    <Td className="divider">{indexOfFirstRow + index + 1}</Td>
+                    <Td className="divider">{proposal.title}</Td>
+                    <Td className="divider" maxW={"20vw"}>
+                      {proposal.sectors && proposal.sectors.length > 5 ? (
+                        <Tooltip label={proposal.sectors.join(", ")}>
+                          <span>
+                            {proposal.sectors.slice(0, 5).join(", ")}
+                            {proposal.sectors.length > 5 ? ", ..+ more" : ""}
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        <span>
+                          {proposal.sectors && proposal.sectors.join(", ")}
+                        </span>
+                      )}
+                    </Td>
+                    <Td className="divider">
+                      {proposal.states.length > 3 ? (
+                        <Tooltip label={proposal.states.join(", ")}>
+                          <span>
+                            {proposal.states.slice(0, 3).join(", ")}
+                            {", ..+" + (proposal.states.length - 3) + " more"}
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        <span>
+                          {proposal.states.map((state, stateIndex) => (
+                            <span key={stateIndex}>
+                              {state}
+                              {stateIndex !== proposal.states.length - 1
+                                ? ", "
+                                : ""}
+                            </span>
+                          ))}
+                        </span>
+                      )}
+                    </Td>
+                    <Td className="divider">{proposal.company_name}</Td>
+                    <Td>
+                      <IconButton
+                        aria-label="View proposal"
+                        icon={<FiEye />}
+                        marginLeft="0.5rem"
+                        variant={"ghost"}
+                        onClick={() => {
+                          // setSelectedRFPId(proposal._id);
+                          handleShowDetails(proposal);
+                        }}
+                        colorScheme="blue"
+                        color={"blue"}
+                      />
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+            {showRFPDetails &&
+              navigate("/Ngo/rfpdetails", {
+                state: {
+                  rfpID: selectedRFPId,
+                },
+              })}
+          </div>
+          <div className="pagination">
+            <ButtonGroup variant="outline" spacing="4">
+              <Button
+                disabled={currentPage === 1}
+                onClick={handlePrevPage}
+                variant={"ghost"}
+                color={"skyblue"}
+                colorScheme="blue"
+              >
+                Previous
+              </Button>
+              {renderPageNumbers()}
+              <Button
+                disabled={currentPage === pageCount}
+                onClick={handleNextPage}
+                variant={"ghost"}
+                color={"skyblue"}
+                colorScheme="blue"
+              >
+                Next
+              </Button>
+            </ButtonGroup>
+          </div>
         </div>
-        <div className="pagination">
-          <ButtonGroup variant="outline" spacing="4">
-            <Button
-              disabled={currentPage === 1}
-              onClick={handlePrevPage}
-              variant={"ghost"}
-            >
-              Previous
-            </Button>
-            {renderPageNumbers()}
-            <Button
-              disabled={currentPage === pageCount}
-              onClick={handleNextPage}
-              variant={"ghost"}
-            >
-              Next
-            </Button>
-          </ButtonGroup>
-        </div>
-      </div>
-    </Container>
+      </Container>
+    </div>
   );
 };
 

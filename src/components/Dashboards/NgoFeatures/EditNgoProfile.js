@@ -24,21 +24,40 @@ import {
   Checkbox,
   Tooltip,
   useToast,
-  // HStack,
-  Wrap,
   IconButton,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  ModalHeader,
+  ModalContent,
+  ModalOverlay,
+  Modal,
+  Td,
+  Tr,
+  Tbody,
+  Th,
+  Thead,
+  TableCaption,
+  Table,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Select,
 } from "@chakra-ui/react";
 import {
   AddIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  DeleteIcon,
   EditIcon,
   PhoneIcon,
 } from "@chakra-ui/icons";
-import { fetchStates } from "../../geoData";
+import { fetchStates, fetchCities, fetchStateName } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
 import { useNavigate } from "react-router-dom";
-import NgoNavigation from "../ngoNavigation";
+import NgoNavigation from "../NgoNavigation";
 // export const allNgoFieldsContext = createContext();
 
 const EditNgoProfile = () => {
@@ -49,22 +68,116 @@ const EditNgoProfile = () => {
   const [states, setStates] = useState([]);
   const [sector, setSector] = useState([]);
   const [CSRBudget, setCSRBudget] = useState();
+  const [personPhone, setPersonPhone] = useState();
   const [userId, setUserId] = useState("");
   const [selectedStates, setSelectedStates] = useState([]);
   const [isSectorDropdownOpen, setIsSectorDropdownOpen] = useState(false);
-  const [isTextAreaVisible, setIsTextAreaVisible] = useState(false);
-  const [isSectorTextAreaVisible, setIsSectorTextAreaVisible] = useState(false);
   const [selectedStatesText, setSelectedStatesText] = useState("");
   const [selectedSectorText, setSelectedSectorText] = useState("");
   const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [memberloading, setmemberLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  // const [memberloading, setmemberLoading] = useState(false);
   const [profileData, setProfileData] = useState(null);
   const toast = useToast();
   // const [allfields, setAllfields] = useState(false);
+  const [isImageChanged, setIsImageChanged] = useState(false);
+  const [establishmentyear, setEstablishmentYear] = useState(1);
   const [boardMembers, setBoardMembers] = useState([]);
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
-  const [isImageChanged, setIsImageChanged] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [currentMemberIndex, setCurrentMemberIndex] = useState(null);
+  const [locationState, setlocationState] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedcities, setselectedCities] = useState([]);
+  const [pincode, setPincode] = useState();
+
+  const handleAddMember = () => {
+    setShowModal(true);
+    setBoardMembers((prevBoardMembers) => [
+      ...prevBoardMembers,
+      {
+        name: "",
+        gender: "",
+        dinNumber: "",
+        phoneNo: "",
+        designation: "",
+        isEditing: true, // Initially set to true to show the form fields
+      },
+    ]);
+    setCurrentMemberIndex(boardMembers.length); // Set the current member index to the newly added member
+  };
+
+  const handleMemberChange = (index, field, value) => {
+    setBoardMembers((prevBoardMembers) => {
+      const updatedMembers = [...prevBoardMembers];
+      updatedMembers[index][field] = value;
+      return updatedMembers;
+    });
+  };
+
+  const handleEditMember = (index) => {
+    setShowModal(true);
+    setCurrentMemberIndex(index);
+    setBoardMembers((prevBoardMembers) => {
+      const updatedMembers = [...prevBoardMembers];
+      updatedMembers[index].isEditing = true; // Set isEditing to true to show the form fields
+      return updatedMembers;
+    });
+  };
+
+  const handleSaveMember = (index) => {
+    const member = boardMembers[index];
+
+    // Check if any of the fields have non-null values
+    const hasValues = Object.values(member).some(
+      (value) => value.trim() !== ""
+    );
+
+    if (!hasValues) {
+      toast({
+        title: "Please fill at least one field",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    setBoardMembers((prevBoardMembers) => {
+      const updatedMembers = [...prevBoardMembers];
+      updatedMembers[index].isEditing = false; // Set isEditing to false to show the text form
+      return updatedMembers;
+    });
+    setShowModal(false);
+  };
+  const handleDeleteMember = (index) => {
+    setBoardMembers((prevBoardMembers) => {
+      const updatedMembers = [...prevBoardMembers];
+      updatedMembers.splice(index, 1);
+      return updatedMembers;
+    });
+  };
+
+  const handleCloseModal = (currentMemberIndex) => {
+    if (currentMemberIndex === boardMembers.length - 1) {
+      const currentMember = boardMembers[currentMemberIndex];
+      if (
+        currentMember.name.trim() === "" &&
+        currentMember.gender.trim() === "" &&
+        currentMember.dinNumber.trim() === "" &&
+        currentMember.phoneNo.trim() === "" &&
+        currentMember.designation.trim() === ""
+      ) {
+        // Remove the current member from the boardMembers state
+        setBoardMembers((prevBoardMembers) =>
+          prevBoardMembers.slice(0, prevBoardMembers.length - 1)
+        );
+      }
+    }
+    setShowModal(false);
+  };
+
   useEffect(() => {
     const getStatesAndCompanyId = async () => {
       const fetchedStates = await fetchStates();
@@ -126,6 +239,10 @@ const EditNgoProfile = () => {
       setNgoName(profileData.NGO_name);
       setNgoSummary(profileData.profile.summary);
       setCSRBudget(profileData.profile.csr_budget);
+      setSector(profileData.profile.sectors);
+      setSelectedStates(profileData.profile.operation_area);
+      setPersonPhone(profileData.profile.phone);
+      setPincode(profileData.profile.location.pincode);
       const defaultMembers = profileData.profile.board_members.map(
         (member) => ({
           name: member.bm_name,
@@ -139,62 +256,15 @@ const EditNgoProfile = () => {
       setBoardMembers(defaultMembers);
     }
   }, [profileData]);
-  const handleAddMember = () => {
-    setBoardMembers((prevBoardMembers) => [
-      ...prevBoardMembers,
-      {
-        name: "",
-        gender: "",
-        dinNumber: "",
-        phoneNo: "",
-        designation: "",
-        isEditing: true, // Initially set to true to show the form fields
-      },
-    ]);
-  };
-  const handleMemberChange = (index, field, value) => {
-    setBoardMembers((prevBoardMembers) => {
-      const updatedMembers = [...prevBoardMembers];
-      updatedMembers[index][field] = value;
-      return updatedMembers;
-    });
-  };
 
-  const handleEditMember = (index) => {
-    setBoardMembers((prevBoardMembers) => {
-      const updatedMembers = [...prevBoardMembers];
-      updatedMembers[index].isEditing = true; // Set isEditing to true to show the form fields
-      return updatedMembers;
-    });
+  const handlelocationStateChange = async (stateId) => {
+    const fetchedCities = await fetchCities(stateId);
+    const fetchedstateName = await fetchStateName(stateId);
+    setlocationState(fetchedstateName);
+    setCities(fetchedCities);
   };
-
-  const handleSaveMember = (index) => {
-    const member = boardMembers[index];
-    if (
-      member.name.trim() === "" ||
-      member.gender.trim() === "" ||
-      member.dinNumber.trim() === "" ||
-      member.phoneNo.trim() === "" ||
-      member.designation.trim() === ""
-    ) {
-      toast({
-        title: "Please Fill all the Fields",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setLoading(false);
-      return;
-    } else {
-      // setAllfields(true);
-    }
-    setBoardMembers((prevBoardMembers) => {
-      const updatedMembers = [...prevBoardMembers];
-      updatedMembers[index].isEditing = false; // Set isEditing to false to show the text form
-      // console.log(boardMembers);
-      return updatedMembers;
-    });
+  const handlecityChange = async (cityId) => {
+    setselectedCities(cityId);
   };
   const handleChange = (event) => {
     setNgoSummary(event.target.value);
@@ -211,16 +281,9 @@ const EditNgoProfile = () => {
     }
   };
 
-  useEffect(() => {
-    setSelectedStatesText(selectedStates.join(", "));
-  }, [selectedStates]);
-
-  useEffect(() => {
-    setSelectedSectorText(sector.join(", "));
-  }, [sector]);
-
   const handleStateChange = (selectedItems) => {
     setSelectedStates(selectedItems);
+    setSelectedStatesText(selectedItems.join(", "));
   };
 
   const handleAllChecked = (e) => {
@@ -235,16 +298,15 @@ const EditNgoProfile = () => {
 
   const handleSectorChange = (selectedItems) => {
     setSector(selectedItems);
+    setSelectedSectorText(selectedItems.join(", "));
   };
 
   const handleToggleSectorDropdown = () => {
     setIsSectorDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
-    setIsSectorTextAreaVisible(!isSectorTextAreaVisible);
   };
 
   const handleToggleStateDropdown = () => {
     setIsStateDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
-    setIsTextAreaVisible(!isTextAreaVisible);
   };
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -283,6 +345,11 @@ const EditNgoProfile = () => {
       !NgoSummary ||
       !sector ||
       !selectedStates ||
+      !locationState ||
+      !selectedcities ||
+      (establishmentyear && establishmentyear.length !== 4) ||
+      (personPhone && personPhone.length !== 10) ||
+      !(pincode && pincode.length <= 10 && pincode.length >= 5) ||
       boardMembers.length === 0
     ) {
       toast({
@@ -292,33 +359,22 @@ const EditNgoProfile = () => {
         isClosable: true,
         position: "bottom",
       });
-      setmemberLoading(false);
       return;
     }
 
     try {
-      const url = `http://localhost:4000/NGO/add-profile/${userId}`;
+      const url = `http://localhost:4000/NGO/add-profile`;
 
-      // const formattedBoardMembers = boardMembers.map((member) => ({
-      //   bm_name: member.name,
-      //   bm_gender: member.gender,
-      //   bm_din: member.dinNumber,
-      //   bm_phone: member.phoneNo,
-      //   bm_designation: member.designation,
-      // }));
-      console.log(
-        NgoName,
-        NgoSummary,
-        // formattedBoardMembers,
-        CSRBudget,
-        selectedStates,
-        sector
-      );
       const formData = new FormData();
 
-      formData.append("NGO_name", NgoName);
+      formData.append("ngo_name", NgoName);
       formData.append("summary", NgoSummary);
       formData.append("csr_budget", CSRBudget);
+      formData.append("city", selectedcities);
+      formData.append("state", locationState);
+      formData.append("pincode", pincode);
+      formData.append("phone", personPhone);
+      formData.append("establishment_year", establishmentyear);
       selectedStates.forEach((state) => {
         formData.append("operation_area", state);
       });
@@ -345,18 +401,10 @@ const EditNgoProfile = () => {
 
       const response = await fetch(url, {
         method: "POST",
+        headers: {
+          authorization: `${localStorage.getItem("NgoAuthToken")}`,
+        },
         body: formData,
-        // headers: {
-        //   "Content-type": "application/json",
-        // },
-        // body: JSON.stringify({
-        //   NGO_name: NgoName,
-        //   summary: NgoSummary,
-        //   board_members: formattedBoardMembers,
-        //   csr_budget: CSRBudget,
-        //   operation_area: selectedStates,
-        //   sectors: sector,
-        // }),
       });
 
       const data = await response.json();
@@ -368,7 +416,6 @@ const EditNgoProfile = () => {
           isClosable: true,
           position: "bottom",
         });
-        setLoading(false);
         console.log(data);
         navigate("/Ngo", { replace: true });
       } else {
@@ -385,347 +432,303 @@ const EditNgoProfile = () => {
         isClosable: true,
         position: "bottom",
       });
-      setLoading(false);
       return; // Prevent further execution
     }
   };
 
   return (
     // <allNgoFieldsContext.Provider value={allfields}>
-    <Container centerContent>
+    <div>
       <NgoNavigation />
-      <Box
-        d="flex"
-        textAlign="center"
-        p={3}
-        bg="#f2f2f2"
-        w={{ base: "100%", md: "80vw" }}
-        m="50px 0 10px 0"
-        borderRadius="10px"
+      <Container
+        centerContent
+        style={{
+          zoom: "0.8",
+          width: "120vw",
+          backgroundImage: "url('../bg3.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          minHeight: "100vh",
+          minWidth: "125vw",
+        }}
       >
-        <Text fontSize="3xl" fontFamily="Work sans">
-          Edit Ngo Profile
-        </Text>
-      </Box>
-      <Box
-        d="flex"
-        textAlign="center"
-        m="25px 0 10px 0"
-        p={3}
-        bg="#f2f2f2"
-        w={{ base: "100%", md: "80vw" }}
-        borderRadius="10px"
-      >
-        <VStack spacing={4} w="100%">
-          <Flex
-            flexWrap="wrap"
-            justifyContent={{ base: "center", md: "flex-start" }}
-            flex={5}
-            w="95%"
-          >
-            <Box mr={"1%"}>
-              <label htmlFor="profile-image">
-                <div
-                  style={{
-                    position: "relative",
-                    width: "100px",
-                    height: "100px",
-                    borderRadius: "50%",
-                    overflow: "hidden",
-                  }}
-                >
-                  <img
-                    src={image || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
-                    alt="Profile"
-                    style={{ width: "100%", height: "100%" }}
-                  />
-                  <input
-                    type="file"
-                    id="profile-image"
-                    accept=".jpg,.jpeg,.png"
-                    style={{ display: "none" }}
-                    onChange={handleImageChange}
-                  />
+        <Box
+          d="flex"
+          textAlign="center"
+          p={3}
+          bg="#f2f2f2"
+          w={{ base: "100%", md: "90vw" }}
+          m="50px 0 0px 0"
+          color={"White"}
+          bgColor={"skyblue"}
+        >
+          <Text fontSize="3xl" fontFamily="Work sans">
+            Ngo Profile
+          </Text>
+        </Box>
+        <Box
+          d="flex"
+          textAlign="center"
+          m="0px 0 0px 0"
+          p={3}
+          bg="white"
+          w={{ base: "100%", md: "90vw" }}
+          maxHeight="100vh" // Limit height to screen height
+          overflowY="auto"
+        >
+          <VStack spacing={4} w="98%">
+            <Flex
+              w="95%"
+              flexWrap="wrap"
+              justifyContent={{ base: "center", md: "flex-start" }}
+            >
+              <Box mr={"1%"} mt={"2%"}>
+                <label htmlFor="profile-image">
                   <div
                     style={{
-                      position: "absolute",
-                      bottom: "8px",
-                      right: "8px",
-                      zIndex: 1, // Increase the z-index value
+                      position: "relative",
+                      width: "70px",
+                      height: "70px",
+                      marginTop: "5",
+                      borderRadius: "50%",
+                      overflow: "hidden",
                     }}
                   >
-                    <label htmlFor="profile-image">
-                      <IconButton
-                        component="span"
-                        size={"xs"}
-                        colorScheme="green"
-                        color="primary"
-                        aria-label="Add Photo"
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    </label>
+                    <img
+                      src={image || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
+                      alt="Profile"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                    <input
+                      type="file"
+                      id="profile-image"
+                      accept=".jpg,.jpeg,.png"
+                      style={{ display: "none" }}
+                      onChange={handleImageChange}
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: "-4px",
+                        right: "-4px",
+                        zIndex: 1, // Increase the z-index value
+                      }}
+                    >
+                      <label htmlFor="profile-image">
+                        <IconButton
+                          component="span"
+                          size={"xs"}
+                          colorScheme="blue"
+                          color="primary"
+                          aria-label="Add Photo"
+                        >
+                          <AddIcon />
+                        </IconButton>
+                      </label>
+                    </div>
                   </div>
-                </div>
-              </label>
-            </Box>
-            <Box
-              w={{ base: "90%", md: "33.5vw" }}
-              mr={{ base: 0, md: "34.5vw" }}
+                </label>
+              </Box>
+
+              <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+                <FormControl id="companyname" isRequired={true}>
+                  <FormLabel>Company Name</FormLabel>
+                  <Input
+                    type="text"
+                    placeholder="Enter Company's Full Name"
+                    value={NgoName || ""}
+                    onChange={(e) => setNgoName(e.target.value)}
+                  />
+                </FormControl>
+              </Box>
+              <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
+                <FormControl id="year" isRequired={true}>
+                  <FormLabel>Year of Establishment</FormLabel>
+                  <NumberInput>
+                    <NumberInputField
+                      placeholder="yyyy"
+                      value={establishmentyear || null}
+                      onChange={(e) => setEstablishmentYear(e.target.value)}
+                      maxLength={4}
+                      minLength={4}
+                    />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
+                </FormControl>
+              </Box>
+            </Flex>
+            <Flex
+              flexWrap="wrap"
+              justifyContent={{ base: "center", md: "flex-start" }}
+              flex={5}
+              w="95%"
             >
               <FormControl id="Ngo" isRequired={true}>
-                <FormLabel>Ngo Name</FormLabel>
-                <Input
-                  type="text"
-                  placeholder="Enter Ngo's Full Name"
-                  defaultValue={NgoName || ""}
-                  onChange={(e) => setNgoName(e.target.value)}
-                />
+                <FormLabel>Ngo Summary</FormLabel>
+
+                <Textarea
+                  value={NgoSummary}
+                  rows={rows}
+                  onChange={handleChange}
+                  placeholder="Enter text..."
+                  resize="none"
+                ></Textarea>
               </FormControl>
-            </Box>
-          </Flex>
-          <Flex
-            flexWrap="wrap"
-            justifyContent={{ base: "center", md: "flex-start" }}
-            flex={5}
-            w="95%"
-          >
-            <FormControl id="Ngo" isRequired={true}>
-              <FormLabel>Ngo Summary</FormLabel>
-
-              <Textarea
-                defaultValue={NgoSummary}
-                rows={rows}
-                onChange={handleChange}
-                placeholder="Enter text..."
-                resize="none"
-              ></Textarea>
-            </FormControl>
-          </Flex>
-          <br />
-          <Box flex={5} w="95%">
-            <FormControl isRequired={true}>
-              <FormLabel>Board Member's Of NGO</FormLabel>
-              <Wrap spacing={10}>
-                {boardMembers.map((member, index) => (
-                  <Box
-                    // ml={25}
-                    key={index}
-                    borderWidth="1px"
-                    borderRadius="md"
-                    p={4}
-                    width="350px"
-                  >
-                    {!member.isEditing && (
-                      <>
-                        <Text mb={2}>
-                          <strong>Member Name:</strong> {member.name}
-                        </Text>
-                        <Text mb={2}>
-                          <strong>Gender:</strong> {member.gender}
-                        </Text>
-                        <Text mb={2}>
-                          <strong>DIN:</strong> {member.dinNumber}
-                        </Text>
-                        <Text mb={2}>
-                          <strong>Phone:</strong> {member.phoneNo}
-                        </Text>
-                        <Text mb={2}>
-                          <strong>Designation:</strong> {member.designation}
-                        </Text>
-                        <Button
-                          colorScheme="teal"
-                          size="sm"
-                          onClick={() => handleEditMember(index)}
-                        >
-                          <EditIcon mr={1} /> Edit
-                        </Button>
-                      </>
-                    )}
-                  </Box>
-                ))}
-              </Wrap>
-
-              {boardMembers.map((member, index) => (
-                <Box
-                  key={index}
-                  textAlign="center"
-                  p={3}
-                  bg="#f2f2f2"
-                  w={{ base: "100%", md: "75vw" }}
-                  // m="10px 0 0 0"
-                >
-                  {member.isEditing && (
-                    <>
-                      <FormControl isRequired={true} mb={3}>
-                        <FormLabel>Name</FormLabel>
-                        <Input
-                          type="text"
-                          placeholder="Enter Name of Communication Person"
-                          value={member.name}
-                          onChange={(e) =>
-                            handleMemberChange(index, "name", e.target.value)
-                          }
-                        />
-                      </FormControl>
-                      <FormControl isRequired={true} mb={3}>
-                        <FormLabel>Gender</FormLabel>
-                        <RadioGroup
-                          value={member.gender}
-                          onChange={(value) =>
-                            handleMemberChange(index, "gender", value)
-                          }
-                        >
-                          <Stack direction="row">
-                            <Radio value="Male">Male</Radio>
-                            <Radio value="Female">Female</Radio>
-                            <Radio value="Others">Others</Radio>
-                          </Stack>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormControl isRequired={true} mb={3}>
-                        <FormLabel>DIN Number</FormLabel>
-                        <Input
-                          type="number"
-                          placeholder="DIN number"
-                          value={member.dinNumber}
-                          onChange={(e) =>
-                            handleMemberChange(
-                              index,
-                              "dinNumber",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </FormControl>
-                      <FormControl isRequired={true} mb={3}>
-                        <FormLabel>Phone No</FormLabel>
-                        <InputGroup>
-                          <InputLeftElement>
-                            <PhoneIcon color="gray.300" />
-                          </InputLeftElement>
-                          <Input
-                            type="tel"
-                            placeholder="Phone number"
-                            value={member.phoneNo}
-                            onChange={(e) =>
-                              handleMemberChange(
-                                index,
-                                "phoneNo",
-                                e.target.value
-                              )
-                            }
-                          />
-                        </InputGroup>
-                      </FormControl>
-                      <FormControl isRequired={true} mb={3}>
-                        <FormLabel>Designation</FormLabel>
-                        <Input
-                          type="text"
-                          placeholder="Enter Designation of Communication Person"
-                          value={member.designation}
-                          onChange={(e) =>
-                            handleMemberChange(
-                              index,
-                              "designation",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </FormControl>
-                      <Button
-                        colorScheme="blue"
-                        mt={4}
-                        onClick={() => handleSaveMember(index)}
-                        isLoading={memberloading}
-                      >
-                        Save
-                      </Button>
-                    </>
-                  )}
-                </Box>
-              ))}
-
-              <Button colorScheme="blue" onClick={handleAddMember}>
-                Add Member
-              </Button>
-            </FormControl>
-          </Box>
-          <br />
-
-          <Flex
-            flexWrap="wrap"
-            justifyContent={{ base: "center", md: "flex-start" }}
-            flex={5}
-            w="95%"
-          >
-            <Box
-              w={{ base: "90%", md: "33.5vw" }}
-              mr={{ base: 0, md: "34.5vw" }}
+            </Flex>
+            <br />
+            <Flex
+              flexWrap="wrap"
+              justifyContent={{ base: "center", md: "flex-start" }}
+              flex={5}
+              w="95%"
             >
-              <FormControl id="AmountRfp" isRequired>
-                <FormLabel>CSR Budget of this year</FormLabel>
-                <Input
-                  type="number"
-                  placeholder="CSR Budget"
-                  defaultValue={CSRBudget}
-                  onChange={(e) => {
-                    setCSRBudget(e.target.value);
-                  }}
-                />
+              <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+                <FormControl id="AmountRfp" isRequired>
+                  <FormLabel>CSR Budget of this year</FormLabel>
+                  <Input
+                    type="number"
+                    placeholder="CSR Budget"
+                    value={CSRBudget}
+                    onChange={(e) => {
+                      setCSRBudget(e.target.value);
+                    }}
+                  />
+                </FormControl>
+              </Box>
+              <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+                <FormControl id="phoneno" isRequired={true}>
+                  <FormLabel>Phone No</FormLabel>
+                  <InputGroup>
+                    <InputLeftElement>
+                      <PhoneIcon color="gray.300" />
+                    </InputLeftElement>
+                    <Input
+                      type="tel"
+                      placeholder="Phone number"
+                      value={personPhone || null}
+                      onChange={(e) => setPersonPhone(e.target.value)}
+                      minLength={10}
+                      maxLength={10}
+                    />
+                  </InputGroup>
+                </FormControl>
+              </Box>
+            </Flex>
+            <br />
+            <Box flex={5} w="95%">
+              <FormControl isRequired={true}>
+                <FormLabel>Location of the Company</FormLabel>
+                <Flex
+                  w="100%"
+                  flexWrap="wrap"
+                  justifyContent={{ base: "center", md: "flex-start" }}
+                >
+                  <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+                    <FormControl>
+                      <FormLabel htmlFor="state">State:</FormLabel>
+                      <Select
+                        id="state"
+                        onChange={(e) =>
+                          handlelocationStateChange(e.target.value)
+                        }
+                      >
+                        <option value="">Select a state</option>
+                        {states.map((state) => (
+                          <option key={state.geonameId} value={state.geonameId}>
+                            {state.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <Box
+                    flex={{ base: "100%", md: "5" }}
+                    mr={{ base: 0, md: 10 }}
+                    ml={{ base: 0, md: 10 }}
+                  >
+                    <FormControl>
+                      <FormLabel htmlFor="city">City:</FormLabel>
+                      <Select
+                        id="city"
+                        onChange={(e) => handlecityChange(e.target.value)}
+                      >
+                        <option value="">Select a city</option>
+                        {cities.map((city) => (
+                          <option key={city.geonameId} value={city.name}>
+                            {city.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
+                    <FormControl id="pincode" isRequired={true}>
+                      <FormLabel>Pincode</FormLabel>
+                      <Input
+                        type="number"
+                        placeholder="Enter Pincode"
+                        value={pincode || null}
+                        onChange={(e) => setPincode(e.target.value)}
+                        minLength={5}
+                        maxLength={10}
+                      />
+                    </FormControl>
+                  </Box>
+                </Flex>
               </FormControl>
             </Box>
-          </Flex>
-          <br />
-          <Flex
-            flexWrap="wrap"
-            justifyContent={{ base: "center", md: "flex-start" }}
-            flex={5}
-            w="95%"
-          >
-            <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
-              <FormControl isRequired={true}>
-                <FormLabel>Area of operation</FormLabel>
-                <Box>
-                  <br />
-                  <Menu closeOnSelect={false}>
-                    <MenuButton
-                      as={Button}
-                      w="100%"
-                      rightIcon={
-                        isStateDropdownOpen ? (
-                          <ChevronUpIcon />
-                        ) : (
-                          <ChevronDownIcon />
-                        )
-                      }
-                      onClick={handleToggleStateDropdown}
-                      display="flex"
-                      justifyContent="flex-start"
-                      isOpen={isStateDropdownOpen.toString()}
-                    >
-                      Select State
-                    </MenuButton>
 
-                    <MenuList maxH="200px" overflowY="auto">
-                      <CheckboxGroup
-                        colorScheme="teal"
-                        defaultValue={selectedStates}
-                        onChange={handleStateChange}
+            <Flex
+              flexWrap="wrap"
+              justifyContent={{ base: "center", md: "flex-start" }}
+              flex={5}
+              w="95%"
+            >
+              <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+                <FormControl isRequired={true}>
+                  <FormLabel>Area of operation</FormLabel>
+                  <Box>
+                    <br />
+                    <Menu closeOnSelect={false}>
+                      <MenuButton
+                        as={Button}
+                        w="100%"
+                        rightIcon={
+                          isStateDropdownOpen ? (
+                            <ChevronUpIcon />
+                          ) : (
+                            <ChevronDownIcon />
+                          )
+                        }
+                        onClick={handleToggleStateDropdown}
+                        display="flex"
+                        justifyContent="flex-start"
+                        isOpen={isStateDropdownOpen.toString()}
                       >
-                        {states.map((state) => (
-                          <MenuItem key={state.adminCode1}>
-                            <Checkbox id={state.geonameId} value={state.name}>
-                              {state.name}
-                            </Checkbox>
-                          </MenuItem>
-                        ))}
-                      </CheckboxGroup>
-                    </MenuList>
-                  </Menu>
-                </Box>
-              </FormControl>
-              {isTextAreaVisible && (
+                        Select State
+                      </MenuButton>
+
+                      <MenuList maxH="200px" overflowY="auto">
+                        <CheckboxGroup
+                          colorScheme="blue"
+                          value={selectedStates}
+                          onChange={handleStateChange}
+                        >
+                          {states.map((state) => (
+                            <MenuItem key={state.adminCode1}>
+                              <Checkbox id={state.geonameId} value={state.name}>
+                                {state.name}
+                              </Checkbox>
+                            </MenuItem>
+                          ))}
+                        </CheckboxGroup>
+                      </MenuList>
+                    </Menu>
+                  </Box>
+                </FormControl>
                 <Tooltip
                   label={selectedStates.join(", ")}
                   isDisabled={selectedStates.length <= 6}
@@ -737,64 +740,63 @@ const EditNgoProfile = () => {
                     height="fit-content"
                     textOverflow="ellipsis"
                     resize="none"
-                  >
-                    {selectedStates.length <= 6
-                      ? selectedStatesText
-                      : `${selectedStates.slice(0, 6)},..+${
-                          selectedStates.length - 6
-                        } more`}
-                  </Textarea>
+                    value={
+                      selectedStates.length <= 6
+                        ? selectedStatesText
+                        : `${selectedStates.slice(0, 6)},..+${
+                            selectedStates.length - 6
+                          } more`
+                    }
+                  ></Textarea>
                 </Tooltip>
-              )}
-            </Box>
-            <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
-              <FormControl isRequired={true}>
-                <FormLabel>Development Sector</FormLabel>
-                <Checkbox
-                  isChecked={sector.length === sectorOptions.length}
-                  onChange={handleAllChecked}
-                  w="100%"
-                >
-                  All Sectors
-                </Checkbox>
-                <Box>
-                  <Menu closeOnSelect={false}>
-                    <MenuButton
-                      as={Button}
-                      w="100%"
-                      rightIcon={
-                        isSectorDropdownOpen ? (
-                          <ChevronUpIcon />
-                        ) : (
-                          <ChevronDownIcon />
-                        )
-                      }
-                      onClick={handleToggleSectorDropdown}
-                      display="flex"
-                      justifyContent="flex-start"
-                      isOpen={isSectorDropdownOpen.toString()}
-                    >
-                      Select Sector
-                    </MenuButton>
-                    <MenuList maxH="200px" overflowY="auto">
-                      <CheckboxGroup
-                        colorScheme="teal"
-                        defaultValue={sector}
-                        onChange={handleSectorChange}
+              </Box>
+              <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
+                <FormControl isRequired={true}>
+                  <FormLabel>Development Sector</FormLabel>
+                  <Checkbox
+                    isChecked={sector.length === sectorOptions.length}
+                    onChange={handleAllChecked}
+                    w="100%"
+                  >
+                    All Sectors
+                  </Checkbox>
+                  <Box>
+                    <Menu closeOnSelect={false}>
+                      <MenuButton
+                        as={Button}
+                        w="100%"
+                        rightIcon={
+                          isSectorDropdownOpen ? (
+                            <ChevronUpIcon />
+                          ) : (
+                            <ChevronDownIcon />
+                          )
+                        }
+                        onClick={handleToggleSectorDropdown}
+                        display="flex"
+                        justifyContent="flex-start"
+                        isOpen={isSectorDropdownOpen.toString()}
                       >
-                        {sectorOptions.map((option) => (
-                          <MenuItem key={option.value}>
-                            <Checkbox id={option.id} value={option.label}>
-                              {option.label}
-                            </Checkbox>
-                          </MenuItem>
-                        ))}
-                      </CheckboxGroup>
-                    </MenuList>
-                  </Menu>
-                </Box>
-              </FormControl>
-              {isSectorTextAreaVisible && (
+                        Select Sector
+                      </MenuButton>
+                      <MenuList maxH="200px" overflowY="auto">
+                        <CheckboxGroup
+                          colorScheme="blue"
+                          value={sector}
+                          onChange={handleSectorChange}
+                        >
+                          {sectorOptions.map((option) => (
+                            <MenuItem key={option.value}>
+                              <Checkbox id={option.id} value={option.label}>
+                                {option.label}
+                              </Checkbox>
+                            </MenuItem>
+                          ))}
+                        </CheckboxGroup>
+                      </MenuList>
+                    </Menu>
+                  </Box>
+                </FormControl>
                 <Tooltip
                   label={sector.join(", ")}
                   isDisabled={sector.length <= 5}
@@ -806,30 +808,254 @@ const EditNgoProfile = () => {
                     height="fit-content"
                     textOverflow="ellipsis"
                     resize="none"
-                  >
-                    {sector.length <= 5
-                      ? selectedSectorText
-                      : `${sector.slice(0, 5)},..+${sector.length - 5} more`}
-                  </Textarea>
+                    value={
+                      sector.length <= 5
+                        ? selectedSectorText
+                        : `${sector.slice(0, 5)},..+${sector.length - 5} more`
+                    }
+                  ></Textarea>
                 </Tooltip>
-              )}
+              </Box>
+            </Flex>
+            <br />
+            <Box flex={5} w="95%">
+              <FormControl isRequired={true}>
+                <FormLabel>Board Member's Of NGO</FormLabel>
+                <div display={"flex"} justifyContent={"center"}>
+                  <Box>
+                    {boardMembers.length !== 0 && (
+                      <Table size="sm" variant={"simple"} colorScheme="blue">
+                        <TableCaption>Member Details</TableCaption>
+                        <Thead
+                          style={{
+                            background: "skyblue",
+                            marginBottom: "2rem",
+                          }}
+                        >
+                          <Tr>
+                            <Th>Sr. No.</Th>
+                            <Th>Member Name</Th>
+                            <Th>Gender</Th>
+                            <Th>DIN No.</Th>
+                            <Th>Phone No.</Th>
+                            <Th>Designation</Th>
+                            <Th>Action</Th>
+                          </Tr>
+                        </Thead>
+                        <Tbody>
+                          {boardMembers.map((member, index) => (
+                            <Tr>
+                              <Td className="divider">{index + 1}</Td>
+                              <Td className="divider">{member.name}</Td>
+                              <Td className="divider">{member.gender}</Td>
+                              <Td className="divider">{member.dinNumber}</Td>
+                              <Td className="divider">{member.phoneNo}</Td>
+                              <Td className="divider">{member.designation}</Td>
+                              <Td>
+                                <IconButton
+                                  aria-label="View proposal"
+                                  icon={<EditIcon />}
+                                  marginLeft="0.5rem"
+                                  variant={"ghost"}
+                                  onClick={() => handleEditMember(index)}
+                                  colorScheme="blue"
+                                  color={"blue"}
+                                />
+                                <IconButton
+                                  aria-label="Delete member"
+                                  icon={<DeleteIcon />}
+                                  marginLeft="0.5rem"
+                                  variant={"ghost"}
+                                  onClick={() => handleDeleteMember(index)}
+                                  colorScheme="red"
+                                  color={"red"}
+                                />
+                              </Td>
+                            </Tr>
+                          ))}
+                        </Tbody>
+                      </Table>
+                    )}
+                  </Box>
+                </div>
+
+                {boardMembers.map((member, index) => (
+                  <Box
+                    key={index}
+                    textAlign="center"
+                    p={3}
+                    bg="white"
+                    w={{ base: "100%", md: "75vw" }}
+                    m="10px 0 10px 0"
+                  >
+                    {member.isEditing && index === currentMemberIndex && (
+                      <Modal
+                        isOpen={showModal}
+                        onClose={() => handleCloseModal(currentMemberIndex)}
+                        size={"sm"}
+                      >
+                        <ModalOverlay />
+                        <ModalContent>
+                          <ModalHeader>
+                            {currentMemberIndex !== null
+                              ? "Edit Member"
+                              : "Add Member"}
+                          </ModalHeader>
+                          <ModalCloseButton />
+                          <ModalBody style={{ zoom: "0.7" }}>
+                            <FormControl isRequired={true} mb={3}>
+                              <FormLabel>Name</FormLabel>
+                              <Input
+                                type="text"
+                                placeholder="Enter Name of Communication Person"
+                                value={
+                                  currentMemberIndex !== null
+                                    ? boardMembers[currentMemberIndex].name
+                                    : ""
+                                }
+                                onChange={(e) =>
+                                  handleMemberChange(
+                                    currentMemberIndex,
+                                    "name",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </FormControl>
+                            <FormControl isRequired={true} mb={3}>
+                              <FormLabel>Gender</FormLabel>
+                              <RadioGroup
+                                value={
+                                  currentMemberIndex !== null
+                                    ? boardMembers[currentMemberIndex].gender
+                                    : ""
+                                }
+                                onChange={(value) =>
+                                  handleMemberChange(
+                                    currentMemberIndex,
+                                    "gender",
+                                    value
+                                  )
+                                }
+                              >
+                                <Stack direction="row">
+                                  <Radio value="Male">Male</Radio>
+                                  <Radio value="Female">Female</Radio>
+                                  <Radio value="Others">Others</Radio>
+                                </Stack>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormControl isRequired={true} mb={3}>
+                              <FormLabel>DIN Number</FormLabel>
+                              <Input
+                                type="number"
+                                placeholder="DIN number"
+                                value={
+                                  currentMemberIndex !== null
+                                    ? boardMembers[currentMemberIndex].dinNumber
+                                    : ""
+                                }
+                                onChange={(e) =>
+                                  handleMemberChange(
+                                    currentMemberIndex,
+                                    "dinNumber",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </FormControl>
+                            <FormControl isRequired={true} mb={3}>
+                              <FormLabel>Phone No</FormLabel>
+                              <InputGroup>
+                                <InputLeftElement>
+                                  <PhoneIcon color="gray.300" />
+                                </InputLeftElement>
+                                <Input
+                                  type="tel"
+                                  placeholder="Phone number"
+                                  value={
+                                    currentMemberIndex !== null
+                                      ? boardMembers[currentMemberIndex].phoneNo
+                                      : ""
+                                  }
+                                  onChange={(e) =>
+                                    handleMemberChange(
+                                      currentMemberIndex,
+                                      "phoneNo",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </InputGroup>
+                            </FormControl>
+                            <FormControl isRequired={true} mb={3}>
+                              <FormLabel>Designation</FormLabel>
+                              <Input
+                                type="text"
+                                placeholder="Enter Designation of Communication Person"
+                                value={
+                                  currentMemberIndex !== null
+                                    ? boardMembers[currentMemberIndex]
+                                        .designation
+                                    : ""
+                                }
+                                onChange={(e) =>
+                                  handleMemberChange(
+                                    currentMemberIndex,
+                                    "designation",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </FormControl>
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button
+                              colorScheme="blue"
+                              onClick={() =>
+                                handleSaveMember(currentMemberIndex)
+                              }
+                            >
+                              Save
+                            </Button>
+                          </ModalFooter>
+                        </ModalContent>
+                      </Modal>
+                    )}
+                  </Box>
+                ))}
+
+                <Button
+                  colorScheme="blue"
+                  bg="white"
+                  color="skyblue"
+                  boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+                  _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+                  _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
+                  onClick={handleAddMember}
+                >
+                  Add Member
+                </Button>
+              </FormControl>
             </Box>
-          </Flex>
-          <br />
-          <br />
-          <br />
-          <Button
-            colorScheme="teal"
-            variant="solid"
-            w={"10vw"}
-            onClick={submitHandler}
-            isLoading={loading}
-          >
-            Save
-          </Button>
-        </VStack>
-      </Box>
-    </Container>
+
+            <Button
+              // colorScheme="blue"
+              bg="skyblue"
+              color="white"
+              w={"15%"}
+              mr={"5%"}
+              boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+              _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+              _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
+              onClick={submitHandler}
+            >
+              save
+            </Button>
+          </VStack>
+        </Box>
+      </Container>
+    </div>
     // </allNgoFieldsContext.Provider>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import jwt_decode from "jwt-decode";
+// import jwt_decode from "jwt-decode";
 import {
   Box,
   Container,
@@ -54,7 +54,6 @@ const AddProfile = () => {
   const [personEmail, setPersonEmail] = useState();
   const [personPhone, setPersonPhone] = useState();
   const [personDesignation, setPersonDesignation] = useState();
-  const [userId, setUserId] = useState("");
   const [certificate, setCertificate] = useState();
   const [Sector, setSector] = useState([]);
   const [taxEligibility, setTaxEligibility] = useState([]);
@@ -64,7 +63,7 @@ const AddProfile = () => {
   const [selectedcities, setselectedCities] = useState([]);
   const [pincode, setPincode] = useState();
   const [selectedSectorText, setSelectedSectorText] = useState("");
-  const [isSectorTextAreaVisible, setIsSectorTextAreaVisible] = useState(false);
+  const isSectorTextAreaVisible = true;
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   // const [allfields, setAllfields] = useState(false);
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
@@ -74,11 +73,6 @@ const AddProfile = () => {
       const fetchedStates = await fetchStates();
       setStates(fetchedStates);
     };
-    // Retrieve the user's ID from localStorage
-    const token = localStorage.getItem("CompanyAuthToken");
-    const decodedToken = jwt_decode(token);
-    // Set the user's ID in the state variable
-    setUserId(decodedToken._id);
     getStates();
   }, []);
 
@@ -106,13 +100,10 @@ const AddProfile = () => {
       setSector([]);
     }
   };
-  useEffect(() => {
-    setSelectedSectorText(Sector.join(", "));
-  }, [Sector]);
 
   const handleSectorChange = (selectedItems) => {
     setSector(selectedItems);
-    // console.log(selectedcities);
+    setSelectedSectorText(selectedItems.join(", "));
   };
 
   const handleTaxEligibilityChange = (selectedValues) => {
@@ -121,7 +112,7 @@ const AddProfile = () => {
 
   const handleToggleDropdown = () => {
     setIsDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
-    setIsSectorTextAreaVisible(!isSectorTextAreaVisible);
+    // setIsSectorTextAreaVisible(!isSectorTextAreaVisible);
   };
   const handleChange = (event) => {
     setCompanySummary(event.target.value);
@@ -214,7 +205,7 @@ const AddProfile = () => {
       return;
     }
     try {
-      const url = `http://localhost:4000/company/add-profile/${userId}`; // Replace with your API endpoint URL
+      const url = `http://localhost:4000/company/add-profile`; // Replace with your API endpoint URL
       const registrationCertificateFile = new File(
         [certificate],
         "registration_certificate.pdf"
@@ -222,7 +213,7 @@ const AddProfile = () => {
       const companyLogoFile = new File([image], "company_logo.jpg");
       const formData = new FormData();
       formData.append("company_name", companyName);
-      formData.append("summary", JSON.stringify(CompanySummary));
+      formData.append("summary", CompanySummary);
       formData.append("city", selectedcities);
       formData.append("state", selectedstates);
       formData.append("pincode", pincode);
@@ -231,7 +222,9 @@ const AddProfile = () => {
       formData.append("cp_email", personEmail);
       formData.append("cp_designation", personDesignation);
       formData.append("cp_phone", personPhone);
-      formData.append("tax_comp", taxEligibility);
+      taxEligibility.forEach((tax) => {
+        formData.append("tax_comp", tax);
+      });
       Sector.forEach((sectorItem) => {
         formData.append("sectors", sectorItem);
       });
@@ -240,9 +233,13 @@ const AddProfile = () => {
 
       const response = await fetch(url, {
         method: "POST",
+        headers: {
+          authorization: localStorage.getItem("CompanyAuthToken"),
+        },
         body: formData,
       });
       const data = await response.json();
+      console.warn(data);
       if (response.ok) {
         toast({
           title: "Profile Edited Successfully",
@@ -275,42 +272,56 @@ const AddProfile = () => {
 
   return (
     // <allFieldsContext.Provider value={allfields}>
-    <Container centerContent>
+    <Container
+      centerContent
+      style={{
+        zoom: "0.8",
+        width: "120vw",
+        backgroundImage: "url('../bg3.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        minWidth: "125vw",
+      }}
+    >
       <Box
         d="flex"
         textAlign="center"
         p={3}
         bg="#f2f2f2"
-        w={{ base: "100%", md: "80vw" }}
-        m="50px 0 10px 0"
-        borderRadius="10px"
+        w={{ base: "100%", md: "90vw" }}
+        m="50px 0 0px 0"
+        color={"White"}
+        bgColor={"skyblue"}
       >
         <Text fontSize="3xl" fontFamily="Work sans">
-          Edit Company Profile
+          Company Profile
         </Text>
       </Box>
       <Box
         d="flex"
         textAlign="center"
-        m="25px 0 10px 0"
+        m="0px 0 0px 0"
         p={3}
-        bg="#f2f2f2"
-        w={{ base: "100%", md: "80vw" }}
-        borderRadius="10px"
+        bg="white"
+        w={{ base: "100%", md: "90vw" }}
+        maxHeight="100vh" // Limit height to screen height
+        overflowY="auto"
       >
         <VStack spacing={4} w="100%">
           <Flex
-            w="90%"
+            w="95%"
             flexWrap="wrap"
             justifyContent={{ base: "center", md: "flex-start" }}
           >
-            <Box mr={"1%"}>
+            <Box mr={"1%"} mt={"2%"}>
               <label htmlFor="profile-image">
                 <div
                   style={{
                     position: "relative",
-                    width: "100px",
-                    height: "100px",
+                    width: "70px",
+                    height: "70px",
+                    marginTop: "5",
                     borderRadius: "50%",
                     overflow: "hidden",
                   }}
@@ -330,8 +341,8 @@ const AddProfile = () => {
                   <div
                     style={{
                       position: "absolute",
-                      bottom: "8px",
-                      right: "8px",
+                      bottom: "-4px",
+                      right: "-4px",
                       zIndex: 1, // Increase the z-index value
                     }}
                   >
@@ -339,7 +350,7 @@ const AddProfile = () => {
                       <IconButton
                         component="span"
                         size={"xs"}
-                        colorScheme="green"
+                        colorScheme="blue"
                         color="primary"
                         aria-label="Add Photo"
                       >
@@ -381,12 +392,12 @@ const AddProfile = () => {
               </FormControl>
             </Box>
           </Flex>
-          <br />
+          {/* <br /> */}
           <Flex
             flexWrap="wrap"
             justifyContent={{ base: "center", md: "flex-start" }}
             flex={5}
-            w="90%"
+            w="95%"
           >
             <FormControl id="Ngo" isRequired={true}>
               <FormLabel>Company Summary</FormLabel>
@@ -401,7 +412,7 @@ const AddProfile = () => {
             </FormControl>
           </Flex>
           <br />
-          <Box flex={5} w="90%">
+          <Box flex={5} w="95%">
             <FormControl isRequired={true}>
               <FormLabel>Location of the Company</FormLabel>
               <Flex
@@ -462,7 +473,7 @@ const AddProfile = () => {
             </FormControl>
           </Box>
           <br />
-          <Box flex={5} w="90%">
+          <Box flex={5} w="95%">
             <FormControl isRequired={true}>
               <FormLabel>Communication Person of the Company</FormLabel>
               <Flex
@@ -501,24 +512,6 @@ const AddProfile = () => {
                     </InputGroup>
                   </FormControl>
                 </Box>
-                <Box flex={{ base: "100%", md: "5" }} ml={{ base: 0, md: 5 }}>
-                  <FormControl id="phoneno" isRequired={true}>
-                    <FormLabel>Phone No</FormLabel>
-                    <InputGroup>
-                      <InputLeftElement>
-                        <PhoneIcon color="gray.300" />
-                      </InputLeftElement>
-                      <Input
-                        type="tel"
-                        placeholder="Phone number"
-                        value={personPhone || null}
-                        onChange={(e) => setPersonPhone(e.target.value)}
-                        minLength={10}
-                        maxLength={10}
-                      />
-                    </InputGroup>
-                  </FormControl>
-                </Box>
               </Flex>
             </FormControl>
           </Box>
@@ -526,11 +519,30 @@ const AddProfile = () => {
             flexWrap="wrap"
             justifyContent={{ base: "center", md: "flex-start" }}
             flex={5}
-            w="90%"
+            w="95%"
           >
+            <Box flex={{ base: "100%", md: "5" }} mr={{ base: 0, md: 5 }}>
+              <FormControl id="phoneno" isRequired={true}>
+                <FormLabel>Phone No</FormLabel>
+                <InputGroup>
+                  <InputLeftElement>
+                    <PhoneIcon color="gray.300" />
+                  </InputLeftElement>
+                  <Input
+                    type="tel"
+                    placeholder="Phone number"
+                    value={personPhone || null}
+                    onChange={(e) => setPersonPhone(e.target.value)}
+                    minLength={10}
+                    maxLength={10}
+                  />
+                </InputGroup>
+              </FormControl>
+            </Box>
             <Box
-              w={{ base: "90%", md: "23.5vw" }}
-              mr={{ base: 0, md: "54.5vw" }}
+              flex={{ base: "100%", md: "5" }}
+              mr={{ base: 0, md: 10 }}
+              ml={{ base: 0, md: 10 }}
             >
               <FormControl id="designation" isRequired={true}>
                 <FormLabel>Designation of Communication Person</FormLabel>
@@ -544,7 +556,7 @@ const AddProfile = () => {
             </Box>
           </Flex>
           <br />
-          <Box flex={5} w="90%">
+          <Box flex={5} w="95%">
             <FormControl isRequired>
               <FormLabel>Sectors to provide CSR</FormLabel>
               <Checkbox
@@ -571,7 +583,7 @@ const AddProfile = () => {
                   </MenuButton>
                   <MenuList maxH="200px" overflowY="auto">
                     <CheckboxGroup
-                      colorScheme="teal"
+                      colorScheme="blue"
                       value={Sector}
                       onChange={handleSectorChange}
                     >
@@ -600,34 +612,24 @@ const AddProfile = () => {
                   height="fit-content"
                   textOverflow="ellipsis"
                   resize="none"
-                >
-                  {Sector.length <= 5
-                    ? selectedSectorText
-                    : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`}
-                </Textarea>
+                  value={
+                    Sector.length <= 5
+                      ? selectedSectorText
+                      : `${Sector.slice(0, 5)},..+${Sector.length - 5} more`
+                  }
+                ></Textarea>
               </Tooltip>
             )}
           </Box>
           <br />
-          <Box flex={5} w="90%">
-            <FormControl id="certificate" isRequired>
-              <FormLabel>Company Registration Certificate</FormLabel>
-              <Input
-                type="file"
-                p={1.5}
-                accept="application/pdf"
-                onChange={handleFileChange}
-              />
-            </FormControl>
-          </Box>
-          <br />
-          <Box flex={5} w="90%">
+          <Box flex={5} w="95%">
             <FormControl id="taxeligibility" isRequired={true}>
               <FormLabel>Tax Compliance Eligibility</FormLabel>
               <CheckboxGroup
-                colorScheme="teal"
+                colorScheme="blue"
                 value={taxEligibility}
                 onChange={handleTaxEligibilityChange}
+                size={"sm"}
               >
                 <Stack spacing={[1, 3]} direction={["column", "row"]}>
                   <Checkbox value="80G">80 G (for 50% tax benefits)</Checkbox>
@@ -645,12 +647,26 @@ const AddProfile = () => {
             </FormControl>
           </Box>
           <br />
-          <br />
+          <Box flex={5} w="95%">
+            <FormControl id="certificate" isRequired>
+              <FormLabel>Company Registration Certificate</FormLabel>
+              <Input
+                type="file"
+                p={1.5}
+                accept="application/pdf"
+                onChange={handleFileChange}
+              />
+            </FormControl>
+          </Box>
           <br />
           <Button
-            colorScheme="teal"
-            variant="solid"
-            w={"10vw"}
+            colorScheme="blue"
+            bg="white"
+            color="skyblue"
+            width={"20%"}
+            boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+            _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+            _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
             onClick={submitHandler}
             isLoading={loading}
           >

@@ -7,25 +7,24 @@ import {
   MenuList,
   MenuItem,
   IconButton,
-  Text,
-  Box,
   Flex,
   Badge,
   Button,
-} from "@chakra-ui/react";
-import classes from "../../CSS/ComCss.module.css";
-import {
   Drawer,
-  DrawerBody,
-  DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
+  DrawerHeader,
+  DrawerBody,
+  Box,
+  Text,
+  useMediaQuery,
+  HStack,
 } from "@chakra-ui/react";
-import { FiBell, FiCheck, FiTrash } from "react-icons/fi";
+import classes from "../../CSS/ComCss.module.css";
+import { FiBell, FiCheck, FiMenu, FiTrash } from "react-icons/fi";
 import jwt_decode from "jwt-decode";
 
-// import jwt_decode from "jwt-decode";
 
 const NgoNavigation = () => {
   const location = useLocation();
@@ -34,15 +33,14 @@ const NgoNavigation = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [ngoId, setNgoId] = useState("");
-
-  // const toast = useToast();
+  const [isMenuDrawerOpen, setIsMenuDrawerOpen] = useState(false);
+  const [isMobile] = useMediaQuery("(max-width: 800px)");
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
+
   useEffect(() => {
     const token = localStorage.getItem("NgoAuthToken");
-    console.log(token);
     const decodedToken = jwt_decode(token);
     setNgoId(decodedToken._id);
-    console.log(decodedToken);
   }, []);
   useEffect(() => {
     const fetchLogo = async () => {
@@ -218,28 +216,56 @@ const NgoNavigation = () => {
 
   return (
     <header className={classes.header}>
-      <div className={classes.logo}>Ngo Dashboard</div>
+      <div className={classes.logo}>
+        <img src={"/image 7.png"} alt="Company Logo" />
+      </div>
       <nav>
-        <ul className={classes.nav}>
-          <li>
-            <Link
-              to="/Ngo"
-              className={location.pathname === "/Ngo" ? classes.active : ""}
-            >
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/Ngo/RFPs"
-              className={
-                location.pathname === "/Ngo/RFPs" ? classes.active : ""
-              }
-            >
-              RFP Requests
-            </Link>
-          </li>
-          {/* <li>
+        <HStack>
+          {isMobile ? ( // Render menu drawer for mobile screens
+            <>
+              <IconButton
+                aria-label="Open menu"
+                icon={<FiMenu />}
+                variant={"ghost"}
+                color={"black"}
+                colorScheme="blue"
+                onClick={() => setIsMenuDrawerOpen(true)}
+              />
+
+              <Drawer
+                isOpen={isMenuDrawerOpen}
+                placement="right"
+                onClose={() => setIsMenuDrawerOpen(false)}
+              >
+                <DrawerOverlay>
+                  <DrawerContent>
+                    <DrawerCloseButton />
+                    <DrawerHeader>Menu</DrawerHeader>
+                    <DrawerBody>
+                      <ul className={classes.nav}>
+                        <li>
+                          <Link
+                            to="/Ngo"
+                            className={
+                              location.pathname === "/Ngo" ? classes.active : ""
+                            }
+                          >
+                            Home
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/Ngo/RFPs"
+                            className={
+                              location.pathname === "/Ngo/RFPs"
+                                ? classes.active
+                                : ""
+                            }
+                          >
+                            RFP
+                          </Link>
+                        </li>
+                        {/* <li>
             <Link
               to="/Ngo/postblogs"
               className={
@@ -249,61 +275,131 @@ const NgoNavigation = () => {
               Post Success
             </Link>
           </li> */}
-          <li>
-            <Link
-              to="/Ngo/acceptedRFPs"
-              className={
-                location.pathname === "/Ngo/acceptedRFPs" ? classes.active : ""
-              }
-            >
-              Accepted RFPs
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/Ngo/media"
-              className={
-                location.pathname === "/Ngo/media" ? classes.active : ""
-              }
-            >
-              Media Section
-            </Link>
-          </li>
-          <li>
-            <IconButton
-              aria-label="Share proposal"
-              variant={"ghost"}
-              icon={<FiBell />}
-              onClick={handleBellIconClick}
-              ml={-5}
-            />
-            {unreadCount > 0 && (
-              <Badge colorScheme="red" borderRadius="full" ml={-5} mb={5}>
-                {unreadCount}
-              </Badge>
-            )}
-          </li>
-          <li>
-            <Menu>
-              <MenuButton
-                as={Avatar}
-                size="sm"
-                src={image ? image : "/user-avatar"}
-              />
-              <MenuList>
-                <Link to="/Ngo/profile">
-                  <MenuItem>Show Ngo Profile</MenuItem>
+                        {/* <li>
+                          <Link
+                            to="/Ngo/acceptedRFPs"
+                            className={
+                              location.pathname === "/Ngo/acceptedRFPs"
+                                ? classes.active
+                                : ""
+                            }
+                          >
+                            Accepted RFPs
+                          </Link>
+                        </li> */}
+                        <li>
+                          <Link
+                            to="/Ngo/media"
+                            className={
+                              location.pathname === "/Ngo/media"
+                                ? classes.active
+                                : ""
+                            }
+                          >
+                            Media
+                          </Link>
+                        </li>
+                        {/* Rest of the navigation links */}
+                      </ul>
+                    </DrawerBody>
+                  </DrawerContent>
+                </DrawerOverlay>
+              </Drawer>
+            </>
+          ) : (
+            // Render regular navigation for larger screens
+            <ul className={classes.nav}>
+              <li>
+                <Link
+                  to="/Ngo"
+                  className={location.pathname === "/Ngo" ? classes.active : ""}
+                >
+                  Home
                 </Link>
-                <MenuItem onClick={handleClick}>Logout</MenuItem>
-              </MenuList>
-            </Menu>
-          </li>
-        </ul>
+              </li>
+              <li>
+                <Link
+                  to="/Ngo/RFPs"
+                  className={
+                    location.pathname === "/Ngo/RFPs" ? classes.active : ""
+                  }
+                >
+                  RFP
+                </Link>
+              </li>
+              {/* <li>
+            <Link
+              to="/Ngo/postblogs"
+              className={
+                location.pathname === "/Ngo/postblogs" ? classes.active : ""
+              }
+            >
+              Post Success
+            </Link>
+          </li> */}
+              {/* <li>
+                <Link
+                  to="/Ngo/acceptedRFPs"
+                  className={
+                    location.pathname === "/Ngo/acceptedRFPs"
+                      ? classes.active
+                      : ""
+                  }
+                >
+                  Accepted RFPs
+                </Link>
+              </li> */}
+              <li>
+                <Link
+                  to="/Ngo/media"
+                  className={
+                    location.pathname === "/Ngo/media" ? classes.active : ""
+                  }
+                >
+                  Media
+                </Link>
+              </li>
+            </ul>
+          )}
+          <ul className={classes.navbutton}>
+            <li>
+              <IconButton
+                aria-label="Share proposal"
+                variant={"ghost"}
+                icon={<FiBell />}
+                onClick={handleBellIconClick}
+                color={"skyblue"}
+                size={"lg"}
+                colorScheme="blue"
+              />
+              {unreadCount > 0 && (
+                <Badge colorScheme="red" borderRadius="full" ml={-5} mb={5}>
+                  {unreadCount}
+                </Badge>
+              )}
+            </li>
+            <li>
+              <Menu>
+                <MenuButton
+                  as={Avatar}
+                  size="sm"
+                  src={image ? image : "/user-avatar"}
+                />
+                <MenuList>
+                  <Link to="/Ngo/profile">
+                    <MenuItem>Show Company Profile</MenuItem>
+                  </Link>
+                  <MenuItem onClick={handleClick}>Logout</MenuItem>
+                </MenuList>
+              </Menu>
+            </li>
+          </ul>
+        </HStack>
         <Drawer
           isOpen={isDrawerOpen}
           placement="right"
           onClose={() => setIsDrawerOpen(false)}
-          size="sm"
+          size="xs"
         >
           <DrawerOverlay>
             <DrawerContent>
@@ -318,6 +414,7 @@ const NgoNavigation = () => {
                         colorScheme="green"
                         onClick={markAllAsRead}
                         disabled={notifications.length === 0}
+                        size={"sm"}
                       >
                         Mark All as Read
                       </Button>
@@ -327,6 +424,7 @@ const NgoNavigation = () => {
                         onClick={deleteAllRead}
                         disabled={notifications.length === 0}
                         ml={2}
+                        size={"sm"}
                       >
                         Delete All Read
                       </Button>
@@ -339,7 +437,7 @@ const NgoNavigation = () => {
                           return -1; // Place unread notifications before read notifications
                         } else {
                           // Sort by timestamp if read statuses are the same
-                          return b.timestamp - a.timestamp;
+                          return a.timestamp - b.timestamp;
                         }
                       })
                       .map((notification) => (
@@ -349,17 +447,25 @@ const NgoNavigation = () => {
                           borderRadius="md"
                           p={4}
                           mb={4}
+                          boxSize={"sm"}
+                          maxW={"100%"}
+                          h={"fit-content"}
                         >
                           {notification.read ? (
                             <>
-                              <Text fontSize="lg" fontWeight="hairline" mb={2}>
+                              <Text fontSize="sm" fontWeight="hairline" mb={2}>
                                 {notification.content}
                               </Text>
                               <br />
-                              <Text fontSize="sm" color="gray.500" mb={2}>
+                              <Text fontSize="xs" color="gray.500" mb={2}>
                                 {notification.timestamp}
                               </Text>
-                              <Text fontSize="sm" color="green" ml={2} mb={2}>
+                              <Text
+                                fontSize="xs"
+                                color="green"
+                                ml={"65%"}
+                                mb={2}
+                              >
                                 Status: Readed
                               </Text>
                               <Flex justify="flex-end">
@@ -371,19 +477,20 @@ const NgoNavigation = () => {
                                   }
                                   variant="solid"
                                   colorScheme="red"
+                                  size={"sm"}
                                 />
                               </Flex>
                             </>
                           ) : (
                             <>
-                              <Text fontSize="lg" fontWeight="bold" mb={2}>
+                              <Text fontSize="sm" fontWeight="bold" mb={2}>
                                 {notification.content}
                               </Text>
                               <br />
-                              <Text fontSize="sm" color="gray.500" mb={2}>
+                              <Text fontSize="xs" color="gray.500" mb={2}>
                                 {notification.timestamp}
                               </Text>
-                              <Text fontSize="sm" color="red" ml={2} mb={2}>
+                              <Text fontSize="xs" color="red" ml={"55%"} mb={2}>
                                 Status: Not Readed
                               </Text>
                               <Flex justify="flex-end">
@@ -395,6 +502,7 @@ const NgoNavigation = () => {
                                   }
                                   variant="solid"
                                   colorScheme="green"
+                                  size={"sm"}
                                   mr={2}
                                 />
                                 <IconButton
@@ -404,6 +512,7 @@ const NgoNavigation = () => {
                                     deleteNotification(notification._id)
                                   }
                                   variant="solid"
+                                  size={"sm"}
                                   colorScheme="red"
                                 />
                               </Flex>
@@ -419,6 +528,7 @@ const NgoNavigation = () => {
             </DrawerContent>
           </DrawerOverlay>
         </Drawer>
+        {/* Rest of the code */}
       </nav>
     </header>
   );

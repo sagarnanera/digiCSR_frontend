@@ -1,14 +1,19 @@
-import React, { useState } from 'react'
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import React, { useState } from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
-import { Box, Button, Flex, Heading, IconButton, Image, Text, useToast } from "@chakra-ui/react";
+import {
+    Box,
+    Flex,
+    Heading,
+    IconButton,
+    Image,
+    Text,
+    useToast,
+} from "@chakra-ui/react";
 
 const PostCard = ({ blog, userType, setBlogs }) => {
-
-
     const navigate = useNavigate();
     const toast = useToast();
 
@@ -16,7 +21,6 @@ const PostCard = ({ blog, userType, setBlogs }) => {
     const [thumbnail, setThumbnail] = useState("");
 
     useEffect(() => {
-
         const parser = new DOMParser();
         const htmlDoc = parser.parseFromString(blog.content, "text/html");
 
@@ -38,21 +42,17 @@ const PostCard = ({ blog, userType, setBlogs }) => {
         const thumbimg = images.length > 0 ? images[0].src : null;
 
         setThumbnail(thumbimg);
+    }, []);
 
-    }, [])
-
-    const handleBlogClick = blogId => {
-
+    const handleBlogClick = (blogId) => {
         console.log(userType === "company" || "beneficiary");
 
         return userType === "company" || "beneficiary"
             ? navigate(`/${userType}/media/${blogId}`)
             : navigate(`/Ngo/media/post/${blogId}`);
-
     };
 
     const handleDeleteBlog = async (blogId, event) => {
-
         event.stopPropagation();
 
         if (userType !== "ngo") {
@@ -61,26 +61,29 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                 status: "warning",
                 duration: 5000,
                 isClosable: true,
-                position: "top-right"
+                position: "top-right",
             });
-            return
+            return;
         }
 
         const token = localStorage.getItem("NgoAuthToken");
 
         if (!token) {
-            navigate('/');
+            navigate("/");
         }
 
         try {
             // Replace this with your logic to fetch the blog post using the id
-            const response = await fetch(`http://localhost:4000/media/delete/${blogId}`, {
-                method: 'DELETE',
-                headers: {
-                    "Content-type": "application/json",
-                    "Authorization": token,
+            const response = await fetch(
+                `http://localhost:4000/media/delete/${blogId}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-type": "application/json",
+                        Authorization: token,
+                    },
                 }
-            });
+            );
             const Data = await response.json();
             console.log(Data);
 
@@ -90,9 +93,9 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                     status: "error",
                     duration: 5000,
                     isClosable: true,
-                    position: "top-right"
+                    position: "top-right",
                 });
-                return
+                return;
             }
 
             setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog._id !== blogId));
@@ -101,24 +104,21 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                 status: "success",
                 duration: 5000,
                 isClosable: true,
-                position: "top-right"
+                position: "top-right",
             });
             navigate("/Ngo/media");
-
         } catch (error) {
-            console.error('Error fetching blog:', error);
+            console.error("Error fetching blog:", error);
             toast({
                 title: "Error fetching blog",
                 status: "error",
                 duration: 5000,
                 isClosable: true,
-                position: "top-right"
+                position: "top-right",
             });
         }
-
-    }
+    };
     const handleEditBlog = (blogId, event) => {
-
         event.stopPropagation();
 
         if (userType !== "ngo") {
@@ -127,15 +127,13 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                 status: "warning",
                 duration: 5000,
                 isClosable: true,
-                position: "top-right"
+                position: "top-right",
             });
-            return
+            return;
         }
 
         navigate(`/Ngo/media/update/${blogId}`, { replace: true });
-
-    }
-
+    };
 
     return (
         <Box
@@ -151,6 +149,7 @@ const PostCard = ({ blog, userType, setBlogs }) => {
             position="relative"
             bg={"#FFF"}
         >
+
             {thumbnail && (
                 <Box
                     mb={2}
@@ -221,7 +220,7 @@ const PostCard = ({ blog, userType, setBlogs }) => {
             </Text>
 
         </Box>
-    )
-}
+    );
+};
 
-export default PostCard
+export default PostCard;
