@@ -60,9 +60,14 @@ function App() {
       <Routes>
         <Route path="/" element={<ChooseUserComponent />} />
         {isCompanyAuthenticated && (
-          <Route path="/Company" element={<CompanyDashboard />} />
+          <Route
+            path="/Company"
+            element={<CompanyDashboard />}
+          />
         )}
-        {isNgoAuthenticated && <Route path="/Ngo" element={<NgoDashboard />} />}
+        {isNgoAuthenticated && (
+          <Route path="/Ngo" element={<NgoDashboard />} />
+        )}
         {isBeneficiaryAuthenticated && (
           <Route path="/Beneficiary" element={<BeneficiaryDashboard />} />
         )}
@@ -88,7 +93,10 @@ function App() {
               path="/Company/ngos"
               element={<NGOs userType={"company"} />}
             />
-            <Route path="/Company/ngo-profile/:id" element={<ShowNgoProfile />} />
+            <Route
+              path="/Company/ngo-profile/:id"
+              element={<ShowNgoProfile />}
+            />
           </>
         )}
         {isNgoAuthenticated && (
@@ -138,7 +146,10 @@ function App() {
               path="/Beneficiary/ngos"
               element={<NGOs userType={"beneficiary"} />}
             />
-            <Route path="/Beneficiary/ngo-profile/:id" element={<ShowNgoProfile />} />
+            <Route
+              path="/Beneficiary/ngo-profile/:id"
+              element={<ShowNgoProfile />}
+            />
           </>
         )}
         <Route path="*" element={<Navigate to="/" />} />

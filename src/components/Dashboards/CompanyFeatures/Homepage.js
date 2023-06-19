@@ -10,10 +10,15 @@ import "../../../CSS/homepage.css";
 // import instagram from "./image_company-componant/instagram.png";
 // import twitter from "./image_company-componant/twitter.png";
 // import Linkdin from "./image_company-componant/Linkdin.png";
-import PieChart from "./Piechart";
+// import PieChart from "./Piechart";
 import { FiFacebook, FiInstagram, FiLinkedin, FiTwitter } from "react-icons/fi";
-import { Icon } from "@chakra-ui/react";
-function Homepage() {
+import { HStack, Icon, VStack } from "@chakra-ui/react";
+import MapChart from "./MapChart";
+import HexGrid from "./HexChart";
+import YearChart from "./YearChart";
+import "../../../CSS/styles.css";
+import "../../../CSS/HexGrid.css";
+function Homepage(userType) {
   return (
     <>
       <div className="home-page-container">
@@ -31,7 +36,19 @@ function Homepage() {
           </div>
         </div>
       </div>
-      <PieChart></PieChart>
+      <>
+        <div className="mapchart">
+          <HStack>
+            <VStack>
+              <MapChart userType={userType} />
+            </VStack>
+            <HexGrid userType={userType} />
+          </HStack>
+        </div>
+        <div className="pie">
+          <YearChart userType={userType} />
+        </div>
+      </>
       <div className="second-part" style={{ maxWidth: "99vw", top: "20vh" }}>
         <img src={"../Rectangle.png"} alt="home"></img>
         <div className="font">
@@ -89,7 +106,7 @@ function Homepage() {
         style={{
           // overflowX: "auto",
           maxWidth: "99vw",
-          top: "18.5vh",
+          top: "21.9vh",
         }}
       >
         <img className="about-img3" src={"../about.png"} alt="home"></img>

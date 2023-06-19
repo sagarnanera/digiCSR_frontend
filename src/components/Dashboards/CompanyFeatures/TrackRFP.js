@@ -80,21 +80,19 @@ const TrackRFP = () => {
       const data = await response.json();
 
       // Apply filtering based on selected state and sector
-      setFilteredData(data);
+      let filteredData = data;
+
       if (selectedstates !== "") {
         console.log(selectedstates);
-        setFilteredData(
-          filteredData.filter((proposal) =>
-            proposal.states.includes(selectedstates)
-          )
+        filteredData = filteredData.filter((proposal) =>
+          proposal.states.includes(selectedstates)
         );
       }
+
       if (selectedsector !== "") {
         console.log(selectedsector);
-        setFilteredData(
-          filteredData.filter((proposal) =>
-            proposal.sectors.includes(selectedsector)
-          )
+        filteredData = filteredData.filter((proposal) =>
+          proposal.sectors.includes(selectedsector)
         );
       }
 
@@ -103,6 +101,8 @@ const TrackRFP = () => {
           prevPage === 1 ? prevPage : prevPage - 1
         );
       }
+
+      setFilteredData(filteredData); // Update the filteredData state once all filters have been applied
       setDocumentCount(filteredData.length);
       setCurrentRows(
         filteredData.slice(
@@ -115,9 +115,10 @@ const TrackRFP = () => {
       console.log(error);
     }
   };
+
   useEffect(() => {
     fetchRFPs();
-  }, [currentPage, rowsPerPage, selectedsector, selectedstates,filteredData]);
+  }, [currentPage, rowsPerPage, selectedsector, selectedstates]);
 
   const handleRowsPerPageChange = (event) => {
     const value = parseInt(event.target.value);
@@ -343,7 +344,7 @@ const TrackRFP = () => {
                   >
                     <option value="">Select a sector</option>
                     {sectorOptions.map((option) => (
-                      <option key={option.id} value={option.value}>
+                      <option key={option.id} value={option.label}>
                         {option.label}
                       </option>
                     ))}

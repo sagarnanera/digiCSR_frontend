@@ -58,59 +58,63 @@ const RFPRequest = () => {
     setselectedSector(selectedSector);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/rfps", {
-          headers: {
-            authorization: `${localStorage.getItem("NgoAuthToken")}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch RFPs.");
-        }
-        const data = await response.json();
+  const fetchData = async () => {
+    try {
+      const result = localStorage.getItem("NgoAuthToken");
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          authorization: result,
+        },
+      };
+      const response = await fetch(`http://localhost:4000/rfps`, {
+        headers: config.headers,
+      });
 
-        // Apply filtering based on selected state and sector
-        setFilteredData(data);
-        // console.log(data);
-        if (selectedstates !== "") {
-          console.log(selectedstates);
-          setFilteredData(
-            filteredData.filter((proposal) =>
-              proposal.states.includes(selectedstates)
-            )
-          );
-        }
-        if (selectedsector !== "") {
-          console.log(selectedsector);
-          setFilteredData(
-            filteredData.filter((proposal) =>
-              proposal.sectors.includes(selectedsector)
-            )
-          );
-        }
-
-        if (filteredData.length === 0) {
-          setCurrentPage((prevPage) =>
-            prevPage === 1 ? prevPage : prevPage - 1
-          );
-        }
-        setDocumentCount(filteredData.length);
-        setCurrentRows(
-          filteredData.slice(
-            (currentPage - 1) * rowsPerPage,
-            currentPage * rowsPerPage
-          )
-        );
-        console.log(filteredData);
-      } catch (error) {
-        console.log(error);
+      if (!response.ok) {
+        throw new Error("Failed to fetch RFPs.");
       }
-    };
+      const data = await response.json();
 
+      // Apply filtering based on selected state and sector
+      let filteredData = data;
+
+      if (selectedstates !== "") {
+        console.log(selectedstates);
+        filteredData = filteredData.filter((proposal) =>
+          proposal.states.includes(selectedstates)
+        );
+      }
+
+      if (selectedsector !== "") {
+        console.log(selectedsector);
+        filteredData = filteredData.filter((proposal) =>
+          proposal.sectors.includes(selectedsector)
+        );
+      }
+
+      if (filteredData.length === 0) {
+        setCurrentPage((prevPage) =>
+          prevPage === 1 ? prevPage : prevPage - 1
+        );
+      }
+
+      setFilteredData(filteredData); // Update the filteredData state once all filters have been applied
+      setDocumentCount(filteredData.length);
+      setCurrentRows(
+        filteredData.slice(
+          (currentPage - 1) * rowsPerPage,
+          currentPage * rowsPerPage
+        )
+      );
+      console.log(filteredData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
     fetchData();
-  }, [currentPage, rowsPerPage, selectedsector, selectedstates, filteredData]);
+  }, [currentPage, rowsPerPage, selectedsector, selectedstates]);
 
   const handleRowsPerPageChange = (event) => {
     const value = parseInt(event.target.value);
@@ -282,7 +286,7 @@ const RFPRequest = () => {
                     onChange={(e) => handleStateChange(e.target.value)}
                     size={"sm"}
                     style={{ maxWidth: "20rem" }}
-                    value={selectedstates}
+                    // value={selectedstates}
                   >
                     <option value="">Select a state</option>
                     {states.map((state) => (
@@ -303,7 +307,7 @@ const RFPRequest = () => {
                   >
                     <option value="">Select a sector</option>
                     {sectorOptions.map((option) => (
-                      <option key={option.id} value={option.value}>
+                      <option key={option.id} value={option.label}>
                         {option.label}
                       </option>
                     ))}
