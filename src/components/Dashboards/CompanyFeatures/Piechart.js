@@ -6,6 +6,7 @@ import "../../../CSS/styles.css";
 import "../../../CSS/HexGrid.css";
 import { HStack } from "@chakra-ui/react";
 import HexGrid from "./HexChart";
+import YearChart from "./YearChart";
 function PieChart() {
   const [regionData, setRegionData] = useState(null);
   useEffect(() => {
@@ -118,18 +119,13 @@ function PieChart() {
       </div>
       <div className="pie"></div>
       <div className="pie">
-        <Chart
-          options={chartData.options}
-          series={[{ name: "Bar", data: chartData.barSeries }]}
-          type="bar"
-          width={chartData.options.chart.width}
-        />
-        <Chart
+        <YearChart />
+        {/* <Chart
           options={chartData.options}
           series={chartData.pieSeries}
           type="pie"
           width={chartData.options.chart.width}
-        />
+        /> */}
       </div>
     </>
   );

@@ -32,7 +32,7 @@ const HexGrid = () => {
   };
 
   return (
-    <div style={{marginLeft:"50vw",marginTop:"7vh"}}>
+    <div style={{marginLeft:"50vw",marginTop:"10vh"}}>
       <div className="hex-grid">
         {items.map((item, index) => (
           <Popover

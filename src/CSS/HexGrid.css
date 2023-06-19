@@ -3,7 +3,8 @@
   grid-template-columns: repeat(3, minmax(0px, 1.3fr));
   grid-gap: 5px;
   /* grid-row: inherit; */
-  left: 5% !important;
+  margin-left: 25%;
+  margin-right: -25%;
 }
 
 .hex-item {
