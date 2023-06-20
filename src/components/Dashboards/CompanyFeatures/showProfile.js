@@ -10,12 +10,16 @@ import {
   Divider,
   Tooltip,
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import CompanyNavigation from "../companyNavigation";
 import { FiMail, FiMapPin, FiPhone, FiUser } from "react-icons/fi";
+import AdminNavigation from "../adminNavigation";
 
 const ShowProfile = () => {
+  const location = useLocation();
+  let companyID = location.state?.companyID;
+  const userType = location.state?.userType;
   const navigate = useNavigate();
   const [profileData, setProfileData] = useState(null);
   const [companyId, setCompanyId] = useState("");
@@ -23,70 +27,132 @@ const ShowProfile = () => {
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
 
   useEffect(() => {
-    const token = localStorage.getItem("CompanyAuthToken");
-    const decodedToken = jwt_decode(token);
-    setCompanyId(decodedToken._id);
-  }, []);
+    if (!(userType === "admin")) {
+      const token = localStorage.getItem("CompanyAuthToken");
+      const decodedToken = jwt_decode(token);
+      setCompanyId(decodedToken._id);
+    }
+  }, [userType]);
 
   // only executes when id is set
   useEffect(() => {
-    const fetchCompanyProfile = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:4000/company/profile/${companyId}`
-        );
-        const data = await response.json();
-        if (data.success) {
-          setProfileData(data.data);
-        } else {
-          console.log(data.message);
-          throw new Error("Failed to Get Profile.please Reload");
+    if (userType === "admin") {
+      const fetchCompanyProfile = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:4000/company/profile/${companyID}`
+          );
+          const data = await response.json();
+          if (data.success) {
+            setProfileData(data.data);
+          } else {
+            console.log(data.message);
+            throw new Error("Failed to Get Profile.please Reload");
+          }
+        } catch (error) {
+          console.log(error.message);
         }
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-    const fetchLogo = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:4000/company/logo/${companyId}`
-        );
+      };
+      const fetchLogo = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:4000/company/logo/${companyID}`
+          );
 
-        const base64Data = await response.text();
+          const base64Data = await response.text();
 
-        const byteCharacters = atob(base64Data.split(",")[1]);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
+          const byteCharacters = atob(base64Data.split(",")[1]);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+
+          const blob = new Blob([byteArray], { type: "image/png" });
+          const imageUrl = URL.createObjectURL(blob);
+          setImage(imageUrl);
+        } catch (error) {
+          console.error(error);
         }
-        const byteArray = new Uint8Array(byteNumbers);
-
-        const blob = new Blob([byteArray], { type: "image/png" });
-        const imageUrl = URL.createObjectURL(blob);
-        setImage(imageUrl);
-      } catch (error) {
-        console.error(error);
+      };
+      if (companyID && companyID !== "") {
+        fetchLogo();
+        fetchCompanyProfile(); // runs when id is non-empty string
       }
-    };
-    if (companyId && companyId !== "") {
-      fetchLogo();
-      fetchCompanyProfile(); // runs when id is non-empty string
+    } else {
+      const fetchCompanyProfile = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:4000/company/profile/${companyId}`
+          );
+          const data = await response.json();
+          if (data.success) {
+            setProfileData(data.data);
+          } else {
+            console.log(data.message);
+            throw new Error("Failed to Get Profile.please Reload");
+          }
+        } catch (error) {
+          console.log(error.message);
+        }
+      };
+      const fetchLogo = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:4000/company/logo/${companyId}`
+          );
+
+          const base64Data = await response.text();
+
+          const byteCharacters = atob(base64Data.split(",")[1]);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+
+          const blob = new Blob([byteArray], { type: "image/png" });
+          const imageUrl = URL.createObjectURL(blob);
+          setImage(imageUrl);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      if (companyId && companyId !== "") {
+        fetchLogo();
+        fetchCompanyProfile(); // runs when id is non-empty string
+      }
     }
-  }, [companyId]);
+  }, [companyId, companyID, userType]);
 
   const fetchCertificate = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:4000/company/certificate/${companyId}`
-      );
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        window.open(url, "_blank"); // Open the URL in a new tab
+      if (userType === "admin") {
+        const response = await fetch(
+          `http://localhost:4000/company/certificate/${companyID}`
+        );
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+          window.open(url, "_blank"); // Open the URL in a new tab
+        } else {
+          const data = await response.json();
+          console.log(data.message);
+          throw new Error("Failed to Download Certificate.");
+        }
       } else {
-        const data = await response.json();
-        console.log(data.message);
-        throw new Error("Failed to Download Certificate.");
+        const response = await fetch(
+          `http://localhost:4000/company/certificate/${companyId}`
+        );
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+          window.open(url, "_blank"); // Open the URL in a new tab
+        } else {
+          const data = await response.json();
+          console.log(data.message);
+          throw new Error("Failed to Download Certificate.");
+        }
       }
     } catch (error) {
       toast({
@@ -114,7 +180,7 @@ const ShowProfile = () => {
       }}
     >
       <Box>
-        <CompanyNavigation />
+        {userType !== "admin" ? <CompanyNavigation /> : <AdminNavigation />}
 
         <div
           style={{
@@ -345,18 +411,22 @@ const ShowProfile = () => {
                     >
                       Show Certificate
                     </Button>
-                    <Button
-                      bg="white"
-                      color="skyblue"
-                      w={"190px"}
-                      boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
-                      _hover={{ boxShadow: "0px 4px 6px rgb(45, 38, 38)" }}
-                      _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
-                      mt={4}
-                      onClick={submitHandler}
-                    >
-                      Edit Profile
-                    </Button>
+                    {userType !== "admin" && (
+                      <Button
+                        bg="white"
+                        color="skyblue"
+                        w={"190px"}
+                        boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+                        _hover={{ boxShadow: "0px 4px 6px rgb(45, 38, 38)" }}
+                        _active={{
+                          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                        }}
+                        mt={4}
+                        onClick={submitHandler}
+                      >
+                        Edit Profile
+                      </Button>
+                    )}
                   </HStack>
                 </Box>
               </Box>

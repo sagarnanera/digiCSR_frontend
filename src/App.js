@@ -23,16 +23,14 @@ import RFPCompanyDetails from "./components/Dashboards/CompanyFeatures/RFPDetail
 import Post from "./components/Dashboards/NgoFeatures/Post";
 import BeneficiaryDashboard from "./pages/Dashboards/BeneficiaryDashboard";
 import ShowBlogs from "./components/Dashboards/BeneficiaryFeatures.js/showBlogs";
-import ShowBenificiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/showprofile";
-import EditBeneficiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/editprofile";
-import AddBeneficiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/addprofile";
 import UpdateBlog from "./components/Dashboards/NgoFeatures/UpdateBlog";
 import NGOs from "./components/Dashboards/NGOs";
 import AdminAuth from "./pages/Authentication/adminAuth";
 import AdminRFP from "./components/Dashboards/Admin/AdminAllRFPs";
-import AdminNGOs from "./components/Dashboards/Admin/Companies";
 import AdminCompanies from "./components/Dashboards/Admin/Companies";
 import AdminBeneficiaries from "./components/Dashboards/Admin/Beneficiaries";
+import AdminDashboard from "./pages/Dashboards/AdminDashboard";
+import AdminNGOs from "./components/Dashboards/Admin/NGOs";
 
 function App() {
   const authToken = localStorage.getItem("CompanyAuthToken");
@@ -52,6 +50,7 @@ function App() {
       !isCompanyAuthenticated &&
       !isNgoAuthenticated &&
       !isBeneficiaryAuthenticated &&
+      !isAdminAuthenticated &&
       window.location.pathname !== "/admin"
     ) {
       navigate("/", { replace: true });
@@ -74,6 +73,9 @@ function App() {
           <Route path="/Company" element={<CompanyDashboard />} />
         )}
         {isNgoAuthenticated && <Route path="/Ngo" element={<NgoDashboard />} />}
+        {isAdminAuthenticated && (
+          <Route path="/Admin/home" element={<AdminDashboard />} />
+        )}
         {isBeneficiaryAuthenticated && (
           <Route path="/Beneficiary" element={<BeneficiaryDashboard />} />
         )}
@@ -155,7 +157,11 @@ function App() {
               path="/Admin/beneficiaries"
               element={<AdminBeneficiaries />}
             />
-            <Route path="/Admin/media" element={<ShowBlogs />} />
+            <Route path="/Admin/ngo-profile/:id" element={<ShowNgoProfile />} />
+            <Route
+              path="/Admin/company-profile/:id"
+              element={<ShowProfile />}
+            />
           </>
         )}
         <Route path="*" element={<Navigate to="/" />} />

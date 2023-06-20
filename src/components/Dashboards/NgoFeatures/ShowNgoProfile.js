@@ -25,6 +25,7 @@ import "../../../CSS/rfpTable.css";
 import ReviewComponent from "../AddReviews";
 import CompanyNavigation from "../companyNavigation";
 import BenificiaryNavigation from "../beneficiaryNavigation";
+import AdminNavigation from "../adminNavigation";
 
 const ShowNgoProfile = () => {
   const location = useLocation();
@@ -35,7 +36,13 @@ const ShowNgoProfile = () => {
   const [ngoId, setNgoId] = useState("");
   // const toast = useToast();
   useEffect(() => {
-    if (!(userType === "company" || userType === "beneficiary")) {
+    if (
+      !(
+        userType === "company" ||
+        userType === "beneficiary" ||
+        userType === "admin"
+      )
+    ) {
       const token = localStorage.getItem("NgoAuthToken");
       const decodedToken = jwt_decode(token);
       setNgoId(decodedToken._id);
@@ -44,7 +51,11 @@ const ShowNgoProfile = () => {
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
 
   useEffect(() => {
-    if (userType === "company" || userType === "beneficiary") {
+    if (
+      userType === "company" ||
+      userType === "beneficiary" ||
+      userType === "admin"
+    ) {
       const fetchCompanyProfile = async () => {
         try {
           const response = await fetch(
@@ -149,12 +160,16 @@ const ShowNgoProfile = () => {
       }}
     >
       <Box>
-        {userType !== "company" && userType !== "beneficiary" ? (
+        {userType !== "company" &&
+        userType !== "beneficiary" &&
+        userType !== "admin" ? (
           <NgoNavigation />
         ) : userType === "company" ? (
           <CompanyNavigation />
-        ) : (
+        ) : userType === "beneficiary" ? (
           <BenificiaryNavigation />
+        ) : (
+          <AdminNavigation />
         )}
 
         <div
@@ -524,23 +539,25 @@ const ShowNgoProfile = () => {
                       justifyContent={"center"}
                       flexWrap={"wrap"}
                     >
-                      {userType !== "company" && userType !== "beneficiary" && (
-                        <Button
-                          bg="white"
-                          color="skyblue"
-                          w={"190px"}
-                          // mr={"5%"}
-                          boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
-                          _hover={{ boxShadow: "0px 4px 6px skyblue" }}
-                          _active={{
-                            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-                          }}
-                          mt={4}
-                          onClick={submitHandler}
-                        >
-                          Edit Profile
-                        </Button>
-                      )}
+                      {userType !== "company" &&
+                        userType !== "beneficiary" &&
+                        userType !== "admin" && (
+                          <Button
+                            bg="white"
+                            color="skyblue"
+                            w={"190px"}
+                            // mr={"5%"}
+                            boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+                            _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+                            _active={{
+                              boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                            }}
+                            mt={4}
+                            onClick={submitHandler}
+                          >
+                            Edit Profile
+                          </Button>
+                        )}
                     </HStack>
                   </Box>
                 </Box>
@@ -562,7 +579,9 @@ const ShowNgoProfile = () => {
           )}
         </div>
       </Box>
-      {userType === "company" || userType === "beneficiary" ? (
+      {userType === "company" ||
+      userType === "beneficiary" ||
+      userType === "admin" ? (
         <ReviewComponent ngoID={ngoID} userType={userType} />
       ) : (
         <>

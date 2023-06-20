@@ -10,27 +10,16 @@ import {
   Container,
   Button,
   ButtonGroup,
-  Tooltip,
   HStack,
   Input,
   Box,
-  Select,
-  VStack,
-  Text,
   useToast,
 } from "@chakra-ui/react";
-import { FiEye, FiTrash } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { FiTrash } from "react-icons/fi";
 import "../../../CSS/rfpTable.css";
-import { fetchStateName, fetchStates } from "../../geoData";
-import { sectorOptions } from "../../sectorData";
 import DeleteConfirmationDialog from "../CompanyFeatures/RFPDeleteAlert";
-import AdminNavigation from "../adminNavigation";
-// import config from "../../config";
 
-const AdminRFP = () => {
-  const navigate = useNavigate();
-  // const rowsPerPage = 10;
+const BeneficiaryTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentRows, setCurrentRows] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -38,29 +27,9 @@ const AdminRFP = () => {
   const pageCount = Math.ceil(documentCount / rowsPerPage);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const [showRFPDetails, setShowRFPDetails] = useState(false);
-  const [selectedRFPId, setSelectedRFPId] = useState(null);
-  const [states, setStates] = useState([]);
-  const [selectedstates, setselectedStates] = useState("");
-  const [selectedsector, setselectedSector] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
   const toast = useToast();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedRFP, setSelectedRFP] = useState(null);
-  useEffect(() => {
-    const getStates = async () => {
-      const fetchedStates = await fetchStates();
-      setStates(fetchedStates);
-    };
-    getStates();
-  }, []);
-  const handleStateChange = async (stateId) => {
-    const fetchedstateName = await fetchStateName(stateId);
-    setselectedStates(fetchedstateName);
-  };
-  const handleSectorChange = async (selectedSector) => {
-    setselectedSector(selectedSector);
-  };
+  const [userId, setuserId] = useState("");
 
   const fetchData = async () => {
     try {
@@ -71,54 +40,37 @@ const AdminRFP = () => {
           authorization: result,
         },
       };
-      const response = await fetch(`http://localhost:4000/rfps`, {
+      const response = await fetch(`http://localhost:4000/Beneficiaries`, {
         headers: config.headers,
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch RFPs.");
+        throw new Error("Failed to fetch Beneficiaries.");
       }
       const data = await response.json();
-
+      console.log(data.beneficiary);
       // Apply filtering based on selected state and sector
-      let filteredData = data;
-
-      if (selectedstates !== "") {
-        console.log(selectedstates);
-        filteredData = filteredData.filter((proposal) =>
-          proposal.states.includes(selectedstates)
-        );
-      }
-
-      if (selectedsector !== "") {
-        console.log(selectedsector);
-        filteredData = filteredData.filter((proposal) =>
-          proposal.sectors.includes(selectedsector)
-        );
-      }
-
-      if (filteredData.length === 0) {
+      if (data.beneficiary.length === 0) {
         setCurrentPage((prevPage) =>
           prevPage === 1 ? prevPage : prevPage - 1
         );
       }
 
-      setFilteredData(filteredData); // Update the filteredData state once all filters have been applied
-      setDocumentCount(filteredData.length);
+      setDocumentCount(data.beneficiary.length);
       setCurrentRows(
-        filteredData.slice(
+        data.beneficiary.slice(
           (currentPage - 1) * rowsPerPage,
           currentPage * rowsPerPage
         )
       );
-      console.log(filteredData);
+      console.log(data.beneficiary);
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
     fetchData();
-  }, [currentPage, rowsPerPage, selectedsector, selectedstates]);
+  }, [currentPage, rowsPerPage]);
 
   const handleRowsPerPageChange = (event) => {
     const value = parseInt(event.target.value);
@@ -229,43 +181,34 @@ const AdminRFP = () => {
     return pageNumbers;
   };
 
-  const handleShowDetails = (rowData) => {
-    setSelectedRFPId(rowData._id);
-    console.log(selectedRFPId);
-    // navigate("/Ngo/rfpdetails", {
-    //   state: { rfpID: selectedRFPId },
-    //   replace: true,
-    // });
-    setShowRFPDetails(true);
-  };
-  const handleDeleteRFP = (rfp) => {
-    setSelectedRFP(rfp);
+  const handleDeleteRFP = (user) => {
+    setuserId(user._id);
     setIsDeleteDialogOpen(true);
   };
   const handleDeleteCancel = () => {
     setIsDeleteDialogOpen(false);
   };
   const handleDeleteConfirmation = async () => {
+    console.log(userId);
     setIsDeleteDialogOpen(false);
-    const rfpID = selectedRFP._id;
 
     // Perform the delete operation here
     try {
-      const response = await fetch(
-        `http://localhost:4000/rfp/delete/${rfpID}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `${localStorage.getItem("AdminAuthToken")}`,
-          },
-        }
-      );
+      const response = await fetch(`http://localhost:4000/Beneficiary/delete`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `${localStorage.getItem("AdminAuthToken")}`,
+        },
+        body: JSON.stringify({
+          _id: userId,
+        }),
+      });
       const data = await response.json();
       console.log(data);
       if (response.ok) {
         toast({
-          title: "RFP Deleted Successfully",
+          title: "Beneficiary Deleted Successfully",
           status: "success",
           duration: 5000,
           isClosable: true,
@@ -273,24 +216,15 @@ const AdminRFP = () => {
         });
         fetchData();
       } else {
-        console.error("Failed to delete RFP:", data.message);
+        console.error("Failed to delete Beneficiary:", data.message);
       }
     } catch (error) {
-      console.error("Failed to delete RFP:", error);
+      console.error("Failed to delete Beneficiary:", error);
     }
   };
   return (
-    <div
-      style={{
-        backgroundImage: "url('../bg.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        minHeight: "100vh",
-        minWidth: "100vw",
-      }}
-    >
+    <>
       <Container centerContent>
-        <AdminNavigation />
         <Box
           d="flex"
           textAlign="center"
@@ -302,7 +236,7 @@ const AdminRFP = () => {
           borderWidth="1px"
           backgroundColor={"skyblue"}
         >
-          <h1 className="title">List of Request for Proposals</h1>
+          <h1 className="title">List of Beneficiaries</h1>
         </Box>
         <div className="container">
           <HStack w={"90%"} justifyContent="space-between" mb={"1%"}>
@@ -317,49 +251,6 @@ const AdminRFP = () => {
               />
               <span className="label">Rows per page</span>
             </div>
-            <Box>
-              <HStack
-                mt={"-5"}
-                display={"flex"}
-                justifyContent={"center"}
-                flexWrap={"wrap"}
-              >
-                <VStack>
-                  <Text ml={"-18vw"}> State Filter </Text>
-                  <Select
-                    id="state"
-                    onChange={(e) => handleStateChange(e.target.value)}
-                    size={"sm"}
-                    style={{ maxWidth: "20rem" }}
-                    // value={selectedstates}
-                  >
-                    <option value="">Select a state</option>
-                    {states.map((state) => (
-                      <option key={state.geonameId} value={state.geonameId}>
-                        {state.name}
-                      </option>
-                    ))}
-                  </Select>
-                </VStack>
-                <VStack>
-                  <Text ml={"-18vw"}> Sector Filter </Text>
-                  <Select
-                    id="sector"
-                    onChange={(e) => handleSectorChange(e.target.value)}
-                    size="sm"
-                    style={{ maxWidth: "20rem" }}
-                    value={selectedsector}
-                  >
-                    <option value="">Select a sector</option>
-                    {sectorOptions.map((option) => (
-                      <option key={option.id} value={option.label}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </Select>
-                </VStack>
-              </HStack>
-            </Box>
           </HStack>
 
           <div className="table-container">
@@ -367,74 +258,31 @@ const AdminRFP = () => {
               <Thead style={{ background: "skyblue", marginBottom: "1rem" }}>
                 <Tr>
                   <Th>Sr. No.</Th>
-                  <Th>Proposal Name</Th>
-                  <Th>Development Sector</Th>
-                  <Th>States</Th>
-                  <Th>Company Name</Th>
+                  <Th>User Name</Th>
+                  <Th>Email</Th>
+                  <Th>Phone No.</Th>
+                  <Th>Addhar No.</Th>
                   <Th>Action</Th>
                 </Tr>
               </Thead>
               <Tbody style={{ zoom: 0.85 }}>
-                {currentRows.map((proposal, index) => (
-                  <Tr key={proposal._id}>
+                {currentRows.map((user, index) => (
+                  <Tr key={user._id}>
                     <Td className="divider">{indexOfFirstRow + index + 1}</Td>
-                    <Td className="divider">{proposal.title}</Td>
+                    <Td className="divider">{user.name}</Td>
                     <Td className="divider" maxW={"20vw"}>
-                      {proposal.sectors && proposal.sectors.length > 5 ? (
-                        <Tooltip label={proposal.sectors.join(", ")}>
-                          <span>
-                            {proposal.sectors.slice(0, 5).join(", ")}
-                            {proposal.sectors.length > 5 ? ", ..+ more" : ""}
-                          </span>
-                        </Tooltip>
-                      ) : (
-                        <span>
-                          {proposal.sectors && proposal.sectors.join(", ")}
-                        </span>
-                      )}
+                      {user.email}
                     </Td>
-                    <Td className="divider">
-                      {proposal.states.length > 3 ? (
-                        <Tooltip label={proposal.states.join(", ")}>
-                          <span>
-                            {proposal.states.slice(0, 3).join(", ")}
-                            {", ..+" + (proposal.states.length - 3) + " more"}
-                          </span>
-                        </Tooltip>
-                      ) : (
-                        <span>
-                          {proposal.states.map((state, stateIndex) => (
-                            <span key={stateIndex}>
-                              {state}
-                              {stateIndex !== proposal.states.length - 1
-                                ? ", "
-                                : ""}
-                            </span>
-                          ))}
-                        </span>
-                      )}
-                    </Td>
-                    <Td className="divider">{proposal.company_name}</Td>
+                    <Td className="divider">{user.mobile_no}</Td>
+                    <Td className="divider">{user.aadhar_no}</Td>
                     <Td>
                       <IconButton
-                        aria-label="View proposal"
-                        icon={<FiEye />}
-                        marginLeft="0.5rem"
-                        variant={"ghost"}
-                        onClick={() => {
-                          // setSelectedRFPId(proposal._id);
-                          handleShowDetails(proposal);
-                        }}
-                        colorScheme="blue"
-                        color={"blue"}
-                      />
-                      <IconButton
-                        aria-label="View proposal"
+                        aria-label="View user"
                         icon={<FiTrash />}
                         marginLeft="0.5rem"
                         variant={"ghost"}
                         onClick={() => {
-                          handleDeleteRFP(proposal);
+                          handleDeleteRFP(user);
                         }}
                         colorScheme="blue"
                         color={"blue"}
@@ -444,12 +292,6 @@ const AdminRFP = () => {
                 ))}
               </Tbody>
             </Table>
-            {showRFPDetails &&
-              navigate("/Ngo/rfpdetails", {
-                state: {
-                  rfpID: selectedRFPId,
-                },
-              })}
             {isDeleteDialogOpen && (
               <DeleteConfirmationDialog
                 isOpen={isDeleteDialogOpen}
@@ -483,8 +325,8 @@ const AdminRFP = () => {
           </div>
         </div>
       </Container>
-    </div>
+    </>
   );
 };
 
-export default AdminRFP;
+export default BeneficiaryTable;

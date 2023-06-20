@@ -149,7 +149,7 @@ function AdminLogin() {
         localStorage.setItem("AdminAuthToken", result);
         setLoading(false);
         // if (allfields) {
-        navigate("/Admin", { replace: true });
+        navigate("/Admin/home", { replace: true });
         // } else {
         //   toast({
         //     title: "Please Complete the whole profile first.",

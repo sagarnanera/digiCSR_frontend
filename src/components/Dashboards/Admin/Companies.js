@@ -9,17 +9,14 @@ import {
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { CardComponent, FilterDrawer } from "../NGOsCompanent";
+import AdminNavigation from "../adminNavigation";
 
-const AdminCompanies = (userType) => {
+const AdminCompanies = () => {
   const [companies, setCompanies] = useState([]);
   const [filteredResult, setResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    fetchNgos();
-  });
-
-  const fetchNgos = async () => {
+  const fetchCompanies = async () => {
     var options;
 
     const token = localStorage.getItem("AdminAuthToken");
@@ -32,7 +29,7 @@ const AdminCompanies = (userType) => {
     };
     try {
       console.log(options.headers);
-      const response = await fetch("http://localhost:4000/compnaies", options);
+      const response = await fetch("http://localhost:4000/companies", options);
       const data = await response.json();
       console.log(data);
       if (response.ok) {
@@ -45,6 +42,21 @@ const AdminCompanies = (userType) => {
       console.log("Error:", error.message);
     }
   };
+
+  useEffect(() => {
+    fetchCompanies();
+  }, []);
+
+  // Function to fetch companies and update state
+  const updateCompanies = async () => {
+    await fetchCompanies();
+  };
+
+  // Callback function to trigger fetchCompanies
+  const triggerFetchCompanies = () => {
+    updateCompanies();
+  };
+
   // Function to handle search query changes
   const handleSearchQueryChange = (event) => {
     setSearchQuery(event.target.value);
@@ -71,6 +83,7 @@ const AdminCompanies = (userType) => {
 
   return (
     <Box>
+      <AdminNavigation />
       <Flex>
         <FilterDrawer
           isOpen={true}
@@ -96,12 +109,14 @@ const AdminCompanies = (userType) => {
                 )
                 .map((company) => (
                   <CardComponent
-                    userType={"company"}
-                    ngoId={company._id}
+                    userType={"admin"}
+                    type={"company"}
+                    Id={company._id}
                     name={company.company_name}
                     email={company.email}
-                    phone={company.profile.phone}
+                    phone={company.profile.comunication_person.cp_phone}
                     location={company.profile.location}
+                    triggerFetchCompanies={triggerFetchCompanies} // Pass the callback function as a prop
                   />
                 ))}
             </Grid>

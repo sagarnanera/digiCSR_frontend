@@ -3,7 +3,6 @@ import {
   Box,
   Flex,
   Grid,
-  HStack,
   Input,
   InputGroup,
   InputLeftElement,
@@ -115,7 +114,7 @@ const NGOs = ({ userType }) => {
                 .map((ngo) => (
                   <CardComponent
                     userType={userType}
-                    ngoId={ngo._id}
+                    Id={ngo._id}
                     name={ngo.ngo_name}
                     email={ngo.email}
                     phone={ngo.profile.phone}

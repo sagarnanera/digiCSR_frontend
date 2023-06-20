@@ -27,14 +27,14 @@ function BenificiarySignup() {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const toast = useToast();
-  const handleAadharKeyPress = (e) => {
-    const maxLength = 16; // Set your desired maxLength value
-    const inputValue = e.target.value;
+  // const handleAadharKeyPress = (e) => {
+  //   const maxLength = 12; // Set your desired maxLength value
+  //   const inputValue = e.target.value;
 
-    if (inputValue.length === maxLength) {
-      e.preventDefault();
-    }
-  };
+  //   if (inputValue.length === maxLength) {
+  //     e.preventDefault();
+  //   }
+  // };
 
   const handleOtpChange = (value) => {
     setOtp(value);
@@ -168,7 +168,7 @@ function BenificiarySignup() {
         });
         localStorage.setItem("BeneficiaryAuthToken", result);
         setLoading(false);
-        navigate("/Benificiary", { replace: true });
+        navigate("/Beneficiary", { replace: true });
       } else {
         throw new Error("Failed to verify. Please try again.");
       }
@@ -218,6 +218,8 @@ function BenificiarySignup() {
             placeholder="Phone number"
             value={phoneNo}
             onChange={(e) => setPhoneNo(e.target.value)}
+            maxLength={10}
+            minLength={10}
           />
         </InputGroup>
       </FormControl>
@@ -229,7 +231,9 @@ function BenificiarySignup() {
           placeholder={"Enter Your Aadhar Card No"}
           value={aadharNo}
           onChange={(e) => setAadharNo(e.target.value)}
-          onKeyPress={handleAadharKeyPress}
+          minLength={12}
+          maxLength={12}
+          // onKeyPress={handleAadharKeyPress}
         />
       </FormControl>
 

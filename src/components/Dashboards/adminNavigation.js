@@ -173,6 +173,30 @@ const AdminNavigation = () => {
               </li>
               <li>
                 <Link
+                  to="/Admin/companies"
+                  className={
+                    location.pathname === "/Admin/companies"
+                      ? classes.active
+                      : ""
+                  }
+                >
+                  Companies
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/Admin/beneficiaries"
+                  className={
+                    location.pathname === "/Admin/beneficiaries"
+                      ? classes.active
+                      : ""
+                  }
+                >
+                  Beneficiaries
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/Admin/media"
                   className={
                     location.pathname === "/Admin/media" ? classes.active : ""

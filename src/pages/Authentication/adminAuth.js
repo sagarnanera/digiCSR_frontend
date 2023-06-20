@@ -62,7 +62,7 @@ const AdminAuth = () => {
               <TabPanels>
                 <TabPanel>
                   <strong style={{ display: "flex", justifyContent: "center" }}>
-                    Welcome Back Beneficiary
+                    Welcome Back Admin
                   </strong>
                   <Divider></Divider>
                   <AdminLogin />

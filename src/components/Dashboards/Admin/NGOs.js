@@ -9,16 +9,16 @@ import {
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { CardComponent, FilterDrawer } from "../NGOsCompanent";
+import AdminNavigation from "../adminNavigation";
 
-const AdminNGOs = ({ userType }) => {
+const AdminNGOs = () => {
   const [ngos, setNgos] = useState([]);
   const [filteredResult, setResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchNgos();
-  }, [userType]);
-
+  }, []);
   const fetchNgos = async () => {
     var options;
 
@@ -31,7 +31,6 @@ const AdminNGOs = ({ userType }) => {
       },
     };
     try {
-      console.log(options.headers);
       const response = await fetch("http://localhost:4000/NGO", options);
       const data = await response.json();
       console.log(data);
@@ -44,6 +43,14 @@ const AdminNGOs = ({ userType }) => {
     } catch (error) {
       console.log("Error:", error.message);
     }
+  };
+  const updateCompanies = async () => {
+    await fetchNgos();
+  };
+
+  // Callback function to trigger fetchCompanies
+  const triggerFetchCompanies = () => {
+    updateCompanies();
   };
   // Function to handle search query changes
   const handleSearchQueryChange = (event) => {
@@ -78,6 +85,7 @@ const AdminNGOs = ({ userType }) => {
 
   return (
     <Box>
+      <AdminNavigation />
       <Flex>
         <FilterDrawer
           isOpen={true}
@@ -101,12 +109,14 @@ const AdminNGOs = ({ userType }) => {
                 )
                 .map((ngo) => (
                   <CardComponent
-                    userType={"ngo"}
-                    ngoId={ngo._id}
+                    userType={"admin"}
+                    type={"ngo"}
+                    Id={ngo._id}
                     name={ngo.ngo_name}
                     email={ngo.email}
                     phone={ngo.profile.phone}
                     location={ngo.profile.location}
+                    triggerFetchCompanies={triggerFetchCompanies} // Pass the callback function as a prop
                   />
                 ))}
             </Grid>
