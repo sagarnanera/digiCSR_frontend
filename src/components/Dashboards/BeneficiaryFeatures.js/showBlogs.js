@@ -1,7 +1,7 @@
 // import React, { useEffect, useState } from "react";
 import { Box, Button, Heading, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import BenificiaryNavigation from "../beneficiaryNavigation";
+import BenificiaryNavigation from "../../Navigation/beneficiaryNavigation";
 
 const ShowBlogs = () => {
   // const [blogs, setBlogs] = useState([]);

@@ -206,6 +206,10 @@ function NgoAndComSignup() {
             position: "bottom",
           });
           localStorage.setItem("CompanyAuthToken", result);
+
+
+          // TODO : get the userData from the server and save it into context
+
           setLoading(false);
           navigate("/Company/addprofile", { replace: true });
         } else {
@@ -265,6 +269,10 @@ function NgoAndComSignup() {
             position: "bottom",
           });
           localStorage.setItem("NgoAuthToken", result);
+
+
+          // TODO : get the userData from the server and save it into context
+
           setLoading(false);
           navigate("/Ngo/addprofile", { replace: true });
         } else {

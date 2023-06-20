@@ -166,7 +166,10 @@ function BenificiarySignup() {
           isClosable: true,
           position: "bottom",
         });
-        localStorage.setItem("BeneficiaryAuthToken", result);
+        localStorage.setItem("BenificiaryAuthToken", result);
+
+        // TODO : get the userData from the server and save it into context
+
         setLoading(false);
         navigate("/Beneficiary", { replace: true });
       } else {

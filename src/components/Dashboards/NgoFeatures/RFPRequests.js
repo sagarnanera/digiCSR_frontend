@@ -21,7 +21,7 @@ import {
 import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import "../../../CSS/rfpTable.css";
-import NgoNavigation from "../NgoNavigation";
+import NgoNavigation from "../../Navigation/NgoNavigation";
 import { fetchStateName, fetchStates } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
 // import config from "../../config";

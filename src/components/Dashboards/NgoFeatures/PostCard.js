@@ -204,21 +204,22 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                 </Flex>
             }
 
-            <Heading as="h2" size="lg" mb={2} noOfLines={1} textOverflow={"ellipsis"} title={`${blog.title}`}>
-                {blog.title}
-            </Heading>
-            <Text color="gray.600" mb={2}>
-                {blog.author} -{" "}
-                {new Date(blog.createdAt).toLocaleString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                })}
-            </Text>
-            <Text noOfLines={3} overflow="hidden" textOverflow="ellipsis">
-                {content}
-            </Text>
-
+            <Box mt={thumbnail ? 2 : 10}>
+                <Heading as="h2" size="lg" mb={2} noOfLines={1} textOverflow={"ellipsis"} title={`${blog.title}`}>
+                    {blog.title}
+                </Heading>
+                <Text color="gray.600" mb={2}>
+                    {blog.author} -{" "}
+                    {new Date(blog.createdAt).toLocaleString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                    })}
+                </Text>
+                <Text noOfLines={thumbnail ? 3 : 6} overflow="hidden" textOverflow="ellipsis">
+                    {content}
+                </Text>
+            </Box>
         </Box>
     );
 };

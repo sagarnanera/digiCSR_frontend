@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import NgoNavigation from "../NgoNavigation";
+import NgoNavigation from "../../Navigation/NgoNavigation";
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import PostCard from "./PostCard";
-import CompanyNavigation from "../companyNavigation";
-import BenificiaryNavigation from "../beneficiaryNavigation";
+import CompanyNavigation from "../../Navigation/companyNavigation";
+import BenificiaryNavigation from "../../Navigation/beneficiaryNavigation";
+import NavBar from "../../NavBar";
 
 const MediaSection = ({ userType }) => {
   const [blogs, setBlogs] = useState([]);
@@ -55,14 +56,21 @@ const MediaSection = ({ userType }) => {
 
   if (!blogs || blogs.length === 0) {
     return (
-      <div>
-        {userType !== "company" && userType !== "beneficiary" ? (
+      <div style={{
+        backgroundImage: "url('../bg.png')",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover"
+      }}>
+        {/* {userType !== "company" && userType !== "beneficiary" ? (
           <NgoNavigation />
         ) : userType === "company" ? (
           <CompanyNavigation />
         ) : (
           <BenificiaryNavigation />
-        )}
+        )} */}
+
+        <NavBar userType={userType} />
+
         <Box
           maxWidth={{ base: "95vw", lg: "80vw" }}
           mx="auto"
@@ -74,12 +82,21 @@ const MediaSection = ({ userType }) => {
           boxShadow="md"
         >
           <h2>NO Blogs</h2>
-          <Button
+          {/* <Button
             onClick={() => navigate("/Ngo/media/create")}
             colorScheme="teal"
             mb={4}
           >
             Create New Blog
+          </Button> */}
+          <Button
+            onClick={() =>
+              userType !== "ngo" ? navigate(-1) : navigate("/Ngo/media/create")
+            }
+            colorScheme="teal"
+            mb={4}
+          >
+            {userType !== "ngo" ? "Back" : "Create New Blog"}
           </Button>
         </Box>
       </div>
@@ -87,12 +104,19 @@ const MediaSection = ({ userType }) => {
   }
 
   return (
-    <div>
-      <NgoNavigation />
+    <div style={{
+      backgroundImage: "url('../bg.png')",
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "cover"
+    }}>
+      <NavBar userType={userType} />
       <Box
         maxWidth={{ base: "95vw", lg: "80vw" }}
         mx="auto"
-        mt={8}
+        height={"85vh"}
+        overflowY={"scroll"}
+        scrollBehavior={"smooth"}
+        mt={4}
         mb={2}
         borderWidth="1px"
         p={2}
@@ -101,12 +125,12 @@ const MediaSection = ({ userType }) => {
         borderRadius="md"
         boxShadow="md"
       >
-        <Flex justifyContent={"space-between"}>
+        <Flex justifyContent={userType === "ngo" ? "space-between" : "center"}>
           <Heading as="h1" mb={4}>
             All Blogs
           </Heading>
 
-          <Button
+          {userType === "ngo" && <Button
             onClick={() => navigate("/Ngo/media/create")}
             bg="white"
             color="skyblue"
@@ -117,6 +141,7 @@ const MediaSection = ({ userType }) => {
           >
             Create New Blog
           </Button>
+          }
         </Flex>
         <Box>
           <Flex flexWrap="wrap" justifyContent={"space-around"}>
@@ -130,110 +155,11 @@ const MediaSection = ({ userType }) => {
                     key={blog._id}
                   />
                 );
-                // const htmlDoc = parser.parseFromString(blog.content, "text/html");
-
-                // // Extract text from HTML content
-                // const textContent = htmlDoc.documentElement.textContent || "";
-
-                // // Limit the text to a certain number of lines
-                // const maxLines = 4;
-                // const content = textContent
-                //   .split("\n")
-                //   .map((line) => line.trim())
-                //   .filter((line) => line !== "")
-                //   .slice(0, maxLines)
-                //   .join(" ");
-
-                // const images = htmlDoc.getElementsByTagName("img");
-                // const thumbnail = images.length > 0 ? images[0].src : null;
-
-                // return (
-                //   <Box
-                //     key={blog._id}
-                //     borderWidth="1px"
-                //     p={4}
-                //     mb={4}
-                //     borderRadius="md"
-                //     _hover={{ boxShadow: "md", cursor: "pointer" }}
-                //     onClick={() => handleBlogClick(blog._id)}
-                //     width={{ base: "100%", md: "50%", lg: "33%" }}
-                //     height="auto"
-                //     position="relative"
-                //   >
-                //     {thumbnail && (
-                //       <Box
-                //         mb={2}
-                //         width="100%"
-                //         height="150px"
-                //         borderRadius="md"
-                //         overflow="hidden"
-                //       >
-                //         <Image
-                //           src={thumbnail}
-                //           alt="Thumbnail"
-                //           width="100%"
-                //           height="100%"
-                //           objectFit="cover"
-                //         />
-                //       </Box>
-                //     )}
-
-                //     {userType === "ngo" &&
-
-                //       <Flex
-                //         position="absolute"
-                //         top={5}
-                //         right={5}
-                //         alignItems="center"
-                //         justifyContent="center"
-                //         // opacity={0} // Initially hidden
-                //         // transition="opacity 0.2s"
-                //         _groupHover={{ opacity: 1 }} // Visible on hover
-                //       >
-                //         <IconButton
-                //           icon={<DeleteIcon />}
-                //           variant="ghost"
-                //           _hover={{ color: "black", bgColor: "red" }}
-                //           color="red"
-                //           aria-label="Delete"
-                //           size="md"
-                //           mr={2}
-                //           onClick={() => handleDeleteBlog(blog._id)}
-                //         />
-                //         <IconButton
-                //           icon={<EditIcon />}
-                //           variant="ghost"
-                //           _hover={{ color: "black", bgColor: "beige" }}
-                //           color="beige"
-                //           aria-label="Edit"
-                //           size="md"
-                //           onClick={() => handleEditBlog(blog._id)}
-                //         />
-                //       </Flex>
-                //     }
-
-                //     <Heading as="h2" size="lg" mb={2}>
-                //       {blog.title}
-                //     </Heading>
-                //     <Text color="gray.600" mb={2}>
-                //       {blog.author} -{" "}
-                //       {new Date(blog.createdAt).toLocaleString("en-US", {
-                //         month: "short",
-                //         day: "numeric",
-                //         year: "numeric",
-                //       })}
-                //     </Text>
-                //     <Text noOfLines={4} overflow="hidden" textOverflow="ellipsis">
-                //       {content}
-                //     </Text>
-
-                //   </Box>
-                // );
               })}
           </Flex>
         </Box>
       </Box>
-    </div>
+    </div >
   );
 };
 

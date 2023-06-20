@@ -57,7 +57,7 @@ import {
 import { fetchStates, fetchCities, fetchStateName } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
 import { useNavigate } from "react-router-dom";
-import NgoNavigation from "../NgoNavigation";
+import NgoNavigation from "../../Navigation/NgoNavigation";
 // export const allNgoFieldsContext = createContext();
 
 const EditNgoProfile = () => {
@@ -743,9 +743,8 @@ const EditNgoProfile = () => {
                     value={
                       selectedStates.length <= 6
                         ? selectedStatesText
-                        : `${selectedStates.slice(0, 6)},..+${
-                            selectedStates.length - 6
-                          } more`
+                        : `${selectedStates.slice(0, 6)},..+${selectedStates.length - 6
+                        } more`
                     }
                   ></Textarea>
                 </Tooltip>
@@ -996,7 +995,7 @@ const EditNgoProfile = () => {
                                 value={
                                   currentMemberIndex !== null
                                     ? boardMembers[currentMemberIndex]
-                                        .designation
+                                      .designation
                                     : ""
                                 }
                                 onChange={(e) =>

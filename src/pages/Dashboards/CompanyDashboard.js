@@ -3,7 +3,7 @@ import React from "react";
 // import "../../CSS/styles.css";
 // import MapChart from "../../components/Dashboards/CompanyFeatures/MapChart";
 import Homepage from "../../components/Dashboards/CompanyFeatures/Homepage";
-import CompanyNavigation from "../../components/Dashboards/companyNavigation";
+import CompanyNavigation from "../../components/Navigation/companyNavigation";
 
 
 function CompanyDashboard() {

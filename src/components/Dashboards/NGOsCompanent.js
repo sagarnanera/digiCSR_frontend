@@ -323,7 +323,7 @@ export const CardComponent = ({
       <Flex align="center">
         <Icon as={FiMapPin} mr={2} />
         <Text>
-          {location.city} , {location.state} , {location.pincode}
+          {location?.city} , {location?.state} , {location?.pincode}
         </Text>
       </Flex>
       <HStack>

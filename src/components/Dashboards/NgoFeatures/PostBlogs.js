@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import NgoNavigation from "../NgoNavigation";
+import NgoNavigation from "../../Navigation/NgoNavigation";
 import {
   Box,
   Button,
@@ -110,13 +110,19 @@ const PostBlogs = () => {
   };
 
   return (
-    <div>
+    <div style={{
+      backgroundImage: "url('/bg.png')",
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "cover",
+    }}>
+
       <NgoNavigation />
 
       <Box
         mx={{ base: 2, md: "auto" }}
         maxW={{ base: "none", md: "80vw" }}
-        mt={8}
+        // height={"90vh"}
+        mt={5}
         borderWidth="1px"
         p={2}
         bg={"white"}
@@ -138,7 +144,13 @@ const PostBlogs = () => {
           <Button onClick={handlePreview} mx={1}>
             preview
           </Button>
-          <Button onClick={handleSubmit} mx={1}>
+          <Button
+            onClick={handleSubmit}
+            mx={1}
+            bgColor={"#28B5E1"}
+            color={"#FFFFFF"}
+            _hover={{ bgColor: "#23a7d0" }}
+          >
             Submit
           </Button>
         </Flex>

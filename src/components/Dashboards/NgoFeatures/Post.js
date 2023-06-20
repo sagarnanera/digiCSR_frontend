@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NgoNavigation from "../NgoNavigation";
+import NgoNavigation from "../../Navigation/NgoNavigation";
 import {
   Box,
   Heading,
@@ -10,10 +10,12 @@ import {
   Flex,
   IconButton,
   useToast,
+  background,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { extendTheme } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import NavBar from "../../NavBar";
 
 const Post = ({ userType }) => {
   const { id } = useParams();
@@ -221,7 +223,11 @@ const Post = ({ userType }) => {
 
   if (!blog) {
     return (
-      <div>
+      <div style={{
+        backgroundImage: "url('../bg.png')",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover"
+      }}>
         <NgoNavigation />
         <Box
           maxWidth={{ base: "95vw", lg: "80vw" }}
@@ -250,18 +256,25 @@ const Post = ({ userType }) => {
   }
 
   return (
-    <div>
-      <NgoNavigation />
+    <div style={{
+      backgroundImage: "url('/bg.png')",
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "cover",
+    }}>
+      <NavBar userType={userType} />
       <Box
         maxWidth={{ base: "95vw", lg: "80vw" }}
+        height={"80vh"}
         mx="auto"
         mt={8}
         mb={2}
         p={4}
         borderWidth="1px"
-        bg={"white"}
         borderRadius="md"
         boxShadow="md"
+        backdropFilter="auto"
+        backdropBlur="8px"
+        overflowX={"scroll"}
       >
         <Heading as="h1" mb={5} fontSize={"5xl"}>
           {blog.title}

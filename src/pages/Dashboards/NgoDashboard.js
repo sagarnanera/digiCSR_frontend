@@ -1,6 +1,5 @@
 import React from "react";
-import NgoNavigation from "../../components/Dashboards/NgoNavigation";
-import Homepage from "../../components/Dashboards/CompanyFeatures/Homepage";
+import NgoNavigation from "../../components/Navigation/NgoNavigation";
 
 const NgoDashboard = () => {
   return (
