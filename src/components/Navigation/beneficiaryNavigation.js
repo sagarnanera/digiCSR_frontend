@@ -75,7 +75,7 @@ const BenificiaryNavigation = () => {
                           to="/Beneficiary/ngos"
                           className={
                             location.pathname === "/Beneficiary/ngos"
-                              ? "active"
+                              ? classes.active
                               : ""
                           }
                         >
@@ -118,7 +118,7 @@ const BenificiaryNavigation = () => {
               <Link
                 to="/Beneficiary/ngos"
                 className={
-                  location.pathname === "/Beneficiary/ngos" ? "active" : ""
+                  location.pathname === "/Beneficiary/ngos" ? classes.active : ""
                 }
               >
                 NGOs

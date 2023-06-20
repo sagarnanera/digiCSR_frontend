@@ -247,7 +247,7 @@ const CompanyNavigation = () => {
                           <Link
                             to="/Company"
                             className={
-                              location.pathname === "/Company" ? "active" : ""
+                              location.pathname === "/Company" ? classes.active : ""
                             }
                           >
                             Home
@@ -258,7 +258,7 @@ const CompanyNavigation = () => {
                             to="/Company/TrackRFP"
                             className={
                               location.pathname === "/Company/TrackRFP"
-                                ? "active"
+                                ? classes.active
                                 : ""
                             }
                           >
@@ -270,7 +270,7 @@ const CompanyNavigation = () => {
                             to="/Company/NGOReviews"
                             className={
                               location.pathname === "/Company/NGOReviews"
-                                ? "active"
+                                ? classes.active
                                 : ""
                             }
                           >
@@ -290,7 +290,7 @@ const CompanyNavigation = () => {
               <li>
                 <Link
                   to="/Company"
-                  className={location.pathname === "/Company" ? "active" : ""}
+                  className={location.pathname === "/Company" ? classes.active : ""}
                 >
                   Home
                 </Link>
@@ -299,7 +299,7 @@ const CompanyNavigation = () => {
                 <Link
                   to="/Company/TrackRFP"
                   className={
-                    location.pathname === "/Company/TrackRFP" ? "active" : ""
+                    location.pathname === "/Company/TrackRFP" ? classes.active : ""
                   }
                 >
                   RFPs
@@ -309,7 +309,7 @@ const CompanyNavigation = () => {
                 <Link
                   to="/Company/ngos"
                   className={
-                    location.pathname === "/Company/ngos" ? "active" : ""
+                    location.pathname === "/Company/ngos" ? classes.active : ""
                   }
                 >
                   NGOs
@@ -319,7 +319,7 @@ const CompanyNavigation = () => {
                 <Link
                   to="/Company/media"
                   className={
-                    location.pathname === "/Company/media" ? "active" : ""
+                    location.pathname === "/Company/media" ? classes.active : ""
                   }
                 >
                   Media

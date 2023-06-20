@@ -1,38 +1,68 @@
-import { Popover, PopoverContent, PopoverTrigger } from "@chakra-ui/react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Text,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
+import "../../../CSS/HexGrid.css";
 
-const HexGrid = () => {
+const HexGrid = (userType) => {
   const [items, setItems] = useState([]);
   const [hoveredItem, setHoveredItem] = useState(null);
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch("http://localhost:4000/charts/sector", {
-        headers: {
-          authorization: localStorage.getItem("CompanyAuthToken"),
-        },
-      });
-      const data = await response.json();
-      if (data.success) {
-        setItems(data.result);
-      } else {
-        console.error(data.message);
-      }
-    } catch (error) {
-      console.error("Error:", error);
+    console.log(userType.userType.userType);
+    if (userType.userType.userType === "company") {
+      const fetchData = async () => {
+        try {
+          const response = await fetch("http://localhost:4000/charts/sector", {
+            headers: {
+              authorization: localStorage.getItem("CompanyAuthToken"),
+            },
+          });
+          const data = await response.json();
+          if (data.success) {
+            setItems(data.result);
+          } else {
+            console.error(data.message);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
+      fetchData();
+    } else if (userType.userType.userType === "NGO") {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(
+            "http://localhost:4000/charts/ngo/sector",
+            {
+              headers: {
+                authorization: localStorage.getItem("NgoAuthToken"),
+              },
+            }
+          );
+          const data = await response.json();
+          if (data.success) {
+            setItems(data.result);
+          } else {
+            console.error(data.message);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
+      fetchData();
     }
-  };
+  }, [userType]);
 
   const handleItemHover = (item) => {
     setHoveredItem(item);
   };
 
   return (
-    <div style={{marginLeft:"50vw",marginTop:"7vh"}}>
+    <div style={{ marginLeft: "50vw", marginTop: "10vh" }}>
       <div className="hex-grid">
         {items.map((item, index) => (
           <Popover
@@ -64,6 +94,9 @@ const HexGrid = () => {
           </Popover>
         ))}
       </div>
+      <Text display={"flex"} justifyContent={"flex-end"} mt={10} mr={"-10"}>
+        <strong>Donations in each Sectors</strong>
+      </Text>
     </div>
   );
 };

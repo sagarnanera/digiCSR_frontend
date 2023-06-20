@@ -58,6 +58,15 @@ const ReviewComponent = ({ ngoID, userType }) => {
           authorization: token,
         },
       };
+    } else if (userType === "admin") {
+      const token = localStorage.getItem("AdminAuthToken");
+      options = {
+        headers: {
+          "Content-type": "application/json",
+          authorization: token,
+        },
+      };
+      console.log(options);
     } else {
       const token = localStorage.getItem("NgoAuthToken");
       options = {

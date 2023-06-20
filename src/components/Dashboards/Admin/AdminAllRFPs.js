@@ -17,16 +17,18 @@ import {
   Select,
   VStack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
-import { FiEye } from "react-icons/fi";
+import { FiEye, FiTrash } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import "../../../CSS/rfpTable.css";
-import NgoNavigation from "../../Navigation/NgoNavigation";
 import { fetchStateName, fetchStates } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
+import DeleteConfirmationDialog from "../CompanyFeatures/RFPDeleteAlert";
+import AdminNavigation from "../adminNavigation";
 // import config from "../../config";
 
-const RFPRequest = () => {
+const AdminRFP = () => {
   const navigate = useNavigate();
   // const rowsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,7 +44,9 @@ const RFPRequest = () => {
   const [selectedstates, setselectedStates] = useState("");
   const [selectedsector, setselectedSector] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-
+  const toast = useToast();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedRFP, setSelectedRFP] = useState(null);
   useEffect(() => {
     const getStates = async () => {
       const fetchedStates = await fetchStates();
@@ -60,7 +64,7 @@ const RFPRequest = () => {
 
   const fetchData = async () => {
     try {
-      const result = localStorage.getItem("NgoAuthToken");
+      const result = localStorage.getItem("AdminAuthToken");
       const config = {
         headers: {
           "Content-type": "application/json",
@@ -234,6 +238,47 @@ const RFPRequest = () => {
     // });
     setShowRFPDetails(true);
   };
+  const handleDeleteRFP = (rfp) => {
+    setSelectedRFP(rfp);
+    setIsDeleteDialogOpen(true);
+  };
+  const handleDeleteCancel = () => {
+    setIsDeleteDialogOpen(false);
+  };
+  const handleDeleteConfirmation = async () => {
+    setIsDeleteDialogOpen(false);
+    const rfpID = selectedRFP._id;
+
+    // Perform the delete operation here
+    try {
+      const response = await fetch(
+        `http://localhost:4000/rfp/delete/${rfpID}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `${localStorage.getItem("AdminAuthToken")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+      if (response.ok) {
+        toast({
+          title: "RFP Deleted Successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        fetchData();
+      } else {
+        console.error("Failed to delete RFP:", data.message);
+      }
+    } catch (error) {
+      console.error("Failed to delete RFP:", error);
+    }
+  };
   return (
     <div
       style={{
@@ -245,7 +290,7 @@ const RFPRequest = () => {
       }}
     >
       <Container centerContent>
-        <NgoNavigation />
+        <AdminNavigation />
         <Box
           d="flex"
           textAlign="center"
@@ -383,6 +428,17 @@ const RFPRequest = () => {
                         colorScheme="blue"
                         color={"blue"}
                       />
+                      <IconButton
+                        aria-label="View proposal"
+                        icon={<FiTrash />}
+                        marginLeft="0.5rem"
+                        variant={"ghost"}
+                        onClick={() => {
+                          handleDeleteRFP(proposal);
+                        }}
+                        colorScheme="blue"
+                        color={"blue"}
+                      />
                     </Td>
                   </Tr>
                 ))}
@@ -394,6 +450,13 @@ const RFPRequest = () => {
                   rfpID: selectedRFPId,
                 },
               })}
+            {isDeleteDialogOpen && (
+              <DeleteConfirmationDialog
+                isOpen={isDeleteDialogOpen}
+                onClose={handleDeleteCancel}
+                onDelete={handleDeleteConfirmation}
+              />
+            )}
           </div>
           <div className="pagination">
             <ButtonGroup variant="outline" spacing="4">
@@ -424,4 +487,4 @@ const RFPRequest = () => {
   );
 };
 
-export default RFPRequest;
+export default AdminRFP;

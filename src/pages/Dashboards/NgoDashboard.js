@@ -5,6 +5,7 @@ const NgoDashboard = () => {
   return (
     <div>
       <NgoNavigation />
+      <Homepage userType={"NGO"} />
     </div>
   );
 };

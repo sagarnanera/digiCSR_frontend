@@ -3,7 +3,9 @@
   grid-template-columns: repeat(3, minmax(0px, 1.3fr));
   grid-gap: 5px;
   /* grid-row: inherit; */
-  left: 5% !important;
+  margin-left: 25%;
+  margin-right: -25%;
+  margin-top: 5vh;
 }
 
 .hex-item {
@@ -20,8 +22,8 @@
   font-size: 12px;
   font-weight: bold;
 }
-.hex-item:nth-child(2n + 2),
+/* .hex-item:nth-child(2n + 2),
 .hex-item:nth-child(4n + 4) {
   margin-left: 50px;
-}
+} */
 /* Add any additional styling or customization as needed */

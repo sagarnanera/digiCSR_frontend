@@ -28,6 +28,7 @@ import CompanyNavigation from "../../Navigation/companyNavigation";
 import RaiseRFP from "./RaiseRFP";
 import { fetchStateName, fetchStates } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
+import DeleteConfirmationDialog from "./RFPDeleteAlert";
 
 const TrackRFP = () => {
   const navigate = useNavigate();
@@ -46,6 +47,8 @@ const TrackRFP = () => {
   const [selectedstates, setselectedStates] = useState("");
   const [selectedsector, setselectedSector] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedRFP, setSelectedRFP] = useState(null);
 
   useEffect(() => {
     const getStates = async () => {
@@ -80,21 +83,19 @@ const TrackRFP = () => {
       const data = await response.json();
 
       // Apply filtering based on selected state and sector
-      setFilteredData(data);
-      if (selectedstates !== "") {
+      let filteredData = data;
+
+      if (selectedstates && selectedstates !== "") {
         console.log(selectedstates);
-        setFilteredData(
-          filteredData.filter((proposal) =>
-            proposal.states.includes(selectedstates)
-          )
+        filteredData = filteredData.filter((proposal) =>
+          proposal.states.includes(selectedstates)
         );
       }
+
       if (selectedsector !== "") {
         console.log(selectedsector);
-        setFilteredData(
-          filteredData.filter((proposal) =>
-            proposal.sectors.includes(selectedsector)
-          )
+        filteredData = filteredData.filter((proposal) =>
+          proposal.sectors.includes(selectedsector)
         );
       }
 
@@ -103,6 +104,8 @@ const TrackRFP = () => {
           prevPage === 1 ? prevPage : prevPage - 1
         );
       }
+
+      setFilteredData(filteredData); // Update the filteredData state once all filters have been applied
       setDocumentCount(filteredData.length);
       setCurrentRows(
         filteredData.slice(
@@ -115,6 +118,7 @@ const TrackRFP = () => {
       console.log(error);
     }
   };
+
   useEffect(() => {
     fetchRFPs();
   }, []);
@@ -236,14 +240,21 @@ const TrackRFP = () => {
     // });
     setShowRFPDetails(true);
   };
-  const handleDeleteRFP = async (rfp) => {
-    const rfpID = rfp._id;
-    console.log(rfpID);
+  const handleDeleteRFP = (rfp) => {
+    setSelectedRFP(rfp);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirmation = async () => {
+    setIsDeleteDialogOpen(false);
+    const rfpID = selectedRFP._id;
+
+    // Perform the delete operation here
     try {
       const response = await fetch(
         `http://localhost:4000/rfp/delete/${rfpID}`,
         {
-          method: "PUT",
+          method: "DELETE",
           headers: {
             "Content-Type": "application/json",
             authorization: `${localStorage.getItem("CompanyAuthToken")}`,
@@ -268,6 +279,11 @@ const TrackRFP = () => {
       console.error("Failed to delete RFP:", error);
     }
   };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteDialogOpen(false);
+  };
+
   const handleRaiseClick = () => {
     setShowRaiseRFPForm(true);
   };
@@ -343,7 +359,7 @@ const TrackRFP = () => {
                   >
                     <option value="">Select a sector</option>
                     {sectorOptions.map((option) => (
-                      <option key={option.id} value={option.value}>
+                      <option key={option.id} value={option.label}>
                         {option.label}
                       </option>
                     ))}
@@ -459,6 +475,13 @@ const TrackRFP = () => {
               navigate("/Company/rfpdetails", {
                 state: { rfpID: selectedRFPId },
               })}
+            {isDeleteDialogOpen && (
+              <DeleteConfirmationDialog
+                isOpen={isDeleteDialogOpen}
+                onClose={handleDeleteCancel}
+                onDelete={handleDeleteConfirmation}
+              />
+            )}
           </div>
           <div className="pagination">
             <ButtonGroup variant="outline" spacing="4">

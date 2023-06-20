@@ -9,6 +9,8 @@ import {
   Text,
   Heading,
   Divider,
+  useToast,
+  HStack,
 } from "@chakra-ui/react";
 import {
   ChevronDownIcon,
@@ -22,6 +24,7 @@ import { fetchStates } from "../geoData";
 import { Icon } from "@chakra-ui/react";
 import { FiMapPin } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import DeleteConfirmationDialog from "./CompanyFeatures/RFPDeleteAlert";
 
 export const FilterDrawer = ({ isOpen, onClose, handleCheckboxChange }) => {
   const [states, setStates] = useState([]);
@@ -180,28 +183,115 @@ export const FilterDrawer = ({ isOpen, onClose, handleCheckboxChange }) => {
 
 export const CardComponent = ({
   userType,
-  ngoId,
+  Id,
+  type,
   name,
   email,
   phone,
   location,
+  triggerFetchCompanies,
 }) => {
   const navigate = useNavigate();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const toast = useToast();
+
   const ShowProfile = () => {
     if (userType === "company") {
-      navigate(`/Company/ngo-profile/${ngoId}`, {
+      navigate(`/Company/ngo-profile/${Id}`, {
         state: {
-          ngoID: ngoId,
+          ngoID: Id,
           userType: userType,
         },
       });
-    } else {
-      navigate(`/Beneficiary/ngo-profile/${ngoId}`, {
+    } else if (userType === "beneficiary") {
+      navigate(`/Beneficiary/ngo-profile/${Id}`, {
         state: {
-          ngoID: ngoId,
+          ngoID: Id,
           userType: userType,
         },
       });
+    } else if (userType === "admin") {
+      if (type === "ngo") {
+        navigate(`/Admin/ngo-profile/${Id}`, {
+          state: {
+            ngoID: Id,
+            userType: userType,
+          },
+        });
+      } else {
+        navigate(`/Admin/company-profile/${Id}`, {
+          state: {
+            companyID: Id,
+            userType: userType,
+          },
+        });
+      }
+    }
+  };
+  const handleDeleteUser = () => {
+    setIsDeleteDialogOpen(true);
+  };
+  const handleDeleteCancel = () => {
+    setIsDeleteDialogOpen(false);
+  };
+  const handleDeleteConfirmation = async () => {
+    setIsDeleteDialogOpen(false);
+    // Perform the delete operation here
+    try {
+      if (type === "company") {
+        const response = await fetch(`http://localhost:4000/company/delete`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `${localStorage.getItem("AdminAuthToken")}`,
+          },
+          body: JSON.stringify({
+            _id: Id,
+          }),
+        });
+        const data = await response.json();
+        console.log(1);
+        console.log(data);
+        if (response.ok) {
+          toast({
+            title: "Company Deleted Successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          triggerFetchCompanies();
+        } else {
+          console.error("Failed to delete Company:", data.message);
+        }
+      } else {
+        const response = await fetch(`http://localhost:4000/NGO/delete`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `${localStorage.getItem("AdminAuthToken")}`,
+          },
+          body: JSON.stringify({
+            _id: Id,
+          }),
+        });
+        const data = await response.json();
+        console.log(data);
+        if (response.ok) {
+          toast({
+            title: "Ngo Deleted Successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          triggerFetchCompanies();
+        } else {
+          console.error("Failed to delete Company:", data.message);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to delete User:", error);
     }
   };
   return (
@@ -218,7 +308,7 @@ export const CardComponent = ({
       marginLeft="0.5rem"
       mr={"2rem"}
     >
-      <Text fontSize="xl" fontWeight="bold" mt={"-3"} align={"center"}>
+      <Text fontSize="lg" fontWeight="bold" mt={"-3"} align={"center"}>
         {name}
       </Text>
       <Divider width={"80%"} ml={"10%"} mb={"3"}></Divider>
@@ -236,23 +326,51 @@ export const CardComponent = ({
           {location?.city} , {location?.state} , {location?.pincode}
         </Text>
       </Flex>
-      <Box display="flex" justifyContent="flex-end">
-        <Button
-          bg="skyblue"
-          color="white"
-          w={"fit-content"}
-          boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
-          size={"sm"}
-          fontSize={"xs"}
-          _hover={{ boxShadow: "0px 4px 6px skyblue", color: "red.500" }}
-          _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
-          onClick={() => {
-            ShowProfile();
-          }}
-        >
-          View More
-        </Button>
-      </Box>
+      <HStack>
+        {userType === "admin" && (
+          <Box display="flex" justifyContent="flex-start">
+            <Button
+              bg="skyblue"
+              color="white"
+              w={"fit-content"}
+              boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+              size={"sm"}
+              fontSize={"xs"}
+              _hover={{ boxShadow: "0px 4px 6px skyblue", color: "red.500" }}
+              _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
+              onClick={() => {
+                handleDeleteUser(Id);
+              }}
+            >
+              Delete
+            </Button>
+          </Box>
+        )}
+        <Box display="flex" justifyContent="flex-end">
+          <Button
+            bg="skyblue"
+            color="white"
+            w={"fit-content"}
+            boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+            size={"sm"}
+            fontSize={"xs"}
+            _hover={{ boxShadow: "0px 4px 6px skyblue", color: "red.500" }}
+            _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
+            onClick={() => {
+              ShowProfile();
+            }}
+          >
+            View More
+          </Button>
+        </Box>
+      </HStack>
+      {isDeleteDialogOpen && (
+        <DeleteConfirmationDialog
+          isOpen={isDeleteDialogOpen}
+          onClose={handleDeleteCancel}
+          onDelete={handleDeleteConfirmation}
+        />
+      )}
     </Box>
   );
 };

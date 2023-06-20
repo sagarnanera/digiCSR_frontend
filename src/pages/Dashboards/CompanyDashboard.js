@@ -10,7 +10,7 @@ function CompanyDashboard() {
   return (
     <div>
       <CompanyNavigation />
-      <Homepage />
+      <Homepage userType={"company"} />
       {/* <HexGrid /> */}
     </div>
   );

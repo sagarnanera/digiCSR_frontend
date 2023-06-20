@@ -129,6 +129,17 @@ function Homepage() {
 
 
       <MapChart />
+      {/* <div className="mapchart">
+        <HStack>
+          <VStack>
+            <MapChart userType={userType} />
+          </VStack>
+          <HexGrid userType={userType} />
+        </HStack>
+      </div>
+      <div className="pie">
+        <YearChart userType={userType} />
+      </div> */}
 
       {/* <PieChart /> */}
 
@@ -149,7 +160,7 @@ function Homepage() {
         <Box maxW={"80%"}>
           <Flex alignItems="center" p={4} justifyContent={"space-between"} wrap={"wrap"}>
             {/* <Flex alignItems="center"  */}
-            <Image src="../image 7.png" pt={4}/>
+            <Image src="../image 7.png" pt={4} />
             <Flex justifyContent="space-between" flexDirection={"column"} mx={1} mt={4}>
               <Text>
                 <Icon as={BsGeoAlt} boxSize={4} mr={2} fill="black" />

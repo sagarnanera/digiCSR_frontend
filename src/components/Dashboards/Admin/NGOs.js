@@ -7,38 +7,30 @@ import {
   InputGroup,
   InputLeftElement,
 } from "@chakra-ui/react";
-import { CardComponent, FilterDrawer } from "./NGOsCompanent";
 import { SearchIcon } from "@chakra-ui/icons";
-import CompanyNavigation from "../Navigation/companyNavigation";
-import BenificiaryNavigation from "../Navigation/beneficiaryNavigation";
+import { CardComponent, FilterDrawer } from "../NGOsCompanent";
+import AdminNavigation from "../adminNavigation";
 
-const NGOs = ({ userType }) => {
+const AdminNGOs = () => {
   const [ngos, setNgos] = useState([]);
   const [filteredResult, setResult] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchNgos();
-  }, [userType]);
-
+  }, []);
   const fetchNgos = async () => {
     var options;
 
-    if (userType === "company" || userType === "beneficiary") {
-      const token =
-        userType === "company"
-          ? localStorage.getItem("CompanyAuthToken")
-          : localStorage.getItem("BenificiaryAuthToken");
+    const token = localStorage.getItem("AdminAuthToken");
 
-      options = {
-        headers: {
-          "Content-type": "application/json",
-          authorization: token,
-        },
-      };
-    }
+    options = {
+      headers: {
+        "Content-type": "application/json",
+        authorization: token,
+      },
+    };
     try {
-      console.log(options.headers);
       const response = await fetch("http://localhost:4000/NGO", options);
       const data = await response.json();
       console.log(data);
@@ -51,6 +43,14 @@ const NGOs = ({ userType }) => {
     } catch (error) {
       console.log("Error:", error.message);
     }
+  };
+  const updateCompanies = async () => {
+    await fetchNgos();
+  };
+
+  // Callback function to trigger fetchCompanies
+  const triggerFetchCompanies = () => {
+    updateCompanies();
   };
   // Function to handle search query changes
   const handleSearchQueryChange = (event) => {
@@ -85,11 +85,7 @@ const NGOs = ({ userType }) => {
 
   return (
     <Box>
-      {userType === "company" ? (
-        <CompanyNavigation />
-      ) : (
-        <BenificiaryNavigation />
-      )}
+      <AdminNavigation />
       <Flex>
         <FilterDrawer
           isOpen={true}
@@ -113,12 +109,14 @@ const NGOs = ({ userType }) => {
                 )
                 .map((ngo) => (
                   <CardComponent
-                    userType={userType}
+                    userType={"admin"}
+                    type={"ngo"}
                     Id={ngo._id}
                     name={ngo.ngo_name}
                     email={ngo.email}
                     phone={ngo.profile.phone}
                     location={ngo.profile.location}
+                    triggerFetchCompanies={triggerFetchCompanies} // Pass the callback function as a prop
                   />
                 ))}
             </Grid>
@@ -129,4 +127,4 @@ const NGOs = ({ userType }) => {
   );
 };
 
-export default NGOs;
+export default AdminNGOs;

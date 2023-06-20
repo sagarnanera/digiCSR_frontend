@@ -23,20 +23,25 @@ import RFPCompanyDetails from "./components/Dashboards/CompanyFeatures/RFPDetail
 import Post from "./components/Dashboards/NgoFeatures/Post";
 import BeneficiaryDashboard from "./pages/Dashboards/BeneficiaryDashboard";
 import ShowBlogs from "./components/Dashboards/BeneficiaryFeatures.js/showBlogs";
-import ShowBenificiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/showprofile";
-import EditBeneficiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/editprofile";
-import AddBeneficiaryprofile from "./components/Dashboards/BeneficiaryFeatures.js/addprofile";
 import UpdateBlog from "./components/Dashboards/NgoFeatures/UpdateBlog";
 import NGOs from "./components/Dashboards/NGOs";
+import AdminAuth from "./pages/Authentication/adminAuth";
+import AdminRFP from "./components/Dashboards/Admin/AdminAllRFPs";
+import AdminCompanies from "./components/Dashboards/Admin/Companies";
+import AdminBeneficiaries from "./components/Dashboards/Admin/Beneficiaries";
+import AdminDashboard from "./pages/Dashboards/AdminDashboard";
+import AdminNGOs from "./components/Dashboards/Admin/NGOs";
 
 function App() {
   const authToken = localStorage.getItem("CompanyAuthToken");
   const NgoauthToken = localStorage.getItem("NgoAuthToken");
-  const BeneficiaryauthToken = localStorage.getItem("BenificiaryAuthToken");
+  const BeneficiaryauthToken = localStorage.getItem("BeneficiaryAuthToken");
+  const AdminauthToken = localStorage.getItem("AdminAuthToken");
   // let selectedOption = "";
   const isCompanyAuthenticated = authToken !== null;
   const isNgoAuthenticated = NgoauthToken !== null;
   const isBeneficiaryAuthenticated = BeneficiaryauthToken !== null;
+  const isAdminAuthenticated = AdminauthToken !== null;
 
   const navigate = useNavigate();
 
@@ -44,7 +49,9 @@ function App() {
     if (
       !isCompanyAuthenticated &&
       !isNgoAuthenticated &&
-      !isBeneficiaryAuthenticated
+      !isBeneficiaryAuthenticated &&
+      !isAdminAuthenticated &&
+      window.location.pathname !== "/admin"
     ) {
       navigate("/", { replace: true });
     }
@@ -52,17 +59,23 @@ function App() {
     isCompanyAuthenticated,
     isNgoAuthenticated,
     isBeneficiaryAuthenticated,
+    isAdminAuthenticated,
     navigate,
   ]);
 
   return (
     <div className="App">
       <Routes>
+        {}
+        <Route path="/admin" element={<AdminAuth />} />
         <Route path="/" element={<ChooseUserComponent />} />
         {isCompanyAuthenticated && (
           <Route path="/Company" element={<CompanyDashboard />} />
         )}
         {isNgoAuthenticated && <Route path="/Ngo" element={<NgoDashboard />} />}
+        {isAdminAuthenticated && (
+          <Route path="/Admin/home" element={<AdminDashboard />} />
+        )}
         {isBeneficiaryAuthenticated && (
           <Route path="/Beneficiary" element={<BeneficiaryDashboard />} />
         )}
@@ -88,7 +101,10 @@ function App() {
               path="/Company/ngos"
               element={<NGOs userType={"company"} />}
             />
-            <Route path="/Company/ngo-profile/:id" element={<ShowNgoProfile />} />
+            <Route
+              path="/Company/ngo-profile/:id"
+              element={<ShowNgoProfile />}
+            />
           </>
         )}
         {isNgoAuthenticated && (
@@ -115,18 +131,6 @@ function App() {
           <>
             <Route path="/Beneficiary/NGOBlogs" element={<ShowBlogs />} />
             <Route
-              path="/Beneficiary/profile"
-              element={<ShowBenificiaryprofile />}
-            />
-            <Route
-              path="/Beneficiary/editprofile"
-              element={<EditBeneficiaryprofile />}
-            />
-            <Route
-              path="/Beneficiary/addprofile"
-              element={<AddBeneficiaryprofile />}
-            />
-            <Route
               path="/Beneficiary/media"
               element={<MediaSection userType={"beneficiary"} />}
             />
@@ -138,7 +142,26 @@ function App() {
               path="/Beneficiary/ngos"
               element={<NGOs userType={"beneficiary"} />}
             />
-            <Route path="/Beneficiary/ngo-profile/:id" element={<ShowNgoProfile />} />
+            <Route
+              path="/Beneficiary/ngo-profile/:id"
+              element={<ShowNgoProfile />}
+            />
+          </>
+        )}
+        {isAdminAuthenticated && (
+          <>
+            <Route path="/Admin/RFP" element={<AdminRFP />} />
+            <Route path="/Admin/ngos" element={<AdminNGOs />} />
+            <Route path="/Admin/companies" element={<AdminCompanies />} />
+            <Route
+              path="/Admin/beneficiaries"
+              element={<AdminBeneficiaries />}
+            />
+            <Route path="/Admin/ngo-profile/:id" element={<ShowNgoProfile />} />
+            <Route
+              path="/Admin/company-profile/:id"
+              element={<ShowProfile />}
+            />
           </>
         )}
         <Route path="*" element={<Navigate to="/" />} />
