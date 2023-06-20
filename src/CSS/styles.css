@@ -28,17 +28,18 @@ body {
   /* margin-top: 50%; */
 }
 
-svg {
+
+/* svg {
   display: inline-block;
   vertical-align: middle;
   height: 600px;
   top: 110vh !important;
   left: 5% !important;
-}
+} 
 
 /* responsive, for small screens, use 13px font size */
-@media (max-width: 1000px) {
+/* @media (max-width: 1000px) {
   svg {
     height: 400px;
   }
-}
+}  */

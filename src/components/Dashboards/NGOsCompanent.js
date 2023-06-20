@@ -220,8 +220,8 @@ export const CardComponent = ({
     >
       <Text fontSize="xl" fontWeight="bold" mt={"-3"} align={"center"}>
         {name}
-          </Text>
-          <Divider width={"80%"} ml={"10%"} mb={"3"}></Divider>
+      </Text>
+      <Divider width={"80%"} ml={"10%"} mb={"3"}></Divider>
       <Flex align="center" mb={2}>
         <EmailIcon mr={2} />
         <Text>{email}</Text>
@@ -233,7 +233,7 @@ export const CardComponent = ({
       <Flex align="center">
         <Icon as={FiMapPin} mr={2} />
         <Text>
-          {location.city} , {location.state} , {location.pincode}
+          {location?.city} , {location?.state} , {location?.pincode}
         </Text>
       </Flex>
       <Box display="flex" justifyContent="flex-end">

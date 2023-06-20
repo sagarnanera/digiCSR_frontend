@@ -40,7 +40,7 @@ import {
   PhoneIcon,
 } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
-import CompanyNavigation from "../companyNavigation";
+import CompanyNavigation from "../../Navigation/companyNavigation";
 // export const allFieldsContext = createContext();
 
 const EditProfile = () => {

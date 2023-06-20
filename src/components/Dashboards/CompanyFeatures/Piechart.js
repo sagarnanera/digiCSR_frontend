@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
-// import "../../../CSS/piechart.css";
-import DatamapsIndia from "react-datamaps-india";
 import "../../../CSS/styles.css";
 import "../../../CSS/HexGrid.css";
-import { HStack } from "@chakra-ui/react";
+import { Box, Flex, HStack } from "@chakra-ui/react";
 import HexGrid from "./HexChart";
 function PieChart() {
   const [regionData, setRegionData] = useState(null);
@@ -79,7 +77,7 @@ function PieChart() {
 
   return (
     <>
-      <div className="mapchart">
+      {/* <div className="mapchart">
         {regionData ? (
           <HStack>
             <DatamapsIndia
@@ -115,9 +113,9 @@ function PieChart() {
         ) : (
           <div>Loading...</div>
         )}
-      </div>
-      <div className="pie"></div>
-      <div className="pie">
+      </div> */}
+      {/* <div className="pie"></div> */}
+      {/* <div className="pie">
         <Chart
           options={chartData.options}
           series={[{ name: "Bar", data: chartData.barSeries }]}
@@ -130,7 +128,46 @@ function PieChart() {
           type="pie"
           width={chartData.options.chart.width}
         />
-      </div>
+      </div> */}
+
+      {/* <Flex className="pie" wrap={"wrap"}>
+        <Chart
+          options={chartData.options}
+          series={[{ name: "Bar", data: chartData.barSeries }]}
+          type="bar"
+          width={chartData.options.chart.width}
+        />
+        <Chart
+          options={chartData.options}
+          series={chartData.pieSeries}
+          type="pie"
+          width={chartData.options.chart.width}
+        />
+      </Flex> */}
+
+      <Flex alignItems="center" justifyContent={"center"}>
+        {/* Bar Chart */}
+        <Box width="100%" maxWidth="500px" height="300px">
+          <Chart
+            options={chartData.options}
+            series={[{ name: "Bar", data: chartData.barSeries }]}
+            type="bar"
+            width="100%"
+            height="100%"
+          />
+        </Box>
+
+        {/* Pie Chart */}
+        <Box width="100%" maxWidth="400px" height="400px">
+          <Chart
+            options={chartData.options}
+            series={chartData.pieSeries}
+            type="pie"
+            width="100%"
+            height="100%"
+          />
+        </Box>
+      </Flex>
     </>
   );
 }

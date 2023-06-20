@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
-import CompanyNavigation from "../companyNavigation";
+import CompanyNavigation from "../../Navigation/companyNavigation";
 import { FiMail, FiMapPin, FiPhone, FiUser } from "react-icons/fi";
 
 const ShowProfile = () => {
@@ -191,7 +191,7 @@ const ShowProfile = () => {
                     display={"flex"}
                     justifyContent={"start"}
                     flexWrap={"wrap"}
-                    // gap={{ base: "10%", md: "10%" }}
+                  // gap={{ base: "10%", md: "10%" }}
                   >
                     <Box
                       mr={{ base: "4%", md: "4%" }}

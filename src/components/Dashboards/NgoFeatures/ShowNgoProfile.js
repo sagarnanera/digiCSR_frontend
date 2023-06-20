@@ -19,12 +19,13 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate, useLocation } from "react-router-dom";
 import jwt_decode from "jwt-decode";
-import NgoNavigation from "../NgoNavigation";
+import NgoNavigation from "../../Navigation/NgoNavigation";
 import { FiMail, FiMapPin, FiPhone } from "react-icons/fi";
 import "../../../CSS/rfpTable.css";
 import ReviewComponent from "../AddReviews";
-import CompanyNavigation from "../companyNavigation";
-import BenificiaryNavigation from "../beneficiaryNavigation";
+import CompanyNavigation from "../../Navigation/companyNavigation";
+import BenificiaryNavigation from "../../Navigation/beneficiaryNavigation";
+import NavBar from "../../NavBar";
 
 const ShowNgoProfile = () => {
   const location = useLocation();
@@ -147,13 +148,15 @@ const ShowNgoProfile = () => {
       }}
     >
       <Box>
-        {userType !== "company" && userType !== "beneficiary" ? (
+        {/* {userType !== "company" && userType !== "beneficiary" ? (
           <NgoNavigation />
         ) : userType === "company" ? (
           <CompanyNavigation />
         ) : (
           <BenificiaryNavigation />
-        )}
+        )} */}
+
+        <NavBar userType={userType} />
 
         <div
           style={{
@@ -232,7 +235,7 @@ const ShowNgoProfile = () => {
                       display={"flex"}
                       justifyContent={"start"}
                       flexWrap={"wrap"}
-                      // gap={{ base: "10%", md: "10%" }}
+                    // gap={{ base: "10%", md: "10%" }}
                     >
                       <Box
                         mr={{ base: "2%", md: "2%" }}

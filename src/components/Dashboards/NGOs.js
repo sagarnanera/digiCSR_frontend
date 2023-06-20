@@ -10,8 +10,8 @@ import {
 } from "@chakra-ui/react";
 import { CardComponent, FilterDrawer } from "./NGOsCompanent";
 import { SearchIcon } from "@chakra-ui/icons";
-import CompanyNavigation from "./companyNavigation";
-import BenificiaryNavigation from "./beneficiaryNavigation";
+import CompanyNavigation from "../Navigation/companyNavigation";
+import BenificiaryNavigation from "../Navigation/beneficiaryNavigation";
 
 const NGOs = ({ userType }) => {
   const [ngos, setNgos] = useState([]);

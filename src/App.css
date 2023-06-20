@@ -1,21 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@300&display=swap");
 
+
+/* * {
+  border: 10px solid lightgreen;
+} */
+
 .App {
   min-height: 100vh;
   display: flex;
   position: relative;
-  background-image: url("../public/back-ground.svg");
-  justify-content: center;
-  background-position: center;
-  background-repeat: no-repeat;
   background-size: cover;
 
-}
-
-@media (max-width: 900px) {
-  .App {
-    background-image: url('../public/mobile-back.svg');
-  }
 }
 
 ::-webkit-scrollbar {

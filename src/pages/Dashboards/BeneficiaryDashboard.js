@@ -1,5 +1,5 @@
 import React from 'react'
-import BenificiaryNavigation from '../../components/Dashboards/beneficiaryNavigation'
+import BenificiaryNavigation from '../../components/Navigation/beneficiaryNavigation'
 
 const BeneficiaryDashboard = () => {
   return (

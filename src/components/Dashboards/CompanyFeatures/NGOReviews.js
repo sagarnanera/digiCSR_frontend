@@ -1,5 +1,5 @@
 import React from 'react'
-import CompanyNavigation from '../companyNavigation';
+import CompanyNavigation from '../../Navigation/companyNavigation';
 
 const NGOReviews = () => {
   return (

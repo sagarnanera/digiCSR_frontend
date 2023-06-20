@@ -12,7 +12,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
-import NgoNavigation from "../NgoNavigation";
+import NgoNavigation from "../../Navigation/NgoNavigation";
 import RequestAmount from "./requestAmount";
 
 const RFPDetails = () => {

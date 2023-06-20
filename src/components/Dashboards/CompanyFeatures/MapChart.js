@@ -34,34 +34,38 @@ const MapChart = () => {
   }, []);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div>
       {regionData ? (
-        <DatamapsIndia
-          style={{ postion: "relative", left: "25%" }}
-          regionData={regionData}
-          hoverComponent={({ value }) => {
-            return (
-              <div>
+        <div style={{
+          height: "100%", display: "flex", justifyContent: "center"
+        }}>
+          <DatamapsIndia
+            style={{ width: "100%", height: "100vh !impotent" }}
+            regionData={regionData}
+            hoverComponent={({ value }) => {
+              return (
                 <div>
-                  {value.name} {value.value} $
+                  <div>
+                    {value.name} {value.value} $
+                  </div>
                 </div>
-              </div>
-            );
-          }}
-          mapLayout={{
-            title: "OCs Deployed per State in India",
-            legendTitle: "Number of OCs",
-            startColor: "#b3d1ff",
-            endColor: "#005ce6",
-            hoverTitle: "Count",
-            noDataColor: "#f5f5f5",
-            borderColor: "#8D8D8D",
-            hoverColor: "blue",
-            hoverBorderColor: "green",
-            height: 10,
-            weight: 30,
-          }}
-        />
+              );
+            }}
+            mapLayout={{
+              title: "OCs Deployed per State in India",
+              legendTitle: "Number of OCs",
+              startColor: "#b3d1ff",
+              endColor: "#005ce6",
+              hoverTitle: "Count",
+              noDataColor: "#f5f5f5",
+              borderColor: "#8D8D8D",
+              hoverColor: "blue",
+              hoverBorderColor: "green",
+              height: 10,
+              weight: 30,
+            }}
+          />
+        </div>
       ) : (
         <div>Loading...</div>
       )}

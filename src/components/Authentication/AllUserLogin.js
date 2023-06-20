@@ -249,6 +249,9 @@ function AllUserLogin() {
             position: "bottom",
           });
           const { result } = data;
+
+          // TODO : get the userData from the server and save it into context
+
           localStorage.setItem("CompanyAuthToken", result);
           setLoading(false);
           // if (allfields) {
@@ -305,6 +308,10 @@ function AllUserLogin() {
             position: "bottom",
           });
           const { result } = data;
+
+
+          // TODO : get the userData from the server and save it into context
+
           localStorage.setItem("NgoAuthToken", result);
           setLoading(false);
           // if (allNgofields) {
@@ -365,6 +372,10 @@ function AllUserLogin() {
             position: "bottom",
           });
           const { result } = data;
+
+
+          // TODO : get the userData from the server and save it into context
+
           localStorage.setItem("BenificiaryAuthToken", result);
           setLoading(false);
           navigate("/Beneficiary/addprofile", { replace: true });

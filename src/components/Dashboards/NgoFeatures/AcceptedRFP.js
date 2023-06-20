@@ -1,5 +1,5 @@
 import React from "react";
-import NgoNavigation from "../NgoNavigation";
+import NgoNavigation from "../../Navigation/NgoNavigation";
 
 const AcceptedRFP = () => {
   return (

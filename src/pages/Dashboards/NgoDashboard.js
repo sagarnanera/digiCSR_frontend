@@ -1,5 +1,5 @@
 import React from "react";
-import NgoNavigation from "../../components/Dashboards/NgoNavigation";
+import NgoNavigation from "../../components/Navigation/NgoNavigation";
 
 const NgoDashboard = () => {
   return (

@@ -167,6 +167,9 @@ function BenificiarySignup() {
           position: "bottom",
         });
         localStorage.setItem("BenificiaryAuthToken", result);
+
+        // TODO : get the userData from the server and save it into context
+
         setLoading(false);
         navigate("/Benificiary", { replace: true });
       } else {
