@@ -8,32 +8,29 @@ import {
   Td,
   IconButton,
   Container,
-  // Input,
   Button,
   ButtonGroup,
   Tooltip,
-  Box,
-  Input,
   HStack,
-  useToast,
-  VStack,
+  Input,
+  Box,
   Select,
+  VStack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { FiEye, FiTrash } from "react-icons/fi";
-import "../../../CSS/rfpTable.css";
-// import config from "../../config";
 import { useNavigate } from "react-router-dom";
-import CompanyNavigation from "../companyNavigation";
-import RaiseRFP from "./RaiseRFP";
+import "../../../CSS/rfpTable.css";
+import NgoNavigation from "../NgoNavigation";
 import { fetchStateName, fetchStates } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
-import DeleteConfirmationDialog from "./RFPDeleteAlert";
+import DeleteConfirmationDialog from "../CompanyFeatures/RFPDeleteAlert";
+// import config from "../../config";
 
-const TrackRFP = () => {
+const AdminRFP = () => {
   const navigate = useNavigate();
-  const [showRFPDetails, setShowRFPDetails] = useState(false);
-  const [selectedRFPId, setSelectedRFPId] = useState(null);
+  // const rowsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [currentRows, setCurrentRows] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -41,15 +38,15 @@ const TrackRFP = () => {
   const pageCount = Math.ceil(documentCount / rowsPerPage);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const [showRaiseRFPForm, setShowRaiseRFPForm] = useState(false);
-  const toast = useToast();
+  const [showRFPDetails, setShowRFPDetails] = useState(false);
+  const [selectedRFPId, setSelectedRFPId] = useState(null);
   const [states, setStates] = useState([]);
   const [selectedstates, setselectedStates] = useState("");
   const [selectedsector, setselectedSector] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const toast = useToast();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedRFP, setSelectedRFP] = useState(null);
-
   useEffect(() => {
     const getStates = async () => {
       const fetchedStates = await fetchStates();
@@ -64,16 +61,17 @@ const TrackRFP = () => {
   const handleSectorChange = async (selectedSector) => {
     setselectedSector(selectedSector);
   };
-  const fetchRFPs = async () => {
+
+  const fetchData = async () => {
     try {
-      const result = localStorage.getItem("CompanyAuthToken");
+      const result = localStorage.getItem("AdminAuthToken");
       const config = {
         headers: {
           "Content-type": "application/json",
           authorization: result,
         },
       };
-      const response = await fetch(`http://localhost:4000/company/rfp`, {
+      const response = await fetch(`http://localhost:4000/rfps`, {
         headers: config.headers,
       });
 
@@ -85,7 +83,7 @@ const TrackRFP = () => {
       // Apply filtering based on selected state and sector
       let filteredData = data;
 
-      if (selectedstates && selectedstates !== "") {
+      if (selectedstates !== "") {
         console.log(selectedstates);
         filteredData = filteredData.filter((proposal) =>
           proposal.states.includes(selectedstates)
@@ -118,9 +116,8 @@ const TrackRFP = () => {
       console.log(error);
     }
   };
-
   useEffect(() => {
-    fetchRFPs();
+    fetchData();
   }, [currentPage, rowsPerPage, selectedsector, selectedstates]);
 
   const handleRowsPerPageChange = (event) => {
@@ -231,6 +228,7 @@ const TrackRFP = () => {
 
     return pageNumbers;
   };
+
   const handleShowDetails = (rowData) => {
     setSelectedRFPId(rowData._id);
     console.log(selectedRFPId);
@@ -244,7 +242,9 @@ const TrackRFP = () => {
     setSelectedRFP(rfp);
     setIsDeleteDialogOpen(true);
   };
-
+  const handleDeleteCancel = () => {
+    setIsDeleteDialogOpen(false);
+  };
   const handleDeleteConfirmation = async () => {
     setIsDeleteDialogOpen(false);
     const rfpID = selectedRFP._id;
@@ -257,7 +257,7 @@ const TrackRFP = () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            authorization: `${localStorage.getItem("CompanyAuthToken")}`,
+            authorization: `${localStorage.getItem("AdminAuthToken")}`,
           },
         }
       );
@@ -271,21 +271,13 @@ const TrackRFP = () => {
           isClosable: true,
           position: "bottom",
         });
-        fetchRFPs();
+        fetchData();
       } else {
         console.error("Failed to delete RFP:", data.message);
       }
     } catch (error) {
       console.error("Failed to delete RFP:", error);
     }
-  };
-
-  const handleDeleteCancel = () => {
-    setIsDeleteDialogOpen(false);
-  };
-
-  const handleRaiseClick = () => {
-    setShowRaiseRFPForm(true);
   };
   return (
     <div
@@ -298,7 +290,7 @@ const TrackRFP = () => {
       }}
     >
       <Container centerContent>
-        <CompanyNavigation />
+        <NgoNavigation />
         <Box
           d="flex"
           textAlign="center"
@@ -313,7 +305,7 @@ const TrackRFP = () => {
           <h1 className="title">List of Request for Proposals</h1>
         </Box>
         <div className="container">
-          <HStack w={"100%"} justifyContent="space-between">
+          <HStack w={"90%"} justifyContent="space-between" mb={"1%"}>
             <div className="input-container">
               <Input
                 type="number"
@@ -339,6 +331,7 @@ const TrackRFP = () => {
                     onChange={(e) => handleStateChange(e.target.value)}
                     size={"sm"}
                     style={{ maxWidth: "20rem" }}
+                    // value={selectedstates}
                   >
                     <option value="">Select a state</option>
                     {states.map((state) => (
@@ -367,22 +360,6 @@ const TrackRFP = () => {
                 </VStack>
               </HStack>
             </Box>
-            <div className="AddRFP">
-              <Button
-                bg="skyblue"
-                color="white"
-                w={"15vw"}
-                mr={"5vw"}
-                boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
-                _hover={{ boxShadow: "0px 4px 6px rgb(45, 38, 38)" }}
-                _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
-                onClick={() => {
-                  handleRaiseClick();
-                }}
-              >
-                Raise RFP
-              </Button>
-            </div>
           </HStack>
 
           <div className="table-container">
@@ -393,6 +370,7 @@ const TrackRFP = () => {
                   <Th>Proposal Name</Th>
                   <Th>Development Sector</Th>
                   <Th>States</Th>
+                  <Th>Company Name</Th>
                   <Th>Action</Th>
                 </Tr>
               </Thead>
@@ -436,6 +414,7 @@ const TrackRFP = () => {
                         </span>
                       )}
                     </Td>
+                    <Td className="divider">{proposal.company_name}</Td>
                     <Td>
                       <IconButton
                         aria-label="View proposal"
@@ -465,15 +444,11 @@ const TrackRFP = () => {
                 ))}
               </Tbody>
             </Table>
-            {showRaiseRFPForm && (
-              <RaiseRFP
-                onClose={() => setShowRaiseRFPForm(false)}
-                onRFPRaised={fetchRFPs}
-              />
-            )}
             {showRFPDetails &&
-              navigate("/Company/rfpdetails", {
-                state: { rfpID: selectedRFPId },
+              navigate("/Ngo/rfpdetails", {
+                state: {
+                  rfpID: selectedRFPId,
+                },
               })}
             {isDeleteDialogOpen && (
               <DeleteConfirmationDialog
@@ -512,4 +487,4 @@ const TrackRFP = () => {
   );
 };
 
-export default TrackRFP;
+export default AdminRFP;

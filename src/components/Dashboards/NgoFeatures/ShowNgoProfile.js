@@ -35,10 +35,12 @@ const ShowNgoProfile = () => {
   const [ngoId, setNgoId] = useState("");
   // const toast = useToast();
   useEffect(() => {
-    const token = localStorage.getItem("NgoAuthToken");
-    const decodedToken = jwt_decode(token);
-    setNgoId(decodedToken._id);
-  }, []);
+    if (!(userType === "company" || userType === "beneficiary")) {
+      const token = localStorage.getItem("NgoAuthToken");
+      const decodedToken = jwt_decode(token);
+      setNgoId(decodedToken._id);
+    }
+  }, [userType]);
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
 
   useEffect(() => {

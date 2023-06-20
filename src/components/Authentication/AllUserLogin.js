@@ -365,7 +365,7 @@ function AllUserLogin() {
             position: "bottom",
           });
           const { result } = data;
-          localStorage.setItem("BenificiaryAuthToken", result);
+          localStorage.setItem("BeneficiaryAuthToken", result);
           setLoading(false);
           navigate("/Beneficiary/addprofile", { replace: true });
         } else {
