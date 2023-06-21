@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Flex } from "@chakra-ui/react";
-import AdminNavigation from "../adminNavigation";
+import AdminNavigation from "../../Navigation/adminNavigation";
 import BeneficiaryTable from "./BeneficiaryTable";
 
 const AdminBeneficiaries = () => {

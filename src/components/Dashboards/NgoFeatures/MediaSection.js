@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import NgoNavigation from "../../Navigation/NgoNavigation";
-import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, IconButton, useMediaQuery } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import PostCard from "./PostCard";
-import CompanyNavigation from "../../Navigation/companyNavigation";
-import BenificiaryNavigation from "../../Navigation/beneficiaryNavigation";
 import NavBar from "../../NavBar";
+import { FiPlus } from "react-icons/fi";
 
 const MediaSection = ({ userType }) => {
   const [blogs, setBlogs] = useState([]);
+
+  const [isLSmallScreen] = useMediaQuery("(max-width: 800px)");
 
   const navigate = useNavigate();
   // const toast = useToast();
@@ -32,7 +32,7 @@ const MediaSection = ({ userType }) => {
           },
         };
       } else {
-        const token = localStorage.getItem("NgoAuthToken");
+        const token = userType === "ngo" ? localStorage.getItem("NgoAuthToken") : localStorage.getItem("AdminAuthToken");
 
         options = {
           headers: {
@@ -61,13 +61,6 @@ const MediaSection = ({ userType }) => {
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover"
       }}>
-        {/* {userType !== "company" && userType !== "beneficiary" ? (
-          <NgoNavigation />
-        ) : userType === "company" ? (
-          <CompanyNavigation />
-        ) : (
-          <BenificiaryNavigation />
-        )} */}
 
         <NavBar userType={userType} />
 
@@ -82,13 +75,6 @@ const MediaSection = ({ userType }) => {
           boxShadow="md"
         >
           <h2>NO Blogs</h2>
-          {/* <Button
-            onClick={() => navigate("/Ngo/media/create")}
-            colorScheme="teal"
-            mb={4}
-          >
-            Create New Blog
-          </Button> */}
           <Button
             onClick={() =>
               userType !== "ngo" ? navigate(-1) : navigate("/Ngo/media/create")
@@ -139,7 +125,12 @@ const MediaSection = ({ userType }) => {
             _hover={{ boxShadow: "0px 4px 6px skyblue" }}
             _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
           >
-            Create New Blog
+            {/* Create New */}
+            {!isLSmallScreen ? (
+              "Create New"
+            ) : (
+              <IconButton as={FiPlus} boxSize={6} bg={"transparent"} />
+            )}
           </Button>
           }
         </Flex>

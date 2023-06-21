@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import DatamapsIndia from "react-datamaps-india";
 import "../../../CSS/styles.css";
 
-function MapChart(userType) {
+function MapChart({ userType }) {
   const [regionData, setRegionData] = useState(null);
   useEffect(() => {
-    if (userType.userType.userType === "company") {
+    if (userType === "company") {
       const fetchStateChartData = async () => {
         try {
           const response = await fetch("http://localhost:4000/charts/state", {
@@ -33,7 +33,7 @@ function MapChart(userType) {
         }
       };
       fetchStateChartData();
-    } else if (userType.userType.userType === "NGO") {
+    } else if (userType === "ngo") {
       const fetchStateChartData = async () => {
         try {
           const response = await fetch(

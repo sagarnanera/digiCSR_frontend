@@ -25,7 +25,7 @@ import "../../../CSS/rfpTable.css";
 import { fetchStateName, fetchStates } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
 import DeleteConfirmationDialog from "../CompanyFeatures/RFPDeleteAlert";
-import AdminNavigation from "../adminNavigation";
+import AdminNavigation from "../../Navigation/adminNavigation";
 // import config from "../../config";
 
 const AdminRFP = () => {
@@ -331,7 +331,7 @@ const AdminRFP = () => {
                     onChange={(e) => handleStateChange(e.target.value)}
                     size={"sm"}
                     style={{ maxWidth: "20rem" }}
-                    // value={selectedstates}
+                  // value={selectedstates}
                   >
                     <option value="">Select a state</option>
                     {states.map((state) => (

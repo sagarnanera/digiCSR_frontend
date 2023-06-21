@@ -105,7 +105,7 @@ const Post = ({ userType }) => {
       },
     };
   } else {
-    const token = localStorage.getItem("NgoAuthToken");
+    const token = userType === "ngo" ? localStorage.getItem("NgoAuthToken") : localStorage.getItem("AdminAuthToken");
 
     options = {
       headers: {
@@ -158,7 +158,7 @@ const Post = ({ userType }) => {
       ...options,
     });
 
-    if (userType !== "ngo") {
+    if (userType !== "ngo" && userType !== "admin") {
       toast({
         title: "Not Allowed",
         status: "warning",
@@ -193,7 +193,7 @@ const Post = ({ userType }) => {
       }
 
       setBlog({});
-      navigate("/Ngo/media");
+      navigate(`/${userType}/media`);
     } catch (error) {
       console.error("Error fetching blog:", error);
       toast({
@@ -297,7 +297,7 @@ const Post = ({ userType }) => {
             <Text>{blog.author}</Text>
           </Box>
 
-          {userType === "ngo" && (
+          {(userType === "ngo" || userType === "admin") && (
             <Flex
               alignItems="center"
               justifyContent="center"
@@ -315,7 +315,7 @@ const Post = ({ userType }) => {
                 mr={2}
                 onClick={() => handleDeleteBlog(blog._id)}
               />
-              <IconButton
+              {userType === "ngo" && <IconButton
                 icon={<EditIcon />}
                 variant="ghost"
                 _hover={{ color: "white", bgColor: "gray" }}
@@ -323,7 +323,7 @@ const Post = ({ userType }) => {
                 aria-label="Edit"
                 size="md"
                 onClick={() => handleEditBlog(blog._id)}
-              />
+              />}
             </Flex>
           )}
         </Box>

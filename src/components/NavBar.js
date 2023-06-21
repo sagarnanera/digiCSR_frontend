@@ -2,6 +2,8 @@ import React from 'react'
 import NgoNavigation from './Navigation/NgoNavigation'
 import CompanyNavigation from './Navigation/companyNavigation'
 import BenificiaryNavigation from './Navigation/beneficiaryNavigation'
+import AdminNavigation from './Navigation/adminNavigation'
+
 
 const NavBar = ({ userType }) => {
 
@@ -12,6 +14,8 @@ const NavBar = ({ userType }) => {
             return <CompanyNavigation />;
         case 'beneficiary':
             return <BenificiaryNavigation />;
+        case 'admin':
+            return <AdminNavigation />;
         default:
             return null;
     }
