@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { CardComponent, FilterDrawer } from "../NGOsCompanent";
-import AdminNavigation from "../adminNavigation";
+import AdminNavigation from "../../Navigation/adminNavigation";
 
 const AdminNGOs = () => {
   const [ngos, setNgos] = useState([]);

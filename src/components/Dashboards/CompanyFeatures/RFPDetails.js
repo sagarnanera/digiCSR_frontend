@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
-import CompanyNavigation from "../companyNavigation";
+import CompanyNavigation from "../../Navigation/companyNavigation";
 
 const RFPCompanyDetails = () => {
   const location = useLocation();
@@ -121,7 +121,7 @@ const RFPCompanyDetails = () => {
               bg="skyblue"
               w={{ base: "100%", md: "95vw" }}
               m="30px 0 0px 0"
-              // borderRadius="10px"
+            // borderRadius="10px"
             >
               <Text fontSize="3xl" fontFamily="Work sans">
                 RFP Details
@@ -133,7 +133,7 @@ const RFPCompanyDetails = () => {
               p={3}
               bg="#f2f2f2"
               w={{ base: "100%", md: "95vw" }}
-              // borderRadius="10px"
+            // borderRadius="10px"
             >
               {rfpDetails ? (
                 <>

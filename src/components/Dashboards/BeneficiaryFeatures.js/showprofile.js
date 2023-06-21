@@ -1,5 +1,5 @@
 import React from "react";
-import BenificiaryNavigation from "../beneficiaryNavigation";
+import BenificiaryNavigation from "../../Navigation/beneficiaryNavigation";
 
 const ShowBenificiaryprofile = () => {
   return (

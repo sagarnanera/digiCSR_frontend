@@ -34,7 +34,7 @@ const CompanyNavigation = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
   const [isMobile] = useMediaQuery("(max-width: 800px)");
-  
+
   const handleClick = () => {
     localStorage.removeItem("CompanyAuthToken");
     navigate("/", { replace: true });
@@ -134,7 +134,7 @@ const CompanyNavigation = () => {
       } else {
         throw new Error(
           data.message ||
-            "Failed to mark notification as read. Please try again."
+          "Failed to mark notification as read. Please try again."
         );
       }
     } catch (error) {
@@ -242,7 +242,7 @@ const CompanyNavigation = () => {
                     <DrawerCloseButton />
                     <DrawerHeader>Menu</DrawerHeader>
                     <DrawerBody>
-                      <ul className={classes.nav}>
+                      <ul className={classes.nav} style={{ fontSize: "2em" }}>
                         <li>
                           <Link
                             to="/Company"
@@ -286,7 +286,7 @@ const CompanyNavigation = () => {
             </>
           ) : (
             // Render regular navigation for larger screens
-            <ul className={classes.nav}>
+            <ul className={classes.nav} style={{ fontSize: "2em" }}>
               <li>
                 <Link
                   to="/Company"
@@ -322,7 +322,7 @@ const CompanyNavigation = () => {
                     location.pathname === "/Company/media" ? classes.active : ""
                   }
                 >
-                  Media 
+                  Media
                 </Link>
               </li>
               {/* Rest of the navigation links */}

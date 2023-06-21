@@ -6,8 +6,12 @@ const PostEditor = ({ content, setContent }) => {
 
     const handleFileUpload = (blobInfo, progress) => new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        // xhr.withCredentials = false;
+        xhr.withCredentials = true;
         xhr.open('POST', 'http://localhost:4000/media/upload');
+
+        const token = localStorage.getItem("NgoAuthToken");
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.setRequestHeader("Authorization", token);
 
         xhr.upload.onprogress = (e) => {
             progress(e.loaded / e.total * 100);
@@ -60,10 +64,10 @@ const PostEditor = ({ content, setContent }) => {
                 height: 400,
                 menubar: false,
                 plugins:
-                    "anchor autolink charmap codesample code emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed  tinymcespellchecker permanentpen powerpaste advtable advcode editimage  tableofcontents footnotes mergetags autocorrect inlinecss fullscreen",
+                    "anchor autolink charmap codesample code emoticons image link lists media searchreplace table visualblocks wordcount fullscreen",
 
                 toolbar:
-                    "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough codesample code | link image media table mergetags | fullscreen | spellcheckdialog | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+                    "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough codesample code | link image media table | fullscreen | spellcheckdialog | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
 
                 images_upload_url: "http://localhost:4000/media/upload",
                 images_upload_handler: handleFileUpload

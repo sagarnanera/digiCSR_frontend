@@ -47,7 +47,7 @@ const PostCard = ({ blog, userType, setBlogs }) => {
     const handleBlogClick = (blogId) => {
         console.log(userType === "company" || "beneficiary");
 
-        return userType === "company" || "beneficiary"
+        return userType === "company" || "beneficiary" || "admin"
             ? navigate(`/${userType}/media/${blogId}`)
             : navigate(`/Ngo/media/post/${blogId}`);
     };
@@ -55,7 +55,7 @@ const PostCard = ({ blog, userType, setBlogs }) => {
     const handleDeleteBlog = async (blogId, event) => {
         event.stopPropagation();
 
-        if (userType !== "ngo") {
+        if (userType !== "ngo" && userType !== "admin") {
             toast({
                 title: "Not Allowed",
                 status: "warning",
@@ -66,7 +66,8 @@ const PostCard = ({ blog, userType, setBlogs }) => {
             return;
         }
 
-        const token = localStorage.getItem("NgoAuthToken");
+        // const token = localStorage.getItem("NgoAuthToken");
+        const token = userType === "ngo" ? localStorage.getItem("NgoAuthToken") : localStorage.getItem("AdminAuthToken");
 
         if (!token) {
             navigate("/");
@@ -144,7 +145,7 @@ const PostCard = ({ blog, userType, setBlogs }) => {
             borderRadius="md"
             _hover={{ boxShadow: "md", cursor: "pointer" }}
             onClick={() => handleBlogClick(blog._id)}
-            width={{ base: "100%", md: "50%", lg: "33%" }}
+            width={{ base: "100%", md: "48%", lg: "32%" }}
             height="auto"
             position="relative"
             bg={"#FFF"}
@@ -168,7 +169,7 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                 </Box>
             )}
 
-            {userType === "ngo" &&
+            {(userType === "ngo" || userType === "admin") &&
 
                 <Flex
                     position="absolute"
@@ -191,7 +192,7 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                         onClick={(e) => handleDeleteBlog(blog._id, e)}
                         title='Delete Post'
                     />
-                    <IconButton
+                    {userType === "ngo" && <IconButton
                         icon={<EditIcon />}
                         variant="ghost"
                         _hover={{ color: "black", bgColor: "beige" }}
@@ -200,25 +201,26 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                         size="md"
                         onClick={(e) => handleEditBlog(blog._id, e)}
                         title='Edit Post'
-                    />
+                    />}
                 </Flex>
             }
 
-            <Heading as="h2" size="lg" mb={2} noOfLines={1} textOverflow={"ellipsis"} title={`${blog.title}`}>
-                {blog.title}
-            </Heading>
-            <Text color="gray.600" mb={2}>
-                {blog.author} -{" "}
-                {new Date(blog.createdAt).toLocaleString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                })}
-            </Text>
-            <Text noOfLines={3} overflow="hidden" textOverflow="ellipsis">
-                {content}
-            </Text>
-
+            <Box mt={thumbnail ? 2 : 10}>
+                <Heading as="h2" size="lg" mb={2} noOfLines={1} textOverflow={"ellipsis"} title={`${blog.title}`}>
+                    {blog.title}
+                </Heading>
+                <Text color="gray.600" mb={2}>
+                    {blog.author} -{" "}
+                    {new Date(blog.createdAt).toLocaleString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                    })}
+                </Text>
+                <Text noOfLines={thumbnail ? 3 : 6} overflow="hidden" textOverflow="ellipsis" textAlign={"justify"}>
+                    {content}
+                </Text>
+            </Box>
         </Box>
     );
 };

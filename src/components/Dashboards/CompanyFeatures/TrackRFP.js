@@ -24,7 +24,7 @@ import { FiEye, FiTrash } from "react-icons/fi";
 import "../../../CSS/rfpTable.css";
 // import config from "../../config";
 import { useNavigate } from "react-router-dom";
-import CompanyNavigation from "../companyNavigation";
+import CompanyNavigation from "../../Navigation/companyNavigation";
 import RaiseRFP from "./RaiseRFP";
 import { fetchStateName, fetchStates } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
@@ -121,7 +121,7 @@ const TrackRFP = () => {
 
   useEffect(() => {
     fetchRFPs();
-  }, [currentPage, rowsPerPage, selectedsector, selectedstates]);
+  }, []);
 
   const handleRowsPerPageChange = (event) => {
     const value = parseInt(event.target.value);

@@ -20,9 +20,12 @@
     "react-apexcharts": "^1.4.0",
     "react-datamaps-india": "^0.6.0",
     "react-dom": "^18.2.0",
+    "react-elastic-carousel": "^0.11.5",
     "react-icons": "^4.9.0",
     "react-router-dom": "^6.12.0",
     "react-scripts": "5.0.1",
+    "react-slick": "^0.29.0",
+    "slick-carousel": "^1.8.1",
     "tinymce": "^6.4.2",
     "util": "^0.12.5",
     "web-vitals": "^2.1.4"

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NgoNavigation from "../NgoNavigation";
+import NgoNavigation from "../../Navigation/NgoNavigation";
 import {
   Box,
   Button,

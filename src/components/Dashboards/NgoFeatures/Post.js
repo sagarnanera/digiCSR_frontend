@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NgoNavigation from "../NgoNavigation";
+import NgoNavigation from "../../Navigation/NgoNavigation";
 import {
   Box,
   Heading,
@@ -10,10 +10,12 @@ import {
   Flex,
   IconButton,
   useToast,
+  background,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { extendTheme } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import NavBar from "../../NavBar";
 
 const Post = ({ userType }) => {
   const { id } = useParams();
@@ -103,7 +105,7 @@ const Post = ({ userType }) => {
       },
     };
   } else {
-    const token = localStorage.getItem("NgoAuthToken");
+    const token = userType === "ngo" ? localStorage.getItem("NgoAuthToken") : localStorage.getItem("AdminAuthToken");
 
     options = {
       headers: {
@@ -156,7 +158,7 @@ const Post = ({ userType }) => {
       ...options,
     });
 
-    if (userType !== "ngo") {
+    if (userType !== "ngo" && userType !== "admin") {
       toast({
         title: "Not Allowed",
         status: "warning",
@@ -191,7 +193,7 @@ const Post = ({ userType }) => {
       }
 
       setBlog({});
-      navigate("/Ngo/media");
+      navigate(`/${userType}/media`);
     } catch (error) {
       console.error("Error fetching blog:", error);
       toast({
@@ -221,7 +223,11 @@ const Post = ({ userType }) => {
 
   if (!blog) {
     return (
-      <div>
+      <div style={{
+        backgroundImage: "url('../bg.png')",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover"
+      }}>
         <NgoNavigation />
         <Box
           maxWidth={{ base: "95vw", lg: "80vw" }}
@@ -250,18 +256,25 @@ const Post = ({ userType }) => {
   }
 
   return (
-    <div>
-      <NgoNavigation />
+    <div style={{
+      backgroundImage: "url('/bg.png')",
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "cover",
+    }}>
+      <NavBar userType={userType} />
       <Box
         maxWidth={{ base: "95vw", lg: "80vw" }}
+        height={"80vh"}
         mx="auto"
         mt={8}
         mb={2}
         p={4}
         borderWidth="1px"
-        bg={"white"}
         borderRadius="md"
         boxShadow="md"
+        backdropFilter="auto"
+        backdropBlur="8px"
+        overflowX={"scroll"}
       >
         <Heading as="h1" mb={5} fontSize={"5xl"}>
           {blog.title}
@@ -284,7 +297,7 @@ const Post = ({ userType }) => {
             <Text>{blog.author}</Text>
           </Box>
 
-          {userType === "ngo" && (
+          {(userType === "ngo" || userType === "admin") && (
             <Flex
               alignItems="center"
               justifyContent="center"
@@ -302,7 +315,7 @@ const Post = ({ userType }) => {
                 mr={2}
                 onClick={() => handleDeleteBlog(blog._id)}
               />
-              <IconButton
+              {userType === "ngo" && <IconButton
                 icon={<EditIcon />}
                 variant="ghost"
                 _hover={{ color: "white", bgColor: "gray" }}
@@ -310,7 +323,7 @@ const Post = ({ userType }) => {
                 aria-label="Edit"
                 size="md"
                 onClick={() => handleEditBlog(blog._id)}
-              />
+              />}
             </Flex>
           )}
         </Box>
