@@ -19,12 +19,9 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate, useLocation } from "react-router-dom";
 import jwt_decode from "jwt-decode";
-import NgoNavigation from "../../Navigation/NgoNavigation";
 import { FiMail, FiMapPin, FiPhone } from "react-icons/fi";
 import "../../../CSS/rfpTable.css";
 import ReviewComponent from "../AddReviews";
-import CompanyNavigation from "../../Navigation/companyNavigation";
-import BenificiaryNavigation from "../../Navigation/beneficiaryNavigation";
 import NavBar from "../../NavBar";
 
 const ShowNgoProfile = () => {
@@ -78,10 +75,10 @@ const ShowNgoProfile = () => {
           const response = await fetch(
             `http://localhost:4000/NGO/logo/${ngoID}`
           );
-
+          console.log(response);
           const base64Data = await response.text();
-
           const byteCharacters = atob(base64Data.split(",")[1]);
+          console.log(base64Data);
           const byteNumbers = new Array(byteCharacters.length);
           for (let i = 0; i < byteCharacters.length; i++) {
             byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -90,6 +87,7 @@ const ShowNgoProfile = () => {
 
           const blob = new Blob([byteArray], { type: "image/png" });
           const imageUrl = URL.createObjectURL(blob);
+          console.log(imageUrl);
           setImage(imageUrl);
         } catch (error) {
           console.error(error);
@@ -247,7 +245,7 @@ const ShowNgoProfile = () => {
                       display={"flex"}
                       justifyContent={"start"}
                       flexWrap={"wrap"}
-                    // gap={{ base: "10%", md: "10%" }}
+                      // gap={{ base: "10%", md: "10%" }}
                     >
                       <Box
                         mr={{ base: "2%", md: "2%" }}
@@ -578,8 +576,8 @@ const ShowNgoProfile = () => {
         </div>
       </Box>
       {userType === "company" ||
-        userType === "beneficiary" ||
-        userType === "admin" ? (
+      userType === "beneficiary" ||
+      userType === "admin" ? (
         <ReviewComponent ngoID={ngoID} userType={userType} />
       ) : (
         <>

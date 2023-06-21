@@ -99,27 +99,26 @@ const AdminCompanies = () => {
               onChange={handleSearchQueryChange}
             />
           </InputGroup>
-          <Box display="flex" p="4">
-            <Grid templateColumns="repeat(3, 1fr)" gap={3}>
-              {filteredResult
-                .filter((company) =>
-                  company.company_name
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase())
-                )
-                .map((company) => (
-                  <CardComponent
-                    userType={"admin"}
-                    type={"company"}
-                    Id={company._id}
-                    name={company.company_name}
-                    email={company.email}
-                    phone={company.profile.comunication_person.cp_phone}
-                    location={company.profile.location}
-                    triggerFetchCompanies={triggerFetchCompanies} // Pass the callback function as a prop
-                  />
-                ))}
-            </Grid>
+          <Box display="flex" p="4" flexWrap={"wrap"}>
+            {filteredResult
+              .filter((company) =>
+                company.company_name
+                  .toLowerCase()
+                  .includes(searchQuery.toLowerCase())
+              )
+              .map((company) => (
+                <CardComponent
+                  userType={"admin"}
+                  type={"company"}
+                  Id={company._id}
+                  name={company.company_name}
+                  email={company.email}
+                  logo={company.profile.ngo_logo}
+                  phone={company.profile.comunication_person.cp_phone}
+                  location={company.profile.location}
+                  triggerFetchCompanies={triggerFetchCompanies} // Pass the callback function as a prop
+                />
+              ))}
           </Box>
         </Box>
       </Flex>

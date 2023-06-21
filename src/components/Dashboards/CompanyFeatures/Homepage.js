@@ -1,16 +1,22 @@
 import React from "react";
 // import "../../../CSS/homepage.css";
-import PieChart from "./Piechart";
-import { BsFacebook, BsTwitter, BsInstagram, BsLinkedin, BsGeoAlt, BsPhone, BsEnvelope } from "react-icons/bs";
-import { Box, Button, Flex, HStack, Icon, Image, Spacer, Text, VStack } from "@chakra-ui/react";
+import {
+  BsFacebook,
+  BsTwitter,
+  BsInstagram,
+  BsLinkedin,
+  BsGeoAlt,
+  BsPhone,
+  BsEnvelope,
+} from "react-icons/bs";
+import { Box, Flex, HStack, Icon, Image, Text, VStack } from "@chakra-ui/react";
 
-import Carousel from 'react-elastic-carousel';
+import Carousel from "react-elastic-carousel";
 import MapChart from "./MapChart";
 import HexGrid from "./HexChart";
 import YearChart from "./YearChart";
 
 function Homepage({ userType }) {
-
   const breakPoints = [
     { width: 500, itemsToShow: 1 },
     { width: 768, itemsToShow: 3 },
@@ -51,7 +57,7 @@ function Homepage({ userType }) {
               // letterSpacing="0.8px"
               textTransform="capitalize"
               color="#000000"
-            // textAlign="center"
+              // textAlign="center"
             >
               Corporate Social Responsibility
             </Text>
@@ -61,30 +67,65 @@ function Homepage({ userType }) {
               fontFamily="Hind Vadodara"
               fontWeight="normal"
               mt={5}
-            // textAlign="center"
+              // textAlign="center"
             >
-              with <u style={{ textDecorationColor: "#29B5E2", textDecorationThickness: "4px" }}> DigiCSR </u>
+              with{" "}
+              <u
+                style={{
+                  textDecorationColor: "#29B5E2",
+                  textDecorationThickness: "4px",
+                }}
+              >
+                {" "}
+                DigiCSR{" "}
+              </u>
             </Text>
-            <Text mt={8}
-            // textAlign="center"
+            <Text
+              mt={8}
+              // textAlign="center"
             >
-              DigiCSR will help companies to ease their companies by generating annual report, project & auditor's report
+              DigiCSR will help companies to ease their companies by generating
+              annual report, project & auditor's report
             </Text>
           </Flex>
         </Box>
       </Box>
 
-      <Box my={8} borderRadius="0 450px 0 0"
-        bg="#CDEBFF">
-        <Text className="font1" fontFamily="Hind Vadodara" fontWeight="400" fontSize="30px" pl={2} pt={2} maxWidth={"80%"}>
-          CSR Expenditure <u style={{ textDecorationColor: "#29B5E2", textDecorationThickness: "2px" }}> Summary </u>
+      <Box my={8} borderRadius="0 450px 0 0" bg="#CDEBFF">
+        <Text
+          className="font1"
+          fontFamily="Hind Vadodara"
+          fontWeight="400"
+          fontSize="30px"
+          pl={2}
+          pt={2}
+          maxWidth={"80%"}
+        >
+          CSR Expenditure{" "}
+          <u
+            style={{
+              textDecorationColor: "#29B5E2",
+              textDecorationThickness: "2px",
+            }}
+          >
+            {" "}
+            Summary{" "}
+          </u>
         </Text>
         {/* <Flex className="card" mt="100px" ml="50px" w="90vw" h="auto" gap="10px" gridColumn="repeat(5, 1fr)"> */}
         <Box mt={4} maxWidth={"95%"}>
-          <Carousel
-            breakPoints={breakPoints}
-          >
-            <Box w="80%" h="100px" bg="#ffffff" boxShadow="0px 4px 45px rgba(0, 0, 0, 0.25)" borderRadius="10px" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+          <Carousel breakPoints={breakPoints}>
+            <Box
+              w="80%"
+              h="100px"
+              bg="#ffffff"
+              boxShadow="0px 4px 45px rgba(0, 0, 0, 0.25)"
+              borderRadius="10px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+            >
               <Text fontSize="30px" fontFamily="Hind Vadodara" fontWeight="700">
                 0
               </Text>
@@ -92,7 +133,17 @@ function Homepage({ userType }) {
                 Companies
               </Text>
             </Box>
-            <Box w="80%" h="100px" bg="#ffffff" boxShadow="0px 4px 45px rgba(0, 0, 0, 0.25)" borderRadius="10px" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+            <Box
+              w="80%"
+              h="100px"
+              bg="#ffffff"
+              boxShadow="0px 4px 45px rgba(0, 0, 0, 0.25)"
+              borderRadius="10px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+            >
               <Text fontSize="30px" fontFamily="Hind Vadodara" fontWeight="700">
                 0
               </Text>
@@ -100,7 +151,17 @@ function Homepage({ userType }) {
                 Reports Generated
               </Text>
             </Box>
-            <Box w="80%" h="100px" bg="#ffffff" boxShadow="0px 4px 45px rgba(0, 0, 0, 0.25)" borderRadius="10px" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+            <Box
+              w="80%"
+              h="100px"
+              bg="#ffffff"
+              boxShadow="0px 4px 45px rgba(0, 0, 0, 0.25)"
+              borderRadius="10px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+            >
               <Text fontSize="30px" fontFamily="Hind Vadodara" fontWeight="700">
                 0
               </Text>
@@ -108,7 +169,17 @@ function Homepage({ userType }) {
                 Auditors
               </Text>
             </Box>
-            <Box w="80%" h="100px" bg="#ffffff" boxShadow="0px 4px 45px rgba(0, 0, 0, 0.25)" borderRadius="10px" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+            <Box
+              w="80%"
+              h="100px"
+              bg="#ffffff"
+              boxShadow="0px 4px 45px rgba(0, 0, 0, 0.25)"
+              borderRadius="10px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+            >
               <Text fontSize="30px" fontFamily="Hind Vadodara" fontWeight="700">
                 0
               </Text>
@@ -116,7 +187,17 @@ function Homepage({ userType }) {
                 Users
               </Text>
             </Box>
-            <Box w="80%" h="100px" bg="#ffffff" boxShadow="0px 4px 45px rgba(0, 0, 0, 0.25)" borderRadius="10px" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+            <Box
+              w="80%"
+              h="100px"
+              bg="#ffffff"
+              boxShadow="0px 4px 45px rgba(0, 0, 0, 0.25)"
+              borderRadius="10px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+            >
               <Text fontSize="30px" fontFamily="Hind Vadodara" fontWeight="700">
                 0
               </Text>
@@ -127,8 +208,7 @@ function Homepage({ userType }) {
           </Carousel>
         </Box>
         {/* </Flex> */}
-      </Box >
-
+      </Box>
 
       {/* <MapChart userType={userType} /> */}
       <div className="mapchart">
@@ -145,25 +225,37 @@ function Homepage({ userType }) {
 
       {/* <PieChart /> */}
 
-      < Box
-        my={8} borderRadius="0 450px 0 0"
-        bg="#0CB6F047" >
+      <Box my={8} borderRadius="0 450px 0 0" bg="#0CB6F047">
         <Box className="social-icons" maxW={"80%"} mx={5}>
           <Text as="h1" fontWeight={"bold"} pt={8} fontSize={"2xl"}>
             About Us
           </Text>
           <Text as="p" fontSize={"sm"} textAlign={"justify"} py={4}>
-            At <b>DigiCSR</b> , we believe in the power of Corporate Social Responsibility (CSR) to make a positive impact on society and the environment. As a leading provider of CSR management solutions, we are dedicated to helping companies navigate the complex world of social and environmental responsibility.
+            At <b>DigiCSR</b> , we believe in the power of Corporate Social
+            Responsibility (CSR) to make a positive impact on society and the
+            environment. As a leading provider of CSR management solutions, we
+            are dedicated to helping companies navigate the complex world of
+            social and environmental responsibility.
           </Text>
         </Box>
-      </Box >
+      </Box>
 
       <Box my={8} borderRadius="0 450px 0 0" bg="#DAF0FC" mb={0}>
         <Box maxW={"80%"}>
-          <Flex alignItems="center" p={4} justifyContent={"space-between"} wrap={"wrap"}>
+          <Flex
+            alignItems="center"
+            p={4}
+            justifyContent={"space-between"}
+            wrap={"wrap"}
+          >
             {/* <Flex alignItems="center"  */}
             <Image src="../image 7.png" pt={4} />
-            <Flex justifyContent="space-between" flexDirection={"column"} mx={1} mt={4}>
+            <Flex
+              justifyContent="space-between"
+              flexDirection={"column"}
+              mx={1}
+              mt={4}
+            >
               <Text>
                 <Icon as={BsGeoAlt} boxSize={4} mr={2} fill="black" />
                 123 Street, City
@@ -178,7 +270,12 @@ function Homepage({ userType }) {
               </Text>
             </Flex>
             {/* </Flex> */}
-            <Flex justifyContent="space-between" flexDirection={"column"} mt={4} mx={1}>
+            <Flex
+              justifyContent="space-between"
+              flexDirection={"column"}
+              mt={4}
+              mx={1}
+            >
               <Text>Home</Text>
               <Text>RFP</Text>
               <Text>Review</Text>
@@ -189,20 +286,25 @@ function Homepage({ userType }) {
                 <Icon as={BsFacebook} boxSize={4} mr={2} fill="black" />
                 FaceBook
               </Text>
-              <Text><Icon as={BsTwitter} boxSize={4} mr={2} fill="black" />
+              <Text>
+                <Icon as={BsTwitter} boxSize={4} mr={2} fill="black" />
                 Twitter
               </Text>
-              <Text><Icon as={BsLinkedin} boxSize={4} mr={2} fill="black" />
+              <Text>
+                <Icon as={BsLinkedin} boxSize={4} mr={2} fill="black" />
                 LinkedIn
               </Text>
-              <Text><Icon as={BsInstagram} boxSize={4} mr={2} fill="black" />
+              <Text>
+                <Icon as={BsInstagram} boxSize={4} mr={2} fill="black" />
                 Instagram
               </Text>
             </Flex>
           </Flex>
         </Box>
         <Flex justify={"center"} alignItems={"center"}>
-          <Text justifyContent={"center"} alignItems={"center"} p={4}>&copy; 2023 DigiCSR. All Rights reserved</Text>
+          <Text justifyContent={"center"} alignItems={"center"} p={4}>
+            &copy; 2023 DigiCSR. All Rights reserved
+          </Text>
         </Flex>
       </Box>
     </>

@@ -5,7 +5,14 @@ import BeneficiaryTable from "./BeneficiaryTable";
 
 const AdminBeneficiaries = () => {
   return (
-    <Box>
+    <div
+      style={{
+        backgroundImage: "url('../bg.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        minWidth: "100vw",
+      }}>
       <AdminNavigation />
       <Flex>
         <Box flex="1" p="4" marginLeft="auto">
@@ -14,7 +21,7 @@ const AdminBeneficiaries = () => {
           </Box>
         </Box>
       </Flex>
-    </Box>
+    </div>
   );
 };
 

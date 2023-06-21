@@ -243,7 +243,7 @@ const ReviewComponent = ({ ngoID, userType }) => {
         borderWidth={"1px"}
         boxShadow="2px 4px 6px black"
         borderColor={"skyblue"}
-        bgColor={"white"}
+        bgColor={"rgba(135, 206, 235, 0.2)"}
         height={"80vh"}
         maxH={"80vh"}
         fontFamily={"serif"}
@@ -286,12 +286,13 @@ const ReviewComponent = ({ ngoID, userType }) => {
           <Box
             left={0}
             top={0}
-            h="100%"
+            h="35vw"
             overflow="auto"
             padding="1%"
             w={"25%"}
             maxW="25%"
-            bg="linear-gradient(174.6deg, rgba(255, 255, 255, 0.6825) 1.74%, rgba(255, 255, 255, 0.75) 53.41%, rgba(255, 255, 255, 0.739748) 76.16%, rgba(255, 255, 255, 0.6075) 97.17%)"
+            bgColor="rgba(135, 206, 235, 0.01)"
+            borderRight={"1px"}
           >
             <Text>Average Rating: </Text>
             <Heading
@@ -335,6 +336,10 @@ const ReviewComponent = ({ ngoID, userType }) => {
                   p="4"
                   my="2"
                   w="50vw"
+                  position="relative"
+                  _hover={{
+                    ".delete-button": { opacity: 1 },
+                  }}
                 >
                   <HStack>
                     {Array.from({ length: 5 }).map((_, index) => (
@@ -356,7 +361,12 @@ const ReviewComponent = ({ ngoID, userType }) => {
                         }}
                         colorScheme="red"
                         color={"red"}
-                        mt={"-5%"}
+                        position="absolute"
+                        top="5px"
+                        right="5px"
+                        opacity={0}
+                        transition="opacity 0.3s"
+                        className="delete-button"
                       />
                     )}
                   </Box>
@@ -386,6 +396,7 @@ const ReviewComponent = ({ ngoID, userType }) => {
                 </Button>
               )}
             </Box>
+
             {isDeleteDialogOpen && (
               <DeleteConfirmationDialog
                 isOpen={isDeleteDialogOpen}

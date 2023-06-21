@@ -11,10 +11,12 @@ import {
   Divider,
   useToast,
   HStack,
+  IconButton,
 } from "@chakra-ui/react";
 import {
   ChevronDownIcon,
   ChevronUpIcon,
+  DeleteIcon,
   // FilterIcon,
   EmailIcon,
   PhoneIcon,
@@ -185,6 +187,7 @@ export const CardComponent = ({
   userType,
   Id,
   type,
+  logo,
   name,
   email,
   phone,
@@ -194,7 +197,9 @@ export const CardComponent = ({
   const navigate = useNavigate();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const toast = useToast();
+  const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
 
+  console.log(logo);
   const ShowProfile = () => {
     if (userType === "company") {
       navigate(`/Company/ngo-profile/${Id}`, {
@@ -296,69 +301,92 @@ export const CardComponent = ({
   };
   return (
     <Box
-      maxW="sm"
+      width={"300px"}
       borderWidth="1px"
       borderRadius="lg"
-      overflow="hidden"
+      overflow="auto"
       p={4}
-      //   bg={"rgba(135, 206, 235, 0.8)"}
-      bg={"whiteAlpha.900"}
+      bg={"rgba(135, 206, 235, 0.1)"}
       fontFamily={"serif"}
       borderColor={"skyblue"}
       marginLeft="0.5rem"
       mr={"2rem"}
+      mb={"2rem"}
+      position="relative"
+      _hover={{
+        ".delete-button": { opacity: 1 },
+      }}
     >
+      <Box display={"flex"} justifyContent={"flex-end"}>
+        {userType === "admin" && (
+          <IconButton
+            aria-label="Delete member"
+            icon={<DeleteIcon />}
+            variant={"ghost"}
+            onClick={() => {
+              handleDeleteUser(Id);
+            }}
+            colorScheme="blue"
+            color={"red"}
+            position="absolute"
+            top="0px"
+            right="3px"
+            opacity={0}
+            transition="opacity 0.3s"
+            className="delete-button"
+          />
+        )}
+      </Box>
       <Text fontSize="lg" fontWeight="bold" mt={"-3"} align={"center"}>
+        <label htmlFor="profile-image">
+          <div
+            style={{
+              position: "relative",
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              overflow: "hidden",
+            }}
+          >
+            {image ? (
+              <img src={image} alt="company logo" width="100%" height="100%" />
+            ) : (
+              <img
+                src={"/user-avatar.jpg"}
+                alt="Profile"
+                style={{ width: "100%", height: "100%" }}
+              />
+            )}
+          </div>
+        </label>
         {name}
       </Text>
       <Divider width={"80%"} ml={"10%"} mb={"3"}></Divider>
-      <Flex align="center" mb={2}>
-        <EmailIcon mr={2} />
-        <Text>{email}</Text>
-      </Flex>
-      <Flex align="center" mb={2}>
-        <PhoneIcon mr={2} />
-        <Text>{phone}</Text>
-      </Flex>
-      <Flex align="center">
-        <Icon as={FiMapPin} mr={2} />
-        <Text>
-          {location?.city} , {location?.state} , {location?.pincode}
-        </Text>
-      </Flex>
+      <Box fontSize={"sm"}>
+        <Flex align="center" mb={2}>
+          <EmailIcon mr={2} />
+          <Text>{email}</Text>
+        </Flex>
+        <Flex align="center" mb={2}>
+          <PhoneIcon mr={2} />
+          <Text>{phone}</Text>
+        </Flex>
+        <Flex align="center">
+          <Icon as={FiMapPin} mr={2} />
+          <Text>
+            {location?.city} , {location?.state} , {location?.pincode}
+          </Text>
+        </Flex>
+      </Box>
       <HStack>
-        {userType === "admin" && (
-          <Box display="flex" justifyContent="flex-start">
-            <Button
-              bg="skyblue"
-              color="white"
-              w={"fit-content"}
-              boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
-              size={"sm"}
-              fontSize={"xs"}
-              _hover={{ boxShadow: "0px 4px 6px skyblue", color: "red.500" }}
-              _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
-              onClick={() => {
-                handleDeleteUser(Id);
-              }}
-            >
-              Delete
-            </Button>
-          </Box>
-        )}
-        <Box display="flex" justifyContent="flex-end">
+        <Box ml={"190px"}>
           <Button
-            bg="skyblue"
-            color="white"
-            w={"fit-content"}
-            boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
-            size={"sm"}
             fontSize={"xs"}
-            _hover={{ boxShadow: "0px 4px 6px skyblue", color: "red.500" }}
-            _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
+            _hover={{ color: "red.500" }}
             onClick={() => {
               ShowProfile();
             }}
+            variant={"link"}
           >
             View More
           </Button>

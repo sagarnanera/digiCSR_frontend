@@ -105,23 +105,22 @@ const NGOs = ({ userType }) => {
               onChange={handleSearchQueryChange}
             />
           </InputGroup>
-          <Box display="flex" p="4">
-            <Grid templateColumns="repeat(3, 1fr)" gap={3}>
-              {filteredResult
-                .filter((ngo) =>
-                  ngo.ngo_name.toLowerCase().includes(searchQuery.toLowerCase())
-                )
-                .map((ngo) => (
-                  <CardComponent
-                    userType={userType}
-                    Id={ngo._id}
-                    name={ngo.ngo_name}
-                    email={ngo.email}
-                    phone={ngo.profile.phone}
-                    location={ngo.profile.location}
-                  />
-                ))}
-            </Grid>
+          <Box display="flex" p="4" flexWrap="wrap">
+            {filteredResult
+              .filter((ngo) =>
+                ngo.ngo_name.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map((ngo) => (
+                <CardComponent
+                  userType={userType}
+                  Id={ngo._id}
+                  logo={ngo.profile.ngo_logo}
+                  name={ngo.ngo_name}
+                  email={ngo.email}
+                  phone={ngo.profile.phone}
+                  location={ngo.profile.location}
+                />
+              ))}
           </Box>
         </Box>
       </Flex>

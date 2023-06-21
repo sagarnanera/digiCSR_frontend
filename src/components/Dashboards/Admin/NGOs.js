@@ -101,25 +101,24 @@ const AdminNGOs = () => {
               onChange={handleSearchQueryChange}
             />
           </InputGroup>
-          <Box display="flex" p="4">
-            <Grid templateColumns="repeat(3, 1fr)" gap={3}>
-              {filteredResult
-                .filter((ngo) =>
-                  ngo.ngo_name.toLowerCase().includes(searchQuery.toLowerCase())
-                )
-                .map((ngo) => (
-                  <CardComponent
-                    userType={"admin"}
-                    type={"ngo"}
-                    Id={ngo._id}
-                    name={ngo.ngo_name}
-                    email={ngo.email}
-                    phone={ngo.profile.phone}
-                    location={ngo.profile.location}
-                    triggerFetchCompanies={triggerFetchCompanies} // Pass the callback function as a prop
-                  />
-                ))}
-            </Grid>
+          <Box display="flex" p="4" flexWrap="wrap">
+            {filteredResult
+              .filter((ngo) =>
+                ngo.ngo_name.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map((ngo) => (
+                <CardComponent
+                  userType={"admin"}
+                  type={"ngo"}
+                  Id={ngo._id}
+                  name={ngo.ngo_name}
+                  logo={ngo.profile.ngo_logo}
+                  email={ngo.email}
+                  phone={ngo.profile.phone}
+                  location={ngo.profile.location}
+                  triggerFetchCompanies={triggerFetchCompanies} // Pass the callback function as a prop
+                />
+              ))}
           </Box>
         </Box>
       </Flex>
