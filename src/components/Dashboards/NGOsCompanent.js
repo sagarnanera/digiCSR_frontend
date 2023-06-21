@@ -302,11 +302,11 @@ export const CardComponent = ({
   return (
     <Box
       width={"300px"}
-      borderWidth="1px"
-      borderRadius="lg"
-      overflow="auto"
+      borderRadius={"10px"}
+      borderWidth={"5px"}
+      overflow="visible"
       p={4}
-      bg={"rgba(135, 206, 235, 0.1)"}
+      bg={"rgba(135, 206, 235, 0.3)"}
       fontFamily={"serif"}
       borderColor={"skyblue"}
       marginLeft="0.5rem"
@@ -317,6 +317,28 @@ export const CardComponent = ({
         ".delete-button": { opacity: 1 },
       }}
     >
+      <Box
+        position="absolute"
+        top="-25px"
+        left="50%"
+        bgColor={"blackAlpha.700"}
+        borderRadius={"10px"}
+        borderWidth={"5px"}
+        borderColor={"white"}
+        width={"70%"}
+        transform="translateX(-50%)"
+        zIndex={1}
+        style={{ backdropFilter: "blur(10px)" }}
+      >
+        <Text
+          fontSize="lg"
+          fontWeight="bold"
+          color={"white"}
+          textAlign="center"
+        >
+          {name}
+        </Text>
+      </Box>
       <Box display={"flex"} justifyContent={"flex-end"}>
         {userType === "admin" && (
           <IconButton
@@ -337,32 +359,30 @@ export const CardComponent = ({
           />
         )}
       </Box>
-      <Text fontSize="lg" fontWeight="bold" mt={"-3"} align={"center"}>
-        <label htmlFor="profile-image">
-          <div
-            style={{
-              position: "relative",
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
-              overflow: "hidden",
-            }}
-          >
-            {image ? (
-              <img src={image} alt="company logo" width="100%" height="100%" />
-            ) : (
-              <img
-                src={"/user-avatar.jpg"}
-                alt="Profile"
-                style={{ width: "100%", height: "100%" }}
-              />
-            )}
-          </div>
-        </label>
-        {name}
-      </Text>
-      <Divider width={"80%"} ml={"10%"} mb={"3"}></Divider>
-      <Box fontSize={"sm"}>
+      <label htmlFor="profile-image">
+        <div
+          style={{
+            position: "relative",
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            overflow: "hidden",
+          }}
+        >
+          {image ? (
+            <img src={image} alt="company logo" width="100%" height="100%" />
+          ) : (
+            <img
+              src={"/user-avatar.jpg"}
+              alt="Profile"
+              style={{ width: "100%", height: "100%" }}
+            />
+          )}
+        </div>
+      </label>
+
+      {/* <Divider width={"80%"} ml={"10%"} mb={"3"}></Divider> */}
+      <Box fontSize={"sm"} bgColor={"whitesmoke"} padding={"10px"} mt={"3"} width={"99%"} borderRadius={"10px"}>
         <Flex align="center" mb={2}>
           <EmailIcon mr={2} />
           <Text>{email}</Text>

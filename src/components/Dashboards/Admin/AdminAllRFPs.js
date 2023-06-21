@@ -448,6 +448,7 @@ const AdminRFP = () => {
               navigate("/Ngo/rfpdetails", {
                 state: {
                   rfpID: selectedRFPId,
+                  userType: "admin",
                 },
               })}
             {isDeleteDialogOpen && (
