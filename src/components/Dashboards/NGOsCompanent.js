@@ -67,12 +67,15 @@ export const FilterDrawer = ({ isOpen, onClose, handleCheckboxChange }) => {
     <Box
       left={0}
       top={0}
-      h="100vh"
+      h="85vh"
       overflow="auto"
       padding="1%"
-      w="45vh"
+      w="40vh"
       bg="linear-gradient(174.6deg, rgba(19, 15, 38, 0.6825) 1.74%, rgba(19, 15, 38, 0.75) 53.41%, rgba(19, 15, 38, 0.739748) 76.16%, rgba(19, 15, 38, 0.6075) 97.17%)"
       boxShadow="md"
+      borderTopLeftRadius={"lg"}
+      borderBottomLeftRadius={"lg"}
+      borderWidth="1px"
     >
       <Heading color="white" fontSize="4xl" marginBottom="0.7rem">
         Filters
@@ -302,15 +305,15 @@ export const CardComponent = ({
   return (
     <Box
       width={"300px"}
-      borderRadius={"10px"}
-      borderWidth={"5px"}
+      borderWidth="1px"
+      borderRadius="lg"
       overflow="visible"
       p={4}
-      bg={"rgba(135, 206, 235, 0.3)"}
+      bg={"rgba(135, 206, 235, 0.1)"}
       fontFamily={"serif"}
       borderColor={"skyblue"}
       marginLeft="0.5rem"
-      mr={"2rem"}
+      mr={"1rem"}
       mb={"2rem"}
       position="relative"
       _hover={{
@@ -320,24 +323,32 @@ export const CardComponent = ({
       <Box
         position="absolute"
         top="-25px"
-        left="50%"
-        bgColor={"blackAlpha.700"}
-        borderRadius={"10px"}
-        borderWidth={"5px"}
-        borderColor={"white"}
+        left="78%"
         width={"70%"}
         transform="translateX(-50%)"
         zIndex={1}
-        style={{ backdropFilter: "blur(10px)" }}
       >
-        <Text
-          fontSize="lg"
-          fontWeight="bold"
-          color={"white"}
-          textAlign="center"
-        >
-          {name}
-        </Text>
+        <label htmlFor="profile-image">
+          <div
+            style={{
+              position: "relative",
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              overflow: "hidden",
+            }}
+          >
+            {image ? (
+              <img src={image} alt="company logo" width="100%" height="100%" />
+            ) : (
+              <img
+                src={"/user-avatar.jpg"}
+                alt="Profile"
+                style={{ width: "100%", height: "100%" }}
+              />
+            )}
+          </div>
+        </label>
       </Box>
       <Box display={"flex"} justifyContent={"flex-end"}>
         {userType === "admin" && (
@@ -359,30 +370,12 @@ export const CardComponent = ({
           />
         )}
       </Box>
-      <label htmlFor="profile-image">
-        <div
-          style={{
-            position: "relative",
-            width: "40px",
-            height: "40px",
-            borderRadius: "50%",
-            overflow: "hidden",
-          }}
-        >
-          {image ? (
-            <img src={image} alt="company logo" width="100%" height="100%" />
-          ) : (
-            <img
-              src={"/user-avatar.jpg"}
-              alt="Profile"
-              style={{ width: "100%", height: "100%" }}
-            />
-          )}
-        </div>
-      </label>
 
-      {/* <Divider width={"80%"} ml={"10%"} mb={"3"}></Divider> */}
-      <Box fontSize={"sm"} bgColor={"whitesmoke"} padding={"10px"} mt={"3"} width={"99%"} borderRadius={"10px"}>
+      <Text fontSize="lg" fontWeight="bold" mt={"-1"} align={"center"}>
+        {name}
+      </Text>
+      <Divider width={"80%"} ml={"10%"} mb={"3"}></Divider>
+      <Box fontSize={"sm"}>
         <Flex align="center" mb={2}>
           <EmailIcon mr={2} />
           <Text>{email}</Text>
