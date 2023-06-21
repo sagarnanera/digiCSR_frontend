@@ -1,11 +1,12 @@
 import React from 'react'
 import BenificiaryNavigation from '../../components/Navigation/beneficiaryNavigation'
+import Homepage from '../../components/Dashboards/CompanyFeatures/Homepage'
 
 const BeneficiaryDashboard = () => {
   return (
     <div>
       <BenificiaryNavigation />
-      Home
+      <Homepage userType={"beneficiary"} />
     </div>
   )
 }

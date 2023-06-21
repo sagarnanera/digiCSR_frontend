@@ -66,7 +66,7 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        {}
+        { }
         <Route path="/admin" element={<AdminAuth />} />
         <Route path="/" element={<ChooseUserComponent />} />
         {isCompanyAuthenticated && (
@@ -129,14 +129,13 @@ function App() {
 
         {isBeneficiaryAuthenticated && (
           <>
-            <Route path="/Beneficiary/NGOBlogs" element={<ShowBlogs />} />
             <Route
               path="/Beneficiary/media"
               element={<MediaSection userType={"beneficiary"} />}
             />
             <Route
               path="/Beneficiary/media/:id"
-              element={<MediaSection userType={"beneficiary"} />}
+              element={<Post userType={"beneficiary"} />}
             />
             <Route
               path="/Beneficiary/ngos"
@@ -161,6 +160,15 @@ function App() {
             <Route
               path="/Admin/company-profile/:id"
               element={<ShowProfile />}
+            />
+
+            <Route
+              path="/admin/media"
+              element={<MediaSection userType={"admin"} />}
+            />
+            <Route
+              path="/admin/media/:id"
+              element={<Post userType={"admin"} />}
             />
           </>
         )}

@@ -8,6 +8,12 @@ import {
   Input,
   Flex,
   useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import PostEditor from "../../PostEditor";
@@ -15,6 +21,8 @@ import PostEditor from "../../PostEditor";
 const PostBlogs = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+
+  const [isPreviewOpen, setPreviewOpen] = useState(false);
 
   const navigate = useNavigate();
   const toast = useToast();
@@ -107,6 +115,39 @@ const PostBlogs = () => {
 
   const handlePreview = () => {
     console.log("preview button clicked");
+
+
+    if (!title.trim() && !content.trim()) {
+      toast({
+        title: "Please provide a title and content!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
+    } else if (!title.trim()) {
+      toast({
+        title: "Post title is required!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
+    } else if (!content.trim()) {
+      toast({
+        title: "Post content is required!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
+    }
+
+    setPreviewOpen(true);
+
   };
 
   return (
@@ -154,6 +195,19 @@ const PostBlogs = () => {
             Submit
           </Button>
         </Flex>
+
+
+        <Modal isOpen={isPreviewOpen} onClose={() => setPreviewOpen(false)}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Preview</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <h2>{title}</h2>
+              <p>{content}</p>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
       </Box>
     </div>
   );

@@ -2,12 +2,14 @@ import React from "react";
 // import "../../../CSS/homepage.css";
 import PieChart from "./Piechart";
 import { BsFacebook, BsTwitter, BsInstagram, BsLinkedin, BsGeoAlt, BsPhone, BsEnvelope } from "react-icons/bs";
-import { Box, Button, Flex, Icon, Image, Spacer, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, Icon, Image, Spacer, Text, VStack } from "@chakra-ui/react";
 
 import Carousel from 'react-elastic-carousel';
 import MapChart from "./MapChart";
+import HexGrid from "./HexChart";
+import YearChart from "./YearChart";
 
-function Homepage() {
+function Homepage({ userType }) {
 
   const breakPoints = [
     { width: 500, itemsToShow: 1 },
@@ -128,8 +130,8 @@ function Homepage() {
       </Box >
 
 
-      <MapChart />
-      {/* <div className="mapchart">
+      {/* <MapChart userType={userType} /> */}
+      <div className="mapchart">
         <HStack>
           <VStack>
             <MapChart userType={userType} />
@@ -139,7 +141,7 @@ function Homepage() {
       </div>
       <div className="pie">
         <YearChart userType={userType} />
-      </div> */}
+      </div>
 
       {/* <PieChart /> */}
 

@@ -6,8 +6,12 @@ const PostEditor = ({ content, setContent }) => {
 
     const handleFileUpload = (blobInfo, progress) => new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        // xhr.withCredentials = false;
+        xhr.withCredentials = true;
         xhr.open('POST', 'http://localhost:4000/media/upload');
+
+        const token = localStorage.getItem("NgoAuthToken");
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.setRequestHeader("Authorization", token);
 
         xhr.upload.onprogress = (e) => {
             progress(e.loaded / e.total * 100);

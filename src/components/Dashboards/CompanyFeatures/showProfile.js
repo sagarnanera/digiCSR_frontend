@@ -14,7 +14,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import CompanyNavigation from "../../Navigation/companyNavigation";
 import { FiMail, FiMapPin, FiPhone, FiUser } from "react-icons/fi";
-import AdminNavigation from "../adminNavigation";
+import AdminNavigation from "../../Navigation/adminNavigation";
 
 const ShowProfile = () => {
   const location = useLocation();
