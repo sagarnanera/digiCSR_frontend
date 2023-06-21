@@ -18,7 +18,8 @@ import {
   Flex,
   VStack,
 } from "@chakra-ui/react";
-import { StarIcon } from "@chakra-ui/icons";
+import { DeleteIcon, StarIcon } from "@chakra-ui/icons";
+import DeleteConfirmationDialog from "./CompanyFeatures/RFPDeleteAlert";
 // import jwt_decode from "jwt-decode";
 
 const ReviewComponent = ({ ngoID, userType }) => {
@@ -33,7 +34,8 @@ const ReviewComponent = ({ ngoID, userType }) => {
   const toast = useToast();
   // const [ngoId, setNgoId] = useState("");
   const [showAllReviews, setShowAllReviews] = useState(false);
-
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedReview, setSelectedReview] = useState(null);
   const handleViewAllReviews = () => {
     setShowAllReviews(true);
   };
@@ -188,7 +190,49 @@ const ReviewComponent = ({ ngoID, userType }) => {
       // Handle the error (e.g., display an error message)
     }
   };
+  const handleDeleteReview = (review) => {
+    setSelectedReview(review);
+    setIsDeleteDialogOpen(true);
+  };
 
+  const handleDeleteConfirmation = async () => {
+    setIsDeleteDialogOpen(false);
+    const reviewID = selectedReview._id;
+
+    // Perform the delete operation here
+    try {
+      const response = await fetch(
+        `http://localhost:4000/review/delete/${reviewID}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `${localStorage.getItem("AdminAuthToken")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+      if (response.ok) {
+        toast({
+          title: "RFP Deleted Successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+        fetchReviews();
+      } else {
+        console.error("Failed to delete RFP:", data.message);
+      }
+    } catch (error) {
+      console.error("Failed to delete RFP:", error);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteDialogOpen(false);
+  };
   return (
     <Box display={"flex"} justifyContent={"center"}>
       <Box
@@ -269,9 +313,7 @@ const ReviewComponent = ({ ngoID, userType }) => {
             <Box mt="4" ml={"4"}>
               {ratingCounts.map((count, index) => (
                 <Flex key={index} align="center" mb="2">
-                  <Text minWidth="50px" mr="2">{`${index + 1} Stars${
-                    count > 1 ? "s" : ""
-                  }`}</Text>
+                  <Text minWidth="50px" mr="2">{`${index + 1} Stars`}</Text>
                   <Box w={`${count * 20}%`} h="20px" bg="yellow.400"></Box>
                   <Text ml="2"></Text>
                 </Flex>
@@ -302,6 +344,22 @@ const ReviewComponent = ({ ngoID, userType }) => {
                       />
                     ))}
                   </HStack>
+                  <Box display={"flex"} justifyContent={"flex-end"}>
+                    {userType === "admin" && (
+                      <IconButton
+                        aria-label="Delete member"
+                        icon={<DeleteIcon />}
+                        marginLeft="0.5rem"
+                        variant={"ghost"}
+                        onClick={() => {
+                          handleDeleteReview(review);
+                        }}
+                        colorScheme="red"
+                        color={"red"}
+                        mt={"-5%"}
+                      />
+                    )}
+                  </Box>
                   <Text
                     fontSize="13"
                     color="gray.500"
@@ -328,6 +386,13 @@ const ReviewComponent = ({ ngoID, userType }) => {
                 </Button>
               )}
             </Box>
+            {isDeleteDialogOpen && (
+              <DeleteConfirmationDialog
+                isOpen={isDeleteDialogOpen}
+                onClose={handleDeleteCancel}
+                onDelete={handleDeleteConfirmation}
+              />
+            )}
           </VStack>
         </HStack>
         <Modal isOpen={isOpen} onClose={handleCloseModal}>
