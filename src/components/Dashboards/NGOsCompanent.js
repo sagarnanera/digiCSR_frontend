@@ -342,8 +342,8 @@ export const CardComponent = ({
               overflow: "hidden",
             }}
           >
-            {image ? (
-              <img src={image} alt="company logo" width="100%" height="100%" />
+            {logo ? (
+              <img src={logo} alt="company logo" width="100%" height="100%" />
             ) : (
               <img
                 src={"/user-avatar.jpg"}

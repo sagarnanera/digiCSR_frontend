@@ -213,7 +213,7 @@ const EditNgoProfile = () => {
           `http://localhost:4000/NGO/logo/${userId}`
         );
 
-        const res = await response.json();
+        const res = await response.json()
         // console.log(res);
         setImage(res.LogoURL);
       } catch (error) {
@@ -301,11 +301,12 @@ const EditNgoProfile = () => {
   };
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    const reader = new FileReader();
+    // const reader = new FileReader();
 
-    reader.onload = () => {
-      setImage(reader.result);
-    };
+    // reader.onload = () => {
+    //   setImage(reader.result);
+    // };
+    setImage(file);
 
     if (file) {
       // Validate file type
@@ -317,7 +318,7 @@ const EditNgoProfile = () => {
         // Validate file size
         if (file.size <= 150 * 1024) {
           // 150 KB in bytes
-          reader.readAsDataURL(file);
+          // reader.readAsDataURL(file);
           setIsImageChanged(true); // Set the state variable to true indicating the image has been changed
           // console.log(image);
         } else {
@@ -354,6 +355,26 @@ const EditNgoProfile = () => {
     }
 
     try {
+
+      // logo upload start
+      const logoData = new FormData();
+      if (isImageChanged) {
+        const ngoLogoFile = new File([image], "ngo_logo.jpg");
+        logoData.append("file", ngoLogoFile);
+      }
+
+      const logoUploadRes = await fetch(`http://localhost:4000/ngo/upload-logo`, {
+        method: "POST",
+        headers: {
+          authorization: localStorage.getItem("NgoAuthToken"),
+        },
+        body: logoData,
+      });
+      const logoRes = await logoUploadRes.json();
+
+      console.log(logoRes);
+      // logo upload end
+
       const url = `http://localhost:4000/NGO/add-profile`;
 
       const formData = new FormData();
@@ -385,10 +406,10 @@ const EditNgoProfile = () => {
           member.designation
         );
       });
-      if (isImageChanged) {
-        const ngoLogoFile = new File([image], "ngo_logo.jpg");
-        formData.append("ngo_logo", ngoLogoFile);
-      }
+      // if (isImageChanged) {
+      //   const ngoLogoFile = new File([image], "ngo_logo.jpg");
+      //   formData.append("ngo_logo", ngoLogoFile);
+      // }
 
       const response = await fetch(url, {
         method: "POST",

@@ -191,11 +191,11 @@ const EditProfile = () => {
   };
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    const reader = new FileReader();
+    // const reader = new FileReader();
 
-    reader.onload = () => {
-      setImage(reader.result);
-    };
+    // reader.onload = () => {
+    setImage(file);
+    // };
 
     if (file) {
       // Validate file type
@@ -207,7 +207,7 @@ const EditProfile = () => {
         // Validate file size
         if (file.size <= 150 * 1024) {
           // 15 KB in bytes
-          reader.readAsDataURL(file);
+          // reader.readAsDataURL(file);
           setIsImageChanged(true); // Set the state variable to true indicating the image has been changed
         } else {
           alert("Please select an image file smaller than 150 KB.");
@@ -275,6 +275,28 @@ const EditProfile = () => {
       return;
     }
     try {
+
+
+      // logo upload start
+      const logoData = new FormData();
+      if (isImageChanged) {
+        const companyLogoFile = new File([image], "company_logo.jpg");
+        logoData.append("file", companyLogoFile);
+      }
+
+      const logoUploadRes = await fetch(`http://localhost:4000/company/upload-logo`, {
+        method: "POST",
+        headers: {
+          authorization: localStorage.getItem("CompanyAuthToken"),
+        },
+        body: logoData,
+      });
+      const logoRes = await logoUploadRes.json();
+
+      console.log(logoRes);
+      // logo upload end
+
+
       const url = `http://localhost:4000/company/add-profile`; // Replace with your API endpoint URL
 
       const formData = new FormData();
@@ -294,10 +316,7 @@ const EditProfile = () => {
       Sector.forEach((sectorItem) => {
         formData.append("sectors", sectorItem);
       });
-      if (isImageChanged) {
-        const companyLogoFile = new File([image], "company_logo.jpg");
-        formData.append("company_logo", companyLogoFile);
-      }
+
       const response = await fetch(url, {
         method: "POST",
         headers: {
