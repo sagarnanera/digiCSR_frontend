@@ -131,8 +131,8 @@ const ShowProfile = () => {
 
         if (response.ok && data.success) {
           const certificateURL = data.certificateURL;
-          
-          // Open the certificate in a new tab
+
+          // Open the certificate PDF in a new tab
           window.open(certificateURL, "_blank");
         } else {
           console.error("Failed to fetch certificate:", data.message);
@@ -241,7 +241,7 @@ const ShowProfile = () => {
                     display={"flex"}
                     justifyContent={"start"}
                     flexWrap={"wrap"}
-                    // gap={{ base: "10%", md: "10%" }}
+                  // gap={{ base: "10%", md: "10%" }}
                   >
                     <Box
                       mr={{ base: "4%", md: "4%" }}

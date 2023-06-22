@@ -204,7 +204,7 @@ const PostBlogs = () => {
             <ModalCloseButton />
             <ModalBody>
               <h2>{title}</h2>
-              <p>{content}</p>
+              <p dangerouslySetInnerHTML={{ __html: content }}></p>
             </ModalBody>
           </ModalContent>
         </Modal>

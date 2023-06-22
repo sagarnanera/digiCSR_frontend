@@ -195,13 +195,23 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                             whiteSpace="nowrap">
                             {blog.author}&nbsp;
                         </Text> -{" "}
-                        {/* <Text display={"inline-block"} width={"40%"}> */}
-                        {new Date(blog.createdAt).toLocaleString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                        })}
-                        {/* </Text> */}
+                        <Text
+                            display={"inline-block"}
+                            width={"40%"}
+                            title={new Date(blog.createdAt).toLocaleString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                            })}
+                            overflow="hidden"
+                            textOverflow="ellipsis"
+                            whiteSpace="nowrap">
+                            {new Date(blog.createdAt).toLocaleString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                            })}
+                        </Text>
                     </Flex>
                     {(userType === "ngo" || userType === "admin") &&
 
@@ -215,7 +225,6 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                                 color="red"
                                 aria-label="Delete"
                                 size="md"
-                                mr={2}
                                 onClick={(e) => handleDeleteBlog(blog._id, e)}
                                 title='Delete Post'
                             />
