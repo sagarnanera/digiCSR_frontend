@@ -97,7 +97,7 @@ const MediaSection = ({ userType }) => {
     }}>
       <NavBar userType={userType} />
       <Box
-        maxWidth={{ base: "95vw", lg: "80vw" }}
+        maxWidth={{ base: "95vw", lg: "90vw" }}
         mx="auto"
         height={"85vh"}
         overflowY={"scroll"}
@@ -113,7 +113,11 @@ const MediaSection = ({ userType }) => {
         boxShadow="xl"
       >
         <Flex justifyContent={userType === "ngo" ? "space-between" : "center"}>
-          <Heading as="h1" mb={4}>
+          <Heading as="h1" mb={4} style={{
+            textDecorationLine: "underline",
+            textDecorationColor: "#29B5E2",
+            textDecorationThickness: "4px",
+          }}>
             All Blogs
           </Heading>
 

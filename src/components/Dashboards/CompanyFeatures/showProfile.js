@@ -130,13 +130,8 @@ const ShowProfile = () => {
         console.log(data);
 
         if (response.ok && data.success) {
-          // const data = await response.text();
 
-          // Create a Blob object from the certificate data
-          const blob = new Blob([data], { type: "application/pdf" });
-
-          // Create a data URL from the Blob
-          const certificateURL = URL.createObjectURL(blob);
+          const certificateURL = data.certificateURL;
 
           // Open the certificate PDF in a new tab
           window.open(certificateURL, "_blank");
@@ -247,7 +242,7 @@ const ShowProfile = () => {
                     display={"flex"}
                     justifyContent={"start"}
                     flexWrap={"wrap"}
-                    // gap={{ base: "10%", md: "10%" }}
+                  // gap={{ base: "10%", md: "10%" }}
                   >
                     <Box
                       mr={{ base: "4%", md: "4%" }}
