@@ -291,18 +291,18 @@ const EditProfile = () => {
       if (isImageChanged) {
         const companyLogoFile = new File([image], "company_logo.jpg");
         logoData.append("file", companyLogoFile);
+        const logoUploadRes = await fetch(`http://localhost:4000/company/upload-logo`, {
+          method: "POST",
+          headers: {
+            authorization: localStorage.getItem("CompanyAuthToken"),
+          },
+          body: logoData,
+        });
+        const logoRes = await logoUploadRes.json();
+
+        console.log(logoRes);
       }
 
-      const logoUploadRes = await fetch(`http://localhost:4000/company/upload-logo`, {
-        method: "POST",
-        headers: {
-          authorization: localStorage.getItem("CompanyAuthToken"),
-        },
-        body: logoData,
-      });
-      const logoRes = await logoUploadRes.json();
-
-      console.log(logoRes);
       // logo upload end
 
 
