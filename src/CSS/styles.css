@@ -17,7 +17,7 @@ body {
   height: 650px;
   position: unset !important;
   top: 110vh !important;
-  left: 5% !important;
+  margin-left: 15vw !important;
 }
 
 .mapchart {
@@ -26,6 +26,6 @@ body {
   align-items: center;
   width: 75%;
   /* Adjust the width as needed */
-  margin-right: 500px;
+  /* margin-right: 500px; */
   /* margin-bottom: 5rem; */
 }

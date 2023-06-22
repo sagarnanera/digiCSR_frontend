@@ -3,8 +3,8 @@
   grid-template-columns: repeat(3, minmax(0px, 1.3fr));
   grid-gap: 5px;
   /* grid-row: inherit; */
-  margin-left: 20%;
-  margin-right: -25%;
+  margin-left: -35vw;
+  margin-right: 15vw;
   margin-top: 5vh;
   height: 400px;
   min-height: 400px;

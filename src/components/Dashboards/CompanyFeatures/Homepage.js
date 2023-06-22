@@ -1,9 +1,15 @@
 import React from "react";
 import "../../../CSS/homepage.css";
-import PieChart from "./Piechart";
-import { BsFacebook, BsTwitter, BsInstagram, BsLinkedin, BsGeoAlt, BsPhone, BsEnvelope } from "react-icons/bs";
-import { Box, Button, Flex, HStack, Icon, Image, Spacer, Text, VStack } from "@chakra-ui/react";
-
+import {
+  BsFacebook,
+  BsTwitter,
+  BsInstagram,
+  BsLinkedin,
+  BsGeoAlt,
+  BsPhone,
+  BsEnvelope,
+} from "react-icons/bs";
+import { Box, Flex, HStack, Icon, Image, Text } from "@chakra-ui/react";
 
 import Carousel from "react-elastic-carousel";
 import MapChart from "./MapChart";
@@ -18,7 +24,7 @@ function Homepage({ userType }) {
   ];
 
   return (
-    <>
+    <Box style={{ overflowX: "hidden" }}>
       <Box w="100vw" h="100vh" pos="relative">
         <Image
           className="background-img"
@@ -28,6 +34,7 @@ function Homepage({ userType }) {
           h="100vh"
           pos="absolute"
           zIndex={-1}
+          overflowX={"hidden"}
         />
         <Box
           className="text-container"
@@ -51,7 +58,7 @@ function Homepage({ userType }) {
               // letterSpacing="0.8px"
               textTransform="capitalize"
               color="#000000"
-            // textAlign="center"
+              // textAlign="center"
             >
               Corporate Social Responsibility
             </Text>
@@ -61,7 +68,7 @@ function Homepage({ userType }) {
               fontFamily="Hind Vadodara"
               fontWeight="normal"
               mt={5}
-            // textAlign="center"
+              // textAlign="center"
             >
               with{" "}
               <u
@@ -76,7 +83,7 @@ function Homepage({ userType }) {
             </Text>
             <Text
               mt={8}
-            // textAlign="center"
+              // textAlign="center"
             >
               DigiCSR will help companies to ease their companies by generating
               annual report, project & auditor's report
@@ -84,7 +91,7 @@ function Homepage({ userType }) {
           </Flex>
         </Box>
       </Box>
-      <div className="mapchart">
+      <div className="mapchart" style={{ overflowX: "hidden" }}>
         <HStack mb={"5rem"}>
           <Box mr={"100px"}>
             <MapChart userType={userType} />
@@ -93,7 +100,13 @@ function Homepage({ userType }) {
         </HStack>
       </div>
       <YearChart userType={userType} />
-      <Box my={8} borderRadius="0 450px 0 0" bg="#CDEBFF">
+      <Box
+        my={8}
+        width={"100vw"}
+        style={{ overflowX: "hidden" }}
+        borderRadius="0 450px 0 0"
+        bg="#CDEBFF"
+      >
         <Text
           className="font1"
           fontFamily="Hind Vadodara"
@@ -212,7 +225,6 @@ function Homepage({ userType }) {
         {/* </Flex> */}
       </Box>
 
-      <MapChart userType={userType} />
       {/* <div className="mapchart">
         <HStack>
           <VStack>
@@ -228,7 +240,13 @@ function Homepage({ userType }) {
 
       {/* <PieChart /> */}
 
-      <Box my={8} borderRadius="0 450px 0 0" bg="#0CB6F047">
+      <Box
+        my={8}
+        width={"100vw"}
+        style={{ overflowX: "hidden" }}
+        borderRadius="0 450px 0 0"
+        bg="#0CB6F047"
+      >
         <Box className="social-icons" maxW={"80%"} mx={5}>
           <Text as="h1" fontWeight={"bold"} pt={8} fontSize={"2xl"}>
             About Us
@@ -243,7 +261,14 @@ function Homepage({ userType }) {
         </Box>
       </Box>
 
-      <Box my={8} borderRadius="0 450px 0 0" bg="#DAF0FC" mb={0}>
+      <Box
+        my={8}
+        width={"100vw"}
+        style={{ overflowX: "hidden" }}
+        borderRadius="0 450px 0 0"
+        bg="#DAF0FC"
+        mb={0}
+      >
         <Box maxW={"80%"}>
           <Flex
             alignItems="center"
@@ -310,7 +335,7 @@ function Homepage({ userType }) {
           </Text>
         </Flex>
       </Box>
-    </>
+    </Box>
   );
 }
 

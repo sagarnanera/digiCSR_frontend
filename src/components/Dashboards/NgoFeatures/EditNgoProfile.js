@@ -213,18 +213,9 @@ const EditNgoProfile = () => {
           `http://localhost:4000/NGO/logo/${userId}`
         );
 
-        const base64Data = await response.text();
-
-        const byteCharacters = atob(base64Data.split(",")[1]);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-
-        const blob = new Blob([byteArray], { type: "image/png" });
-        const imageUrl = URL.createObjectURL(blob);
-        setImage(imageUrl);
+        const res = await response.json();
+        // console.log(res);
+        setImage(res.LogoURL);
       } catch (error) {
         console.error(error);
       }
