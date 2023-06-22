@@ -7,7 +7,7 @@ import {
 import React, { useEffect, useState } from "react";
 import "../../../CSS/HexGrid.css";
 
-const HexGrid = ({userType}) => {
+const HexGrid = ({ userType }) => {
   const [items, setItems] = useState([]);
   const [hoveredItem, setHoveredItem] = useState(null);
 
@@ -93,10 +93,10 @@ const HexGrid = ({userType}) => {
             </PopoverContent>
           </Popover>
         ))}
+        <Text display={"flex"} justifyContent={"flex-start"} ml={"8"} mt={10} width={"25vw"}>
+          <strong>Donations in each Sectors</strong>
+        </Text>
       </div>
-      <Text display={"flex"} justifyContent={"flex-end"} mt={10} mr={"-10"}>
-        <strong>Donations in each Sectors</strong>
-      </Text>
     </div>
   );
 };

@@ -75,8 +75,8 @@ function MapChart({ userType }) {
             style={{
               postion: "relative",
               left: "25%",
-              width: "30px", // Adjust the width as desired
-              height: "20px", // Adjust the height as desired
+              // width: "30px", // Adjust the width as desired
+              // height: "20px", // Adjust the height as desired
             }}
             regionData={regionData}
             hoverComponent={({ value }) => {

@@ -58,7 +58,7 @@ const ShowProfile = () => {
           const response = await fetch(
             `http://localhost:4000/company/logo/${companyID}`
           );
-          const res = await response.json()
+          const res = await response.json();
           // console.log(res);
           setImage(res.LogoURL);
         } catch (error) {
@@ -91,7 +91,7 @@ const ShowProfile = () => {
           const response = await fetch(
             `http://localhost:4000/company/logo/${companyId}`
           );
-          const res = await response.json()
+          const res = await response.json();
           // console.log(res);
           setImage(res.LogoURL);
         } catch (error) {
@@ -111,27 +111,37 @@ const ShowProfile = () => {
         const response = await fetch(
           `http://localhost:4000/company/certificate/${companyID}`
         );
-        if (response.ok) {
-          const res = await response.json()
-          console.log(res);
-          window.open(res.certificateURL, "_blank"); // Open the URL in a new tab
+        const data = await response.json();
+        console.log(data);
+
+        if (response.ok && data.success) {
+          const certificateURL = data.certificateURL;
+
+          // Open the certificate in a new tab
+          window.open(certificateURL, "_blank");
         } else {
-          const data = await response.json();
-          console.log(data.message);
-          throw new Error("Failed to Download Certificate.");
+          console.error("Failed to fetch certificate:", data.message);
         }
       } else {
         const response = await fetch(
           `http://localhost:4000/company/certificate/${companyId}`
         );
-        if (response.ok) {
-          const res = await response.json()
-          console.log(res);
-          window.open(res.certificateURL, "_blank"); // Open the URL in a new tab
+        const data = await response.json();
+        console.log(data);
+
+        if (response.ok && data.success) {
+          // const data = await response.text();
+
+          // Create a Blob object from the certificate data
+          const blob = new Blob([data], { type: "application/pdf" });
+
+          // Create a data URL from the Blob
+          const certificateURL = URL.createObjectURL(blob);
+
+          // Open the certificate PDF in a new tab
+          window.open(certificateURL, "_blank");
         } else {
-          const data = await response.json();
-          console.log(data.message);
-          throw new Error("Failed to Download Certificate.");
+          console.error("Failed to fetch certificate:", data.message);
         }
       }
     } catch (error) {
@@ -237,7 +247,7 @@ const ShowProfile = () => {
                     display={"flex"}
                     justifyContent={"start"}
                     flexWrap={"wrap"}
-                  // gap={{ base: "10%", md: "10%" }}
+                    // gap={{ base: "10%", md: "10%" }}
                   >
                     <Box
                       mr={{ base: "4%", md: "4%" }}

@@ -99,7 +99,7 @@ const YearChart = ({userType}) => {
   }, [userType]);
 
   return (
-    <VStack ml={"600px"} mb={"100px"}>
+    <VStack ml={"-1000px"} mb={"100px"}>
       <Chart
         options={chartData.options}
         series={chartData.barSeries}

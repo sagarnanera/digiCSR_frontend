@@ -201,8 +201,12 @@ export const CardComponent = ({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const toast = useToast();
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
-
-  console.log(logo);
+  useEffect(() => {
+    if (logo) {
+      setImage(logo);
+    }
+  },[logo]);
+  // console.log(logo);
   const ShowProfile = () => {
     if (userType === "company") {
       navigate(`/Company/ngo-profile/${Id}`, {
