@@ -58,19 +58,9 @@ const ShowProfile = () => {
           const response = await fetch(
             `http://localhost:4000/company/logo/${companyID}`
           );
-
-          const base64Data = await response.text();
-
-          const byteCharacters = atob(base64Data.split(",")[1]);
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-
-          const blob = new Blob([byteArray], { type: "image/png" });
-          const imageUrl = URL.createObjectURL(blob);
-          setImage(imageUrl);
+          const res = await response.json()
+          // console.log(res);
+          setImage(res.LogoURL);
         } catch (error) {
           console.error(error);
         }
@@ -101,19 +91,9 @@ const ShowProfile = () => {
           const response = await fetch(
             `http://localhost:4000/company/logo/${companyId}`
           );
-
-          const base64Data = await response.text();
-
-          const byteCharacters = atob(base64Data.split(",")[1]);
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-
-          const blob = new Blob([byteArray], { type: "image/png" });
-          const imageUrl = URL.createObjectURL(blob);
-          setImage(imageUrl);
+          const res = await response.json()
+          // console.log(res);
+          setImage(res.LogoURL);
         } catch (error) {
           console.error(error);
         }
@@ -132,9 +112,9 @@ const ShowProfile = () => {
           `http://localhost:4000/company/certificate/${companyID}`
         );
         if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          window.open(url, "_blank"); // Open the URL in a new tab
+          const res = await response.json()
+          console.log(res);
+          window.open(res.certificateURL, "_blank"); // Open the URL in a new tab
         } else {
           const data = await response.json();
           console.log(data.message);
@@ -145,9 +125,9 @@ const ShowProfile = () => {
           `http://localhost:4000/company/certificate/${companyId}`
         );
         if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          window.open(url, "_blank"); // Open the URL in a new tab
+          const res = await response.json()
+          console.log(res);
+          window.open(res.certificateURL, "_blank"); // Open the URL in a new tab
         } else {
           const data = await response.json();
           console.log(data.message);

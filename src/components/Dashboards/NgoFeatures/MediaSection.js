@@ -106,10 +106,11 @@ const MediaSection = ({ userType }) => {
         mb={2}
         borderWidth="1px"
         p={2}
+        bgColor={"rgba(186, 182, 182, 0.4)"}
         backdropFilter="auto"
         backdropBlur="8px"
         borderRadius="md"
-        boxShadow="md"
+        boxShadow="xl"
       >
         <Flex justifyContent={userType === "ngo" ? "space-between" : "center"}>
           <Heading as="h1" mb={4}>
@@ -134,8 +135,8 @@ const MediaSection = ({ userType }) => {
           </Button>
           }
         </Flex>
-        <Box>
-          <Flex flexWrap="wrap" justifyContent={"space-around"}>
+        <Flex justifyContent={"center"}>
+          <Flex flexWrap="wrap" justifyContent={"center"} gap={2}>
             {blogs &&
               blogs.map((blog) => {
                 return (
@@ -148,7 +149,7 @@ const MediaSection = ({ userType }) => {
                 );
               })}
           </Flex>
-        </Box>
+        </Flex>
       </Box>
     </div >
   );

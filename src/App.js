@@ -103,7 +103,7 @@ function App() {
             />
             <Route
               path="/Company/ngo-profile/:id"
-              element={<ShowNgoProfile />}
+              element={<ShowNgoProfile userType={"company"} />}
             />
           </>
         )}
@@ -120,7 +120,7 @@ function App() {
             <Route path="/Ngo/media/:id" element={<Post userType={"ngo"} />} />
             <Route path="/Ngo/media/update/:id" element={<UpdateBlog />} />
 
-            <Route path="/Ngo/profile" element={<ShowNgoProfile />} />
+            <Route path="/Ngo/profile" element={<ShowNgoProfile userType={"ngo"} />} />
             <Route path="/Ngo/editprofile" element={<EditNgoProfile />} />
             <Route path="/Ngo/rfpdetails" element={<RFPDetails />} />
             <Route path="/Ngo/addprofile" element={<AddNgoProfile />} />
@@ -143,7 +143,7 @@ function App() {
             />
             <Route
               path="/Beneficiary/ngo-profile/:id"
-              element={<ShowNgoProfile />}
+              element={<ShowNgoProfile userType={"beneficiary"} />}
             />
           </>
         )}
@@ -156,7 +156,7 @@ function App() {
               path="/Admin/beneficiaries"
               element={<AdminBeneficiaries />}
             />
-            <Route path="/Admin/ngo-profile/:id" element={<ShowNgoProfile />} />
+            <Route path="/Admin/ngo-profile/:id" element={<ShowNgoProfile userType={"admin"} />} />
             <Route
               path="/Admin/company-profile/:id"
               element={<ShowProfile />}

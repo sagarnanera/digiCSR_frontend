@@ -32,6 +32,7 @@ const AdminCompanies = () => {
       const data = await response.json();
       console.log(data);
       if (response.ok) {
+        console.log(data.companies);
         setCompanies(data.companies);
         setResult(data.companies);
       } else {

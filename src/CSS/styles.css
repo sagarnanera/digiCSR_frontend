@@ -2,9 +2,11 @@ html {
   font-family: system-ui, sans-serif;
   font-size: 1.25rem;
 }
+
 .pie {
   display: flex;
 }
+
 body {
   margin: 0;
   display: flex;
@@ -13,6 +15,7 @@ body {
 
 .map-container svg {
   height: 650px;
+  position: unset !important;
   top: 110vh !important;
   left: 5% !important;
 }
@@ -21,7 +24,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 75%; /* Adjust the width as needed */
+  width: 75%;
+  /* Adjust the width as needed */
   margin-right: 500px;
   /* margin-bottom: 5rem; */
 }
