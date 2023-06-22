@@ -2,7 +2,7 @@ import { Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 
-const YearChart = (userType) => {
+const YearChart = ({userType}) => {
   const [chartData, setChartData] = useState({
     options: {
       chart: {
@@ -17,8 +17,8 @@ const YearChart = (userType) => {
   });
 
   useEffect(() => {
-    if (userType.userType.userType === "company") {
-      console.log(userType.userType);
+    if (userType === "company") {
+      console.log(userType);
       const fetchYearChartData = async () => {
         try {
           const response = await fetch("http://localhost:4000/charts/year", {
@@ -55,7 +55,7 @@ const YearChart = (userType) => {
       };
 
       fetchYearChartData();
-    } else if (userType.userType.userType === "NGO") {
+    } else if (userType === "ngo") {
       const fetchYearChartData = async () => {
         try {
           const response = await fetch(
@@ -99,7 +99,7 @@ const YearChart = (userType) => {
   }, [userType]);
 
   return (
-    <VStack>
+    <VStack ml={"600px"} mb={"100px"}>
       <Chart
         options={chartData.options}
         series={chartData.barSeries}

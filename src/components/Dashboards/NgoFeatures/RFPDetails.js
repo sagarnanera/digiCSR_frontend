@@ -14,10 +14,12 @@ import {
 import { useLocation } from "react-router-dom";
 import NgoNavigation from "../../Navigation/NgoNavigation";
 import RequestAmount from "./requestAmount";
+import AdminNavigation from "../../Navigation/adminNavigation";
 
 const RFPDetails = () => {
   const location = useLocation();
   const rfpID = location.state?.rfpID;
+  const userType = location.state?.userType;
   const [rfpDetails, setRfpDetails] = useState(null);
   const [companyDetails, setCompanyDetails] = useState(null);
   const [selectedRFPId, setSelectedRFPId] = useState(null);
@@ -79,7 +81,7 @@ const RFPDetails = () => {
       }}
     >
       <Box>
-        <NgoNavigation />
+        {userType === "admin" ? <AdminNavigation /> : <NgoNavigation />}
         <div
           className="company-details-container"
           style={{ zoom: "0.8", width: "125vw" }}
@@ -439,18 +441,22 @@ const RFPDetails = () => {
                   <br />
                   <br />
                   <Box display={"flex"} justifyContent={"center"}>
-                    <Button
-                      colorScheme="blue"
-                      bg="white"
-                      color="skyblue"
-                      width={"300px"}
-                      boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
-                      _hover={{ boxShadow: "0px 4px 6px skyblue" }}
-                      _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
-                      onClick={handleShareClick}
-                    >
-                      Rquest Donation
-                    </Button>
+                    {userType !== "admin" && (
+                      <Button
+                        colorScheme="blue"
+                        bg="white"
+                        color="skyblue"
+                        width={"300px"}
+                        boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+                        _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+                        _active={{
+                          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                        }}
+                        onClick={handleShareClick}
+                      >
+                        Rquest Donation
+                      </Button>
+                    )}
                     {showShareForm && (
                       <RequestAmount
                         rfpID={selectedRFPId}

@@ -25,7 +25,7 @@ const DeleteConfirmationDialog = ({ isOpen, onClose, onDelete }) => {
           </AlertDialogHeader>
 
           <AlertDialogBody>
-            Are you sure you want to delete this RFP?
+            Are you sure you want to delete it?
           </AlertDialogBody>
 
           <AlertDialogFooter>

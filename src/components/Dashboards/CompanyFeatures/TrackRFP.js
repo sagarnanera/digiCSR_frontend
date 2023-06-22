@@ -121,7 +121,7 @@ const TrackRFP = () => {
 
   useEffect(() => {
     fetchRFPs();
-  }, []);
+  }, [currentPage, rowsPerPage, selectedsector, selectedstates]);
 
   const handleRowsPerPageChange = (event) => {
     const value = parseInt(event.target.value);
@@ -327,7 +327,7 @@ const TrackRFP = () => {
             </div>
             <Box>
               <HStack
-                mt={"-5"}
+                mt={"-10"}
                 display={"flex"}
                 justifyContent={"center"}
                 flexWrap={"wrap"}
@@ -373,6 +373,7 @@ const TrackRFP = () => {
                 color="white"
                 w={"15vw"}
                 mr={"5vw"}
+                mt={"-5"}
                 boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
                 _hover={{ boxShadow: "0px 4px 6px rgb(45, 38, 38)" }}
                 _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}

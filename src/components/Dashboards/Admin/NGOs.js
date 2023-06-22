@@ -84,45 +84,72 @@ const AdminNGOs = () => {
   };
 
   return (
-    <Box>
+    <Box
+      style={{
+        backgroundImage: "url('../bg.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        minWidth: "100vw",
+      }}
+    >
       <AdminNavigation />
-      <Flex>
-        <FilterDrawer
-          isOpen={true}
-          handleCheckboxChange={handleCheckboxChange}
-        />
-        <Box flex="1" p="4" marginLeft="auto">
-          <InputGroup mb={4}>
-            <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
-            <Input
-              type="text"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={handleSearchQueryChange}
+      <Box
+        display={"flex"}
+        justifyContent={"center"}
+        mt={"5"}
+        borderRadius="lg"
+        borderWidth="1px"
+        width={"90vw"}
+        ml={"5vw"}
+        bgColor={"whiteAlpha.800"}
+        overflow={"auto"}
+        // style={{ backdropFilter: "blur(10px)" }}
+      >
+        <Box width={"98vw"} height={"80vh"}>
+          <Flex>
+            <FilterDrawer
+              isOpen={true}
+              handleCheckboxChange={handleCheckboxChange}
             />
-          </InputGroup>
-          <Box display="flex" p="4">
-            <Grid templateColumns="repeat(3, 1fr)" gap={3}>
-              {filteredResult
-                .filter((ngo) =>
-                  ngo.ngo_name.toLowerCase().includes(searchQuery.toLowerCase())
-                )
-                .map((ngo) => (
-                  <CardComponent
-                    userType={"admin"}
-                    type={"ngo"}
-                    Id={ngo._id}
-                    name={ngo.ngo_name}
-                    email={ngo.email}
-                    phone={ngo.profile.phone}
-                    location={ngo.profile.location}
-                    triggerFetchCompanies={triggerFetchCompanies} // Pass the callback function as a prop
-                  />
-                ))}
-            </Grid>
-          </Box>
+            <Box flex="1" p="4" marginLeft="auto">
+              <InputGroup mb={4}>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<SearchIcon />}
+                />
+                <Input
+                  type="text"
+                  placeholder="Search"
+                  value={searchQuery}
+                  onChange={handleSearchQueryChange}
+                />
+              </InputGroup>
+              <Box display="flex" pt="6" pl={"4"} flexWrap="wrap">
+                {filteredResult
+                  .filter((ngo) =>
+                    ngo.ngo_name
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase())
+                  )
+                  .map((ngo) => (
+                    <CardComponent
+                      userType={"admin"}
+                      type={"ngo"}
+                      Id={ngo._id}
+                      name={ngo.ngo_name}
+                      logo={ngo.profile.ngo_logo}
+                      email={ngo.email}
+                      phone={ngo.profile.phone}
+                      location={ngo.profile.location}
+                      triggerFetchCompanies={triggerFetchCompanies} // Pass the callback function as a prop
+                    />
+                  ))}
+              </Box>
+            </Box>
+          </Flex>
         </Box>
-      </Flex>
+      </Box>
     </Box>
   );
 };

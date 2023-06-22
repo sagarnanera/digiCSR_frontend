@@ -28,7 +28,6 @@ import { sectorOptions } from "../../sectorData";
 
 const RFPRequest = () => {
   const navigate = useNavigate();
-  // const rowsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [currentRows, setCurrentRows] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -79,7 +78,7 @@ const RFPRequest = () => {
       // Apply filtering based on selected state and sector
       let filteredData = data;
 
-      if (selectedstates !== "") {
+      if (selectedstates && selectedstates !== "") {
         console.log(selectedstates);
         filteredData = filteredData.filter((proposal) =>
           proposal.states.includes(selectedstates)
@@ -274,7 +273,7 @@ const RFPRequest = () => {
             </div>
             <Box>
               <HStack
-                mt={"-5"}
+                mt={"-10"}
                 display={"flex"}
                 justifyContent={"center"}
                 flexWrap={"wrap"}

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   Box,
   Flex,
-  Grid,
   Input,
   InputGroup,
   InputLeftElement,
@@ -83,46 +82,77 @@ const AdminCompanies = () => {
   };
 
   return (
-    <Box>
+    <Box
+      style={{
+        backgroundImage: "url('../bg.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        minWidth: "100vw",
+      }}
+    >
       <AdminNavigation />
-      <Flex>
-        <FilterDrawer
-          isOpen={true}
-          handleCheckboxChange={handleCheckboxChange}
-        />
-        <Box flex="1" p="4" marginLeft="auto">
-          <InputGroup mb={4}>
-            <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
-            <Input
-              type="text"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={handleSearchQueryChange}
+      <Box
+        display={"flex"}
+        justifyContent={"center"}
+        mt={"5"}
+        borderRadius="lg"
+        borderWidth="1px"
+        width={"90vw"}
+        ml={"5vw"}
+        bgColor={"whiteAlpha.800"}
+        // style={{ backdropFilter: "blur(5px)" }}
+        overflow={"auto"}
+      >
+        <Box width={"98vw"} height={"80vh"}>
+          <Flex>
+            <FilterDrawer
+              isOpen={true}
+              handleCheckboxChange={handleCheckboxChange}
             />
-          </InputGroup>
-          <Box display="flex" p="4">
-            <Grid templateColumns="repeat(3, 1fr)" gap={3}>
-              {filteredResult
-                .filter((company) =>
-                  company.company_name?.toLowerCase()
-                    .includes(searchQuery?.toLowerCase())
-                )
-                .map((company) => (
-                  <CardComponent
-                    userType={"admin"}
-                    type={"company"}
-                    Id={company._id}
-                    name={company.company_name}
-                    email={company.email}
-                    phone={company.profile.comunication_person.cp_phone}
-                    location={company.profile.location}
-                    triggerFetchCompanies={triggerFetchCompanies} // Pass the callback function as a prop
-                  />
-                ))}
-            </Grid>
-          </Box>
+            <Box flex="1" p="4" marginLeft="auto">
+              <InputGroup mb={4}>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<SearchIcon />}
+                />
+                <Input
+                  type="text"
+                  placeholder="Search"
+                  value={searchQuery}
+                  onChange={handleSearchQueryChange}
+                />
+              </InputGroup>
+              <Box
+                display="flex"
+                pt="6"
+                pl={"4"}
+                flexWrap="wrap"
+              >
+                {filteredResult
+                  .filter((company) =>
+                    company.company_name
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase())
+                  )
+                  .map((company) => (
+                    <CardComponent
+                      userType={"admin"}
+                      type={"company"}
+                      Id={company._id}
+                      name={company.company_name}
+                      logo={company.profile.company_logo}
+                      email={company.email}
+                      phone={company.profile.comunication_person.cp_phone}
+                      location={company.profile.location}
+                      triggerFetchCompanies={triggerFetchCompanies} // Pass the callback function as a prop
+                    />
+                  ))}
+              </Box>
+            </Box>
+          </Flex>
         </Box>
-      </Flex>
+      </Box>
     </Box>
   );
 };

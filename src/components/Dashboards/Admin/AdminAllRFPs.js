@@ -83,7 +83,7 @@ const AdminRFP = () => {
       // Apply filtering based on selected state and sector
       let filteredData = data;
 
-      if (selectedstates !== "") {
+      if (selectedstates && selectedstates !== "") {
         console.log(selectedstates);
         filteredData = filteredData.filter((proposal) =>
           proposal.states.includes(selectedstates)
@@ -319,7 +319,7 @@ const AdminRFP = () => {
             </div>
             <Box>
               <HStack
-                mt={"-5"}
+                mt={"-10"}
                 display={"flex"}
                 justifyContent={"center"}
                 flexWrap={"wrap"}
@@ -331,7 +331,7 @@ const AdminRFP = () => {
                     onChange={(e) => handleStateChange(e.target.value)}
                     size={"sm"}
                     style={{ maxWidth: "20rem" }}
-                  // value={selectedstates}
+                    // value={selectedstates}
                   >
                     <option value="">Select a state</option>
                     {states.map((state) => (
@@ -448,6 +448,7 @@ const AdminRFP = () => {
               navigate("/Ngo/rfpdetails", {
                 state: {
                   rfpID: selectedRFPId,
+                  userType: "admin",
                 },
               })}
             {isDeleteDialogOpen && (

@@ -7,13 +7,13 @@ import {
 import React, { useEffect, useState } from "react";
 import "../../../CSS/HexGrid.css";
 
-const HexGrid = (userType) => {
+const HexGrid = ({userType}) => {
   const [items, setItems] = useState([]);
   const [hoveredItem, setHoveredItem] = useState(null);
 
   useEffect(() => {
-    console.log(userType.userType.userType);
-    if (userType.userType.userType === "company") {
+    console.log(userType);
+    if (userType === "company") {
       const fetchData = async () => {
         try {
           const response = await fetch("http://localhost:4000/charts/sector", {
@@ -32,7 +32,7 @@ const HexGrid = (userType) => {
         }
       };
       fetchData();
-    } else if (userType.userType.userType === "NGO") {
+    } else if (userType === "ngo") {
       const fetchData = async () => {
         try {
           const response = await fetch(

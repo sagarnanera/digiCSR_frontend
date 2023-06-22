@@ -61,9 +61,9 @@ const AdminNavigation = () => {
                       <ul className={classes.nav}>
                         <li>
                           <Link
-                            to="/Admin"
+                            to="/Admin/home"
                             className={
-                              location.pathname === "/Admin"
+                              location.pathname === "/Admin/home"
                                 ? classes.active
                                 : ""
                             }
@@ -143,9 +143,9 @@ const AdminNavigation = () => {
             <ul className={classes.nav}>
               <li>
                 <Link
-                  to="/Admin"
+                  to="/Admin/home"
                   className={
-                    location.pathname === "/Admin" ? classes.active : ""
+                    location.pathname === "/Admin/home" ? classes.active : ""
                   }
                 >
                   Home
