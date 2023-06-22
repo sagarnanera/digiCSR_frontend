@@ -171,12 +171,12 @@ const PostCard = ({ blog, userType, setBlogs }) => {
             )
             }
 
-            <Box mt={thumbnail ? 2 : 6}>
+            <Box mt={thumbnail ? 2 : 4}>
                 <Heading as="h2" size="lg" mb={2} noOfLines={1} textOverflow={"ellipsis"} title={`${blog.title}`}>
                     {blog.title}
                 </Heading>
                 <Flex justifyContent={"space-between"} alignItems={"center"} mb={2}>
-                    <Flex color="gray.400" justifyItems={"center"} width={"80%"}>
+                    <Flex color="gray.400" justifyItems={"center"} width={"90%"}>
                         <Image
                             src={blog.ngoLogo ? blog.ngoLogo : "/user-avatar.jpg"}
                             alt={blog.author}
@@ -195,13 +195,25 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                             whiteSpace="nowrap">
                             {blog.author}&nbsp;
                         </Text> -{" "}
-                        {/* <Text display={"inline-block"} width={"40%"}> */}
-                        {new Date(blog.createdAt).toLocaleString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                        })}
-                        {/* </Text> */}
+                        <Text display={"inline-block"}
+                            title={
+                                new Date(blog.createdAt).toLocaleString("en-US", {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                })
+                            }
+                            maxWidth={"50%"}
+                            overflow="hidden"
+                            textOverflow="ellipsis"
+                            whiteSpace="nowrap"
+                        >
+                            {new Date(blog.createdAt).toLocaleString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                            })}
+                        </Text>
                     </Flex>
                     {(userType === "ngo" || userType === "admin") &&
 
@@ -215,7 +227,7 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                                 color="red"
                                 aria-label="Delete"
                                 size="md"
-                                mr={2}
+                                // mr={2}
                                 onClick={(e) => handleDeleteBlog(blog._id, e)}
                                 title='Delete Post'
                             />
