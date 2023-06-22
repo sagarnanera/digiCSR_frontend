@@ -130,15 +130,9 @@ const ShowProfile = () => {
         console.log(data);
 
         if (response.ok && data.success) {
-          // const data = await response.text();
-
-          // Create a Blob object from the certificate data
-          const blob = new Blob([data], { type: "application/pdf" });
-
-          // Create a data URL from the Blob
-          const certificateURL = URL.createObjectURL(blob);
-
-          // Open the certificate PDF in a new tab
+          const certificateURL = data.certificateURL;
+          
+          // Open the certificate in a new tab
           window.open(certificateURL, "_blank");
         } else {
           console.error("Failed to fetch certificate:", data.message);

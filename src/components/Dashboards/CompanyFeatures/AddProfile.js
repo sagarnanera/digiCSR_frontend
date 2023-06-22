@@ -67,6 +67,7 @@ const AddProfile = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   // const [allfields, setAllfields] = useState(false);
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
+  const [imageURL, setImageURL] = useState("");
 
   useEffect(() => {
     const getStates = async () => {
@@ -132,7 +133,16 @@ const AddProfile = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     // const reader = new FileReader();
+    const file1 = e.target.files[0];
+    const reader = new FileReader();
 
+    reader.onload = () => {
+      setImageURL(reader.result);
+    };
+
+    if (file1) {
+      reader.readAsDataURL(file);
+    }
     // reader.onload = () => {
     setImage(file);
     // };
@@ -147,7 +157,7 @@ const AddProfile = () => {
         // Validate file size
         if (file.size <= 150 * 1024) {
           // 150 KB in bytes
-          // reader.readAsDataURL(file);  
+          // reader.readAsDataURL(file);
           // console.log(image);
         } else {
           alert("Please select an image file smaller than 150 KB.");
@@ -205,25 +215,26 @@ const AddProfile = () => {
       return;
     }
     try {
-
       // logo upload start
       const logoData = new FormData();
       const companyLogoFile = new File([image], "company_logo.jpg");
       logoData.append("file", companyLogoFile);
 
-      const logoUploadRes = await fetch(`http://localhost:4000/company/upload-logo`, {
-        method: "POST",
-        headers: {
-          authorization: localStorage.getItem("CompanyAuthToken"),
-        },
-        body: logoData,
-      });
+      const logoUploadRes = await fetch(
+        `http://localhost:4000/company/upload-logo`,
+        {
+          method: "POST",
+          headers: {
+            authorization: localStorage.getItem("CompanyAuthToken"),
+          },
+          body: logoData,
+        }
+      );
       const logoRes = await logoUploadRes.json();
 
       console.log(logoRes);
 
       // logo upload end
-
 
       // certificate upload start
       const certificateData = new FormData();
@@ -233,18 +244,20 @@ const AddProfile = () => {
       );
       certificateData.append("file", registrationCertificateFile);
 
-      const certificatUploadRes = await fetch(`http://localhost:4000/company/upload-certificate`, {
-        method: "POST",
-        headers: {
-          authorization: localStorage.getItem("CompanyAuthToken"),
-        },
-        body: certificateData,
-      });
+      const certificatUploadRes = await fetch(
+        `http://localhost:4000/company/upload-certificate`,
+        {
+          method: "POST",
+          headers: {
+            authorization: localStorage.getItem("CompanyAuthToken"),
+          },
+          body: certificateData,
+        }
+      );
       const certificateRes = await certificatUploadRes.json();
 
       console.log(certificateRes);
       // certificate upload end
-
 
       const url = `http://localhost:4000/company/add-profile`; // Replace with your API endpoint URL
 
@@ -277,7 +290,7 @@ const AddProfile = () => {
       console.warn(data);
       if (response.ok) {
         toast({
-          title: "Profile Edited Successfully",
+          title: "Profile Created Successfully",
           status: "success",
           duration: 5000,
           isClosable: true,
@@ -285,7 +298,7 @@ const AddProfile = () => {
         });
         setLoading(false);
         console.log(data);
-        // navigate("/Company", { replace: true });
+        navigate("/Company", { replace: true });
       } else {
         console.warn(data);
         throw new Error("Failed to create Profile. Please try again.");
@@ -361,11 +374,19 @@ const AddProfile = () => {
                     overflow: "hidden",
                   }}
                 >
-                  <img
-                    src={image || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
-                    alt="Profile"
-                    style={{ width: "100%", height: "100%" }}
-                  />
+                  {imageURL ? (
+                    <img
+                      src={imageURL || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
+                      alt="Profile"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  ) : (
+                    <img
+                      src={image || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
+                      alt="Profile"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  )}
                   <input
                     type="file"
                     id="profile-image"

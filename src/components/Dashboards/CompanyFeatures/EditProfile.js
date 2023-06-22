@@ -70,7 +70,7 @@ const EditProfile = () => {
   const [image, setImage] = useState("/user-avatar.jpg"); // State to store the selected image
   const [companyId, setCompanyId] = useState("");
   const [isImageChanged, setIsImageChanged] = useState(false);
-
+  const [imageURL, setImageURL] = useState("");
   useEffect(() => {
     const token = localStorage.getItem("CompanyAuthToken");
     const decodedToken = jwt_decode(token);
@@ -109,8 +109,8 @@ const EditProfile = () => {
         );
 
         const res = await response.json();
-          // console.log(res);
-          setImage(res.LogoURL);
+        // console.log(res);
+        setImage(res.LogoURL);
       } catch (error) {
         console.error(error);
       }
@@ -192,7 +192,16 @@ const EditProfile = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     // const reader = new FileReader();
+    const file1 = e.target.files[0];
+    const reader = new FileReader();
 
+    reader.onload = () => {
+      setImageURL(reader.result);
+    };
+
+    if (file1) {
+      reader.readAsDataURL(file);
+    }
     // reader.onload = () => {
     setImage(file);
     // };
@@ -275,8 +284,6 @@ const EditProfile = () => {
       return;
     }
     try {
-
-
       // logo upload start
       const logoData = new FormData();
       if (isImageChanged) {
@@ -284,18 +291,20 @@ const EditProfile = () => {
         logoData.append("file", companyLogoFile);
       }
 
-      const logoUploadRes = await fetch(`http://localhost:4000/company/upload-logo`, {
-        method: "POST",
-        headers: {
-          authorization: localStorage.getItem("CompanyAuthToken"),
-        },
-        body: logoData,
-      });
+      const logoUploadRes = await fetch(
+        `http://localhost:4000/company/upload-logo`,
+        {
+          method: "POST",
+          headers: {
+            authorization: localStorage.getItem("CompanyAuthToken"),
+          },
+          body: logoData,
+        }
+      );
       const logoRes = await logoUploadRes.json();
 
       console.log(logoRes);
       // logo upload end
-
 
       const url = `http://localhost:4000/company/add-profile`; // Replace with your API endpoint URL
 
@@ -413,11 +422,19 @@ const EditProfile = () => {
                       overflow: "hidden",
                     }}
                   >
-                    <img
-                      src={image || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
-                      alt="Profile"
-                      style={{ width: "100%", height: "100%" }}
-                    />
+                    {imageURL ? (
+                      <img
+                        src={imageURL || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
+                        alt="Profile"
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    ) : (
+                      <img
+                        src={image || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
+                        alt="Profile"
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    )}
                     <input
                       type="file"
                       id="profile-image"
