@@ -240,11 +240,13 @@ const AddNgoProfile = () => {
   };
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    const reader = new FileReader();
+    // const reader = new FileReader();
 
-    reader.onload = () => {
-      setImage(reader.result);
-    };
+    // reader.onload = () => {
+    //   setImage(reader.result);
+    // };
+
+    setImage(file);
 
     if (file) {
       // Validate file type
@@ -256,7 +258,7 @@ const AddNgoProfile = () => {
         // Validate file size
         if (file.size <= 150 * 1024) {
           // 150 KB in bytes
-          reader.readAsDataURL(file);
+          // reader.readAsDataURL(file);
           // console.log(image);
         } else {
           alert("Please select an image file smaller than 150 KB.");
@@ -292,10 +294,29 @@ const AddNgoProfile = () => {
     }
 
     try {
+
+
+      const logoData = new FormData();
+      const ngoLogoFile = new File([image], "ngo_logo.jpg");
+      logoData.append("file", ngoLogoFile);
+
+      const logoUploadRes = await fetch(`http://localhost:4000/ngo/upload-logo`, {
+        method: "POST",
+        headers: {
+          authorization: localStorage.getItem("CompanyAuthToken"),
+        },
+        body: logoData,
+      });
+      const logoRes = await logoUploadRes.json();
+
+      console.log(logoRes);
+
+      // logo upload end
+
       const url = `http://localhost:4000/NGO/add-profile`;
 
       const formData = new FormData();
-      const ngoLogoFile = new File([image], "ngo_logo.jpg");
+      // const ngoLogoFile = new File([image], "ngo_logo.jpg");
 
       formData.append("ngo_name", NgoName);
       formData.append("summary", NgoSummary);
@@ -324,7 +345,7 @@ const AddNgoProfile = () => {
           member.designation
         );
       });
-      formData.append("ngo_logo", ngoLogoFile);
+      // formData.append("ngo_logo", ngoLogoFile);
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -667,9 +688,8 @@ const AddNgoProfile = () => {
                   value={
                     selectedStates.length <= 6
                       ? selectedStatesText
-                      : `${selectedStates.slice(0, 6)},..+${
-                          selectedStates.length - 6
-                        } more`
+                      : `${selectedStates.slice(0, 6)},..+${selectedStates.length - 6
+                      } more`
                   }
                 ></Textarea>
               </Tooltip>
