@@ -33,6 +33,7 @@ const AdminCompanies = () => {
       const data = await response.json();
       console.log(data);
       if (response.ok) {
+        console.log(data.companies);
         setCompanies(data.companies);
         setResult(data.companies);
       } else {
@@ -103,9 +104,8 @@ const AdminCompanies = () => {
             <Grid templateColumns="repeat(3, 1fr)" gap={3}>
               {filteredResult
                 .filter((company) =>
-                  company.company_name
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase())
+                  company.company_name?.toLowerCase()
+                    .includes(searchQuery?.toLowerCase())
                 )
                 .map((company) => (
                   <CardComponent

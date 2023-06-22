@@ -193,6 +193,14 @@ const Post = ({ userType }) => {
       }
 
       setBlog({});
+      toast({
+        title: "Successfully deleted Post !!!",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+
       navigate(`/${userType}/media`);
     } catch (error) {
       console.error("Error fetching blog:", error);
@@ -268,10 +276,11 @@ const Post = ({ userType }) => {
         mx="auto"
         mt={8}
         mb={2}
-        p={4}
+        p={{ base: 4, lg: 8 }}
         borderWidth="1px"
         borderRadius="md"
         boxShadow="md"
+        bgColor={"rgba(255, 255, 255, 0.76)"}
         backdropFilter="auto"
         backdropBlur="8px"
         overflowX={"scroll"}
@@ -287,14 +296,20 @@ const Post = ({ userType }) => {
         >
           <Box display="flex" alignItems="center">
             <Image
-              src={blog.authorLogoUrl}
+              src={blog.ngoLogo}
               alt={blog.author}
               boxSize="40px"
               borderRadius="full"
               m={0}
               mr={2}
             />
-            <Text>{blog.author}</Text>
+            <Text>{blog.author} &nbsp;  </Text>
+            -{"  "}
+            {new Date(blog.createdAt).toLocaleString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
           </Box>
 
           {(userType === "ngo" || userType === "admin") && (
@@ -308,7 +323,7 @@ const Post = ({ userType }) => {
               <IconButton
                 icon={<DeleteIcon />}
                 variant="ghost"
-                _hover={{ color: "black", bgColor: "red" }}
+                _hover={{ color: "black", bgColor: "transparent" }}
                 color="red"
                 aria-label="Delete"
                 size="md"
@@ -318,7 +333,7 @@ const Post = ({ userType }) => {
               {userType === "ngo" && <IconButton
                 icon={<EditIcon />}
                 variant="ghost"
-                _hover={{ color: "white", bgColor: "gray" }}
+                _hover={{ color: "blue", bgColor: "transparent" }}
                 color="black"
                 aria-label="Edit"
                 size="md"
@@ -327,21 +342,14 @@ const Post = ({ userType }) => {
             </Flex>
           )}
         </Box>
-        <Text color="gray.600" mb={4}>
-          Published on -{" "}
-          {new Date(blog.createdAt).toLocaleString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </Text>
+
         <Box width="100%" overflowWrap="break-word">
           <ChakraProvider theme={theme}>
             <Text dangerouslySetInnerHTML={{ __html: blog.content }} />
           </ChakraProvider>
         </Box>
       </Box>
-    </div>
+    </div >
   );
 };
 

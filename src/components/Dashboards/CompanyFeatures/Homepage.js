@@ -1,5 +1,5 @@
 import React from "react";
-// import "../../../CSS/homepage.css";
+import "../../../CSS/homepage.css";
 import PieChart from "./Piechart";
 import { BsFacebook, BsTwitter, BsInstagram, BsLinkedin, BsGeoAlt, BsPhone, BsEnvelope } from "react-icons/bs";
 import { Box, Button, Flex, HStack, Icon, Image, Spacer, Text, VStack } from "@chakra-ui/react";
@@ -130,8 +130,8 @@ function Homepage({ userType }) {
       </Box >
 
 
-      {/* <MapChart userType={userType} /> */}
-      <div className="mapchart">
+      <MapChart userType={userType} />
+      {/* <div className="mapchart">
         <HStack>
           <VStack>
             <MapChart userType={userType} />
@@ -141,7 +141,7 @@ function Homepage({ userType }) {
       </div>
       <div className="pie">
         <YearChart userType={userType} />
-      </div>
+      </div> */}
 
       {/* <PieChart /> */}
 

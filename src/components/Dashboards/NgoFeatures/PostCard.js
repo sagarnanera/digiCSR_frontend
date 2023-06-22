@@ -107,7 +107,7 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                 isClosable: true,
                 position: "top-right",
             });
-            navigate("/Ngo/media");
+            // navigate("/Ngo/media");
         } catch (error) {
             console.error("Error fetching blog:", error);
             toast({
@@ -143,12 +143,12 @@ const PostCard = ({ blog, userType, setBlogs }) => {
             p={4}
             mb={4}
             borderRadius="md"
-            _hover={{ boxShadow: "md", cursor: "pointer" }}
+            _hover={{ boxShadow: "2xl", cursor: "pointer" }}
             onClick={() => handleBlogClick(blog._id)}
             width={{ base: "100%", md: "48%", lg: "32%" }}
             height="auto"
             position="relative"
-            bg={"#FFF"}
+            bg={"#FBFBFB"}
         >
 
             {thumbnail && (
@@ -158,6 +158,7 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                     height="150px"
                     borderRadius="md"
                     overflow="hidden"
+                    boxShadow={"0px 4px 4px rgba(0, 0, 0, 0.25)"}
                 >
                     <Image
                         src={thumbnail}
@@ -167,61 +168,75 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                         objectFit="cover"
                     />
                 </Box>
-            )}
-
-            {(userType === "ngo" || userType === "admin") &&
-
-                <Flex
-                    position="absolute"
-                    top={5}
-                    right={5}
-                    alignItems="center"
-                    justifyContent="center"
-                    // opacity={0} // Initially hidden
-                    // transition="opacity 0.2s"
-                    _groupHover={{ opacity: 1 }} // Visible on hover
-                >
-                    <IconButton
-                        icon={<DeleteIcon />}
-                        variant="ghost"
-                        _hover={{ color: "black", bgColor: "red" }}
-                        color="red"
-                        aria-label="Delete"
-                        size="md"
-                        mr={2}
-                        onClick={(e) => handleDeleteBlog(blog._id, e)}
-                        title='Delete Post'
-                    />
-                    {userType === "ngo" && <IconButton
-                        icon={<EditIcon />}
-                        variant="ghost"
-                        _hover={{ color: "black", bgColor: "beige" }}
-                        color="beige"
-                        aria-label="Edit"
-                        size="md"
-                        onClick={(e) => handleEditBlog(blog._id, e)}
-                        title='Edit Post'
-                    />}
-                </Flex>
+            )
             }
 
-            <Box mt={thumbnail ? 2 : 10}>
+            <Box mt={thumbnail ? 2 : 6}>
                 <Heading as="h2" size="lg" mb={2} noOfLines={1} textOverflow={"ellipsis"} title={`${blog.title}`}>
                     {blog.title}
                 </Heading>
-                <Text color="gray.600" mb={2}>
-                    {blog.author} -{" "}
-                    {new Date(blog.createdAt).toLocaleString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                    })}
-                </Text>
-                <Text noOfLines={thumbnail ? 3 : 6} overflow="hidden" textOverflow="ellipsis" textAlign={"justify"}>
+                <Flex justifyContent={"space-between"} alignItems={"center"} mb={2}>
+                    <Flex color="gray.400" justifyItems={"center"} width={"80%"}>
+                        <Image
+                            src={blog.ngoLogo ? blog.ngoLogo : "/user-avatar.jpg"}
+                            alt={blog.author}
+                            title={blog.author}
+                            boxSize="30px"
+                            borderRadius="full"
+                            m={0}
+                            mr={2}
+                        />
+                        <Text
+                            display={"inline-block"}
+                            title={blog.author}
+                            maxWidth={"40%"}
+                            overflow="hidden"
+                            textOverflow="ellipsis"
+                            whiteSpace="nowrap">
+                            {blog.author}&nbsp;
+                        </Text> -{" "}
+                        {/* <Text display={"inline-block"} width={"40%"}> */}
+                        {new Date(blog.createdAt).toLocaleString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                        })}
+                        {/* </Text> */}
+                    </Flex>
+                    {(userType === "ngo" || userType === "admin") &&
+
+                        <Flex
+                            _groupHover={{ opacity: 1 }} // Visible on hover
+                        >
+                            <IconButton
+                                icon={<DeleteIcon />}
+                                variant="ghost"
+                                _hover={{ color: "black", bgColor: "transparent" }}
+                                color="red"
+                                aria-label="Delete"
+                                size="md"
+                                mr={2}
+                                onClick={(e) => handleDeleteBlog(blog._id, e)}
+                                title='Delete Post'
+                            />
+                            {userType === "ngo" && <IconButton
+                                icon={<EditIcon />}
+                                variant="ghost"
+                                _hover={{ color: "blue", bgColor: "transparent" }}
+                                color="black"
+                                aria-label="Edit"
+                                size="md"
+                                onClick={(e) => handleEditBlog(blog._id, e)}
+                                title='Edit Post'
+                            />}
+                        </Flex>
+                    }
+                </Flex>
+                <Text noOfLines={thumbnail ? 3 : 8} fontSize={"medium"} overflow="hidden" textOverflow="ellipsis" textAlign={"justify"}>
                     {content}
                 </Text>
             </Box>
-        </Box>
+        </Box >
     );
 };
 

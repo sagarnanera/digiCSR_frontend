@@ -27,10 +27,10 @@ import CompanyNavigation from "../../Navigation/companyNavigation";
 import BenificiaryNavigation from "../../Navigation/beneficiaryNavigation";
 import NavBar from "../../NavBar";
 
-const ShowNgoProfile = () => {
+const ShowNgoProfile = ({ userType }) => {
   const location = useLocation();
   let ngoID = location.state?.ngoID;
-  const userType = location.state?.userType;
+  // const userType = location.state?.userType;
   const navigate = useNavigate();
   const [profileData, setProfileData] = useState(null);
   const [ngoId, setNgoId] = useState("");
@@ -78,19 +78,10 @@ const ShowNgoProfile = () => {
           const response = await fetch(
             `http://localhost:4000/NGO/logo/${ngoID}`
           );
+          const res = await response.json()
+          // console.log(res);
+          setImage(res.LogoURL);
 
-          const base64Data = await response.text();
-
-          const byteCharacters = atob(base64Data.split(",")[1]);
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-
-          const blob = new Blob([byteArray], { type: "image/png" });
-          const imageUrl = URL.createObjectURL(blob);
-          setImage(imageUrl);
         } catch (error) {
           console.error(error);
         }
@@ -123,18 +114,10 @@ const ShowNgoProfile = () => {
             `http://localhost:4000/NGO/logo/${ngoId}`
           );
 
-          const base64Data = await response.text();
+          const res = await response.json()
+          // console.log(res);
+          setImage(res.LogoURL);
 
-          const byteCharacters = atob(base64Data.split(",")[1]);
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-
-          const blob = new Blob([byteArray], { type: "image/png" });
-          const imageUrl = URL.createObjectURL(blob);
-          setImage(imageUrl);
         } catch (error) {
           console.error(error);
         }
@@ -160,13 +143,6 @@ const ShowNgoProfile = () => {
       }}
     >
       <Box>
-        {/* {userType !== "company" && userType !== "beneficiary" ? (
-          <NgoNavigation />
-        ) : userType === "company" ? (
-          <CompanyNavigation />
-        ) : userType === "beneficiary" ? (
-          <BenificiaryNavigation />
-        )} */}
 
         <NavBar userType={userType} />
 
