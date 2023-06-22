@@ -4,6 +4,7 @@ import DatamapsIndia from "react-datamaps-india";
 import "../../../CSS/styles.css";
 
 function MapChart({ userType }) {
+  console.log(userType);
   const [regionData, setRegionData] = useState(null);
   useEffect(() => {
     if (userType === "company") {

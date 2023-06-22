@@ -15,7 +15,7 @@ import Carousel from "react-elastic-carousel";
 import MapChart from "./MapChart";
 import HexGrid from "./HexChart";
 import YearChart from "./YearChart";
-
+import "../../../CSS/styles.css";
 function Homepage({ userType }) {
   const breakPoints = [
     { width: 500, itemsToShow: 1 },
@@ -90,7 +90,15 @@ function Homepage({ userType }) {
           </Flex>
         </Box>
       </Box>
-
+      <div className="mapchart">
+        <HStack mb={"5rem"}>
+          <Box mr={"100px"}>
+            <MapChart userType={userType} />
+          </Box>
+          <HexGrid userType={userType} />
+        </HStack>
+      </div>
+      <YearChart userType={userType} />
       <Box my={8} borderRadius="0 450px 0 0" bg="#CDEBFF">
         <Text
           className="font1"
@@ -211,17 +219,6 @@ function Homepage({ userType }) {
       </Box>
 
       {/* <MapChart userType={userType} /> */}
-      <div className="mapchart">
-        <HStack>
-          <VStack>
-            <MapChart userType={userType} />
-          </VStack>
-          <HexGrid userType={userType} />
-        </HStack>
-      </div>
-      <div className="pie">
-        <YearChart userType={userType} />
-      </div>
 
       {/* <PieChart /> */}
 
