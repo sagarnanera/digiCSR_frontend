@@ -3,17 +3,7 @@ import "../../../CSS/homepage.css";
 import PieChart from "./Piechart";
 import { BsFacebook, BsTwitter, BsInstagram, BsLinkedin, BsGeoAlt, BsPhone, BsEnvelope } from "react-icons/bs";
 import { Box, Button, Flex, HStack, Icon, Image, Spacer, Text, VStack } from "@chakra-ui/react";
-// import "../../../CSS/homepage.css";
-import {
-  BsFacebook,
-  BsTwitter,
-  BsInstagram,
-  BsLinkedin,
-  BsGeoAlt,
-  BsPhone,
-  BsEnvelope,
-} from "react-icons/bs";
-import { Box, Flex, HStack, Icon, Image, Text, VStack } from "@chakra-ui/react";
+
 
 import Carousel from "react-elastic-carousel";
 import MapChart from "./MapChart";
@@ -61,7 +51,7 @@ function Homepage({ userType }) {
               // letterSpacing="0.8px"
               textTransform="capitalize"
               color="#000000"
-              // textAlign="center"
+            // textAlign="center"
             >
               Corporate Social Responsibility
             </Text>
@@ -71,7 +61,7 @@ function Homepage({ userType }) {
               fontFamily="Hind Vadodara"
               fontWeight="normal"
               mt={5}
-              // textAlign="center"
+            // textAlign="center"
             >
               with{" "}
               <u
@@ -86,7 +76,7 @@ function Homepage({ userType }) {
             </Text>
             <Text
               mt={8}
-              // textAlign="center"
+            // textAlign="center"
             >
               DigiCSR will help companies to ease their companies by generating
               annual report, project & auditor's report
