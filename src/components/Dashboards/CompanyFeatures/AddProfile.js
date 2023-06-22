@@ -131,11 +131,11 @@ const AddProfile = () => {
   };
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    const reader = new FileReader();
+    // const reader = new FileReader();
 
-    reader.onload = () => {
-      setImage(reader.result);
-    };
+    // reader.onload = () => {
+    setImage(file);
+    // };
 
     if (file) {
       // Validate file type
@@ -147,7 +147,7 @@ const AddProfile = () => {
         // Validate file size
         if (file.size <= 150 * 1024) {
           // 150 KB in bytes
-          reader.readAsDataURL(file);
+          // reader.readAsDataURL(file);  
           // console.log(image);
         } else {
           alert("Please select an image file smaller than 150 KB.");
@@ -205,12 +205,49 @@ const AddProfile = () => {
       return;
     }
     try {
-      const url = `http://localhost:4000/company/add-profile`; // Replace with your API endpoint URL
+
+      // logo upload start
+      const logoData = new FormData();
+      const companyLogoFile = new File([image], "company_logo.jpg");
+      logoData.append("file", companyLogoFile);
+
+      const logoUploadRes = await fetch(`http://localhost:4000/company/upload-logo`, {
+        method: "POST",
+        headers: {
+          authorization: localStorage.getItem("CompanyAuthToken"),
+        },
+        body: logoData,
+      });
+      const logoRes = await logoUploadRes.json();
+
+      console.log(logoRes);
+
+      // logo upload end
+
+
+      // certificate upload start
+      const certificateData = new FormData();
       const registrationCertificateFile = new File(
         [certificate],
         "registration_certificate.pdf"
       );
-      const companyLogoFile = new File([image], "company_logo.jpg");
+      certificateData.append("file", registrationCertificateFile);
+
+      const certificatUploadRes = await fetch(`http://localhost:4000/company/upload-certificate`, {
+        method: "POST",
+        headers: {
+          authorization: localStorage.getItem("CompanyAuthToken"),
+        },
+        body: certificateData,
+      });
+      const certificateRes = await certificatUploadRes.json();
+
+      console.log(certificateRes);
+      // certificate upload end
+
+
+      const url = `http://localhost:4000/company/add-profile`; // Replace with your API endpoint URL
+
       const formData = new FormData();
       formData.append("company_name", companyName);
       formData.append("summary", CompanySummary);
@@ -228,8 +265,6 @@ const AddProfile = () => {
       Sector.forEach((sectorItem) => {
         formData.append("sectors", sectorItem);
       });
-      formData.append("registration_certificate", registrationCertificateFile);
-      formData.append("company_logo", companyLogoFile);
 
       const response = await fetch(url, {
         method: "POST",
@@ -250,7 +285,7 @@ const AddProfile = () => {
         });
         setLoading(false);
         console.log(data);
-        navigate("/Company", { replace: true });
+        // navigate("/Company", { replace: true });
       } else {
         console.warn(data);
         throw new Error("Failed to create Profile. Please try again.");
