@@ -130,7 +130,6 @@ const ShowProfile = () => {
         console.log(data);
 
         if (response.ok && data.success) {
-
           const certificateURL = data.certificateURL;
 
           // Open the certificate PDF in a new tab
