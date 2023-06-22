@@ -264,7 +264,6 @@ function Homepage({ userType }) {
       <Box
         my={8}
         width={"100vw"}
-        style={{ overflowX: "hidden" }}
         borderRadius="0 450px 0 0"
         bg="#DAF0FC"
         mb={0}
