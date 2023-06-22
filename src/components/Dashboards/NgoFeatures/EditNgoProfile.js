@@ -361,18 +361,18 @@ const EditNgoProfile = () => {
       if (isImageChanged) {
         const ngoLogoFile = new File([image], "ngo_logo.jpg");
         logoData.append("file", ngoLogoFile);
+        const logoUploadRes = await fetch(`http://localhost:4000/ngo/upload-logo`, {
+          method: "POST",
+          headers: {
+            authorization: localStorage.getItem("NgoAuthToken"),
+          },
+          body: logoData,
+        });
+        const logoRes = await logoUploadRes.json();
+
+        console.log(logoRes);
       }
 
-      const logoUploadRes = await fetch(`http://localhost:4000/ngo/upload-logo`, {
-        method: "POST",
-        headers: {
-          authorization: localStorage.getItem("NgoAuthToken"),
-        },
-        body: logoData,
-      });
-      const logoRes = await logoUploadRes.json();
-
-      console.log(logoRes);
       // logo upload end
 
       const url = `http://localhost:4000/NGO/add-profile`;
