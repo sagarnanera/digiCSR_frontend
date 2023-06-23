@@ -125,23 +125,40 @@ const AdminNGOs = () => {
                   onChange={handleSearchQueryChange}
                 />
               </InputGroup>
-              <Box display="flex" pt="6" pl={"4"} flexWrap="wrap">
+              <Box
+                display="flex"
+                pt="6"
+                pl={"0"}
+                flexWrap="wrap"
+                maxH={"65vh"}
+                overflowY="scroll"
+                paddingRight="0"
+                css={{
+                  "&::-webkit-scrollbar": { width: "5px" },
+                  "&::-webkit-scrollbar-track": { background: "#f1f1f1" },
+                  "&::-webkit-scrollbar-thumb": { background: "gray" },
+                  "&::-webkit-scrollbar-thumb:hover": { background: "#555" },
+                }}
+              >
                 {filteredResult
                   .filter((ngo) =>
-                    ngo.ngo_name
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase())
+                    (ngo.ngo_name
+                      ? ngo.ngo_name.toLowerCase()
+                      : "undefined"
+                    ).includes(searchQuery.toLowerCase())
                   )
                   .map((ngo) => (
                     <CardComponent
                       userType={"admin"}
                       type={"ngo"}
                       Id={ngo._id}
-                      name={ngo.ngo_name}
+                      name={ngo.ngo_name ?? "undefined"}
                       logo={ngo.profile.ngo_logo}
-                      email={ngo.email}
-                      phone={ngo.profile.phone}
-                      location={ngo.profile.location}
+                      email={ngo.email ?? "undefined"}
+                      phone={ngo.profile.phone ?? "undefined"}
+                      location={ngo.profile.location ?? "undefined"}
+                      summary={ngo.profile.summary ?? "undefined"}
+                      year={ngo.profile.establishment_year ?? "undefined"}
                       triggerFetchCompanies={triggerFetchCompanies} // Pass the callback function as a prop
                     />
                   ))}

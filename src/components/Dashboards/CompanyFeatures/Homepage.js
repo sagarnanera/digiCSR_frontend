@@ -9,7 +9,15 @@ import {
   BsPhone,
   BsEnvelope,
 } from "react-icons/bs";
-import { Box, Flex, HStack, Icon, Image, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Divider,
+  Flex,
+  HStack,
+  Icon,
+  Image,
+  Text,
+} from "@chakra-ui/react";
 
 import Carousel from "react-elastic-carousel";
 import MapChart from "./MapChart";
@@ -57,10 +65,10 @@ function Homepage({ userType }) {
       >
         <Image
           className="background-img"
-          src="../image 79.png"
+          src="../Group 3.png"
           alt="home"
           w="50vw"
-          h="100vh"
+          h="90vh"
           pos="absolute"
           marginTop={"-10"}
           marginLeft={"50vw"}
@@ -73,7 +81,7 @@ function Homepage({ userType }) {
         />
         <Box
           className="text-container"
-          maxWidth="600px" // Set a maximum width for the text container
+          maxWidth="750px" // Set a maximum width for the text container
           mx={4} // Added horizontal margin to create space on the left side
           pt={20}
         >
@@ -84,6 +92,8 @@ function Homepage({ userType }) {
             // px={2}
             px={{ base: 2, sm: 4, md: 6, lg: 8 }}
             height="100%"
+            ml={10}
+            mt={"15vh"}
           >
             <Text
               fontFamily="Hind Vadodara"
@@ -98,23 +108,23 @@ function Homepage({ userType }) {
               Corporate Social Responsibility
             </Text>
             <Text
-              className="second-header"
+              // className="second-header"
               fontSize="50px"
               fontFamily="Hind Vadodara"
               fontWeight="normal"
               mt={5}
               // textAlign="center"
             >
-              with{" "}
-              <u
-                style={{
-                  textDecorationColor: "#29B5E2",
-                  textDecorationThickness: "4px",
-                }}
-              >
-                {" "}
-                DigiCSR{" "}
-              </u>
+              with DigiCSR{" "}
+              <Divider
+                height={"1"}
+                ml={"35%"}
+                mt={"-7"}
+                mb={8}
+                w={"65%"}
+                borderBottomWidth="20px"
+                borderColor={"skyblue"}
+              />
             </Text>
             <Text
               mt={8}
@@ -150,7 +160,8 @@ function Homepage({ userType }) {
           fontWeight="400"
           fontSize="30px"
           pl={2}
-          pt={2}
+          pt={5}
+          pb={2}
           maxWidth={"80%"}
         >
           CSR Expenditure{" "}
@@ -276,20 +287,20 @@ function Homepage({ userType }) {
       {/* <MapChart userType={userType} /> */}
 
       {/* <PieChart /> */}
-      <Image
+      {/* <Image
         src="../about-photo.png"
         width={"28vw"}
         height={"28vw"}
         ml={"78vw"}
         mb={"-45vh"}
         mt={"-5vw"}
-      />
+      /> */}
 
       <Box
         my={8}
         width={"100vw"}
         style={{ overflowX: "visible" }}
-        borderRadius="0 450px 0 0"
+        borderRadius="450px 0px 0px 0px"
         bg="#0CB6F047"
         // maxH={"15vw"}
         zIndex={-1}
@@ -303,10 +314,21 @@ function Homepage({ userType }) {
             fontSize={"2xl"}
             mb={10}
             mt={"5"}
+            mr={"-15vw"}
+            align={"end"}
           >
             About Us
           </Text>
-          <Text as="p" fontSize={"sm"} textAlign={"justify"} py={4} mt={-5}>
+          <Text
+            as="p"
+            fontSize={"sm"}
+            textAlign={"right"}
+            py={4}
+            mt={-5}
+            align={"end"}
+            ml={"25vw"}
+            width={"70vw"}
+          >
             At <b>DigiCSR</b> , we believe in the power of Corporate Social
             Responsibility (CSR) to make a positive impact on society and the
             environment. As a leading provider of CSR management solutions, we

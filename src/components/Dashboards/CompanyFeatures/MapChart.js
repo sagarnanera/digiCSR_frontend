@@ -99,11 +99,61 @@ function MapChart({ userType }) {
               hoverBorderColor: "green",
               height: 10,
               weight: 30,
+              labels: {
+                0: "0",
+                20: "20",
+                40: "40",
+                60: "60",
+                80: "80+",
+              },
             }}
           />
         ) : (
           <div>Loading...</div>
         )}
+        <div
+          style={{
+            marginLeft: "75vw",
+            marginTop: "-45vh",
+            marginBottom: "40vh",
+          }}
+        >
+          <div>
+            <span
+              className="color-box"
+              style={{ backgroundColor: "#b3d1ff" }}
+            />
+            <span>Lowest Donations</span>
+          </div>
+          <div>
+            <span
+              className="color-box"
+              style={{ backgroundColor: "#88a7f7" }}
+            />
+            <span>Less than Average Donations</span>
+          </div>
+          <div>
+            <span
+              className="color-box"
+              style={{ backgroundColor: "#5d86ef" }}
+            />
+            <span>Average Donations</span>
+          </div>
+          <div>
+            <span
+              className="color-box"
+              style={{ backgroundColor: "#3388f6" }}
+            />
+            <span>More than Average Donations</span>
+          </div>
+          <div>
+            <span
+              className="color-box"
+              style={{ backgroundColor: "#005ce6" }}
+            />
+            <span>Highest Donations</span>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -102,7 +102,7 @@ const AdminCompanies = () => {
         ml={"5vw"}
         bgColor={"whiteAlpha.800"}
         // style={{ backdropFilter: "blur(5px)" }}
-        overflow={"auto"}
+        // overflow={"auto"}
       >
         <Box width={"98vw"} height={"80vh"}>
           <Flex>
@@ -126,25 +126,40 @@ const AdminCompanies = () => {
               <Box
                 display="flex"
                 pt="6"
-                pl={"4"}
+                pl={"0"}
                 flexWrap="wrap"
+                maxH={"65vh"}
+                overflowY="scroll"
+                paddingRight="0"
+                css={{
+                  "&::-webkit-scrollbar": { width: "5px" },
+                  "&::-webkit-scrollbar-track": { background: "#f1f1f1" },
+                  "&::-webkit-scrollbar-thumb": { background: "gray" },
+                  "&::-webkit-scrollbar-thumb:hover": { background: "#555" },
+                }}
               >
                 {filteredResult
                   .filter((company) =>
-                    company.company_name
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase())
+                    (company.company_name
+                      ? company.company_name.toLowerCase()
+                      : "undefined"
+                    ).includes(searchQuery.toLowerCase())
                   )
                   .map((company) => (
                     <CardComponent
                       userType={"admin"}
                       type={"company"}
                       Id={company._id}
-                      name={company.company_name}
+                      name={company.company_name ?? "undefined"}
                       logo={company.profile.company_logo}
-                      email={company.email}
-                      phone={company.profile.comunication_person.cp_phone}
-                      location={company.profile.location}
+                      email={company.email ?? "undefined"}
+                      phone={
+                        company.profile.comunication_person?.cp_phone ??
+                        "undefined"
+                      }
+                      location={company.profile.location ?? "undefined"}
+                      summary={company.profile.summary ?? "undefined"}
+                      year={company.profile.establishment_year ?? "undefined"}
                       triggerFetchCompanies={triggerFetchCompanies} // Pass the callback function as a prop
                     />
                   ))}

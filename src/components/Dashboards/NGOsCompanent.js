@@ -67,7 +67,7 @@ export const FilterDrawer = ({ isOpen, onClose, handleCheckboxChange }) => {
     <Box
       left={0}
       top={0}
-      h="85vh"
+      h="80vh"
       overflow="auto"
       padding="1%"
       w="40vh"
@@ -194,6 +194,8 @@ export const CardComponent = ({
   name,
   email,
   phone,
+  summary,
+  year,
   location,
   triggerFetchCompanies,
 }) => {
@@ -205,7 +207,7 @@ export const CardComponent = ({
     if (logo) {
       setImage(logo);
     }
-  },[logo]);
+  }, [logo]);
   // console.log(logo);
   const ShowProfile = () => {
     if (userType === "company") {
@@ -307,116 +309,195 @@ export const CardComponent = ({
     }
   };
   return (
-    <Box
-      width={"300px"}
-      borderWidth="1px"
-      borderRadius="lg"
-      overflow="visible"
-      p={4}
-      bg={"rgba(135, 206, 235, 0.1)"}
-      fontFamily={"serif"}
-      borderColor={"skyblue"}
-      marginLeft="0.5rem"
-      mr={"1rem"}
-      mb={"2rem"}
-      position="relative"
-      _hover={{
-        ".delete-button": { opacity: 1 },
-      }}
-    >
+    <>
       <Box
-        position="absolute"
-        top="-25px"
-        left="78%"
-        width={"70%"}
-        transform="translateX(-50%)"
-        zIndex={1}
+        width={"300px"}
+        borderWidth="1px"
+        borderRadius="lg"
+        overflow="visible"
+        p={4}
+        bg={"rgba(135, 206, 235, 0.1)"}
+        fontFamily={"serif"}
+        borderColor={"skyblue"}
+        marginLeft="0.5rem"
+        mr={"1rem"}
+        mb={"2rem"}
+        position="relative"
+        _hover={{
+          ".delete-button": { opacity: 1 },
+        }}
       >
-        <label htmlFor="profile-image">
-          <div
-            style={{
-              position: "relative",
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
-              overflow: "hidden",
-            }}
-          >
-            {image ? (
-              <img src={image} alt="company logo" width="100%" height="100%" />
-            ) : (
-              <img
-                src={"/user-avatar.jpg"}
-                alt="Profile"
-                style={{ width: "100%", height: "100%" }}
-              />
-            )}
-          </div>
-        </label>
-      </Box>
-      <Box display={"flex"} justifyContent={"flex-end"}>
-        {userType === "admin" && (
-          <IconButton
-            aria-label="Delete member"
-            icon={<DeleteIcon />}
-            variant={"ghost"}
-            onClick={() => {
-              handleDeleteUser(Id);
-            }}
-            colorScheme="blue"
-            color={"red"}
-            position="absolute"
-            top="0px"
-            right="3px"
-            opacity={0}
-            transition="opacity 0.3s"
-            className="delete-button"
+        <Box
+          position="absolute"
+          top="-2.6vh"
+          left="78%"
+          width={"70%"}
+          transform="translateX(-50%)"
+          zIndex={1}
+        >
+          <label htmlFor="profile-image">
+            <div
+              style={{
+                position: "relative",
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                overflow: "hidden",
+              }}
+            >
+              {image ? (
+                <img
+                  src={image}
+                  alt="company logo"
+                  width="100%"
+                  height="100%"
+                />
+              ) : (
+                <img
+                  src={"/user-avatar.jpg"}
+                  alt="Profile"
+                  style={{ width: "100%", height: "100%" }}
+                />
+              )}
+            </div>
+          </label>
+        </Box>
+        <Box display={"flex"} justifyContent={"flex-end"}>
+          {userType === "admin" && (
+            <IconButton
+              aria-label="Delete member"
+              icon={<DeleteIcon />}
+              variant={"ghost"}
+              onClick={() => {
+                handleDeleteUser(Id);
+              }}
+              colorScheme="blue"
+              color={"red"}
+              position="absolute"
+              top="0px"
+              right="3px"
+              opacity={0}
+              transition="opacity 0.3s"
+              className="delete-button"
+            />
+          )}
+        </Box>
+
+        {name !== "undefined" ? (
+          <Text fontSize="lg" fontWeight="bold" mt={1} align="center">
+            {name}
+          </Text>
+        ) : (
+          <Text fontSize="lg" fontWeight="bold" mt={1} align="center">
+            ------
+          </Text>
+        )}
+        <Divider width="80%" ml="10%" mb="3" />
+        <Box fontSize="sm">
+          {year !== "undefined" ? (
+            <Flex align="center" mb={2}>
+              <strong>establishment_year:</strong>
+              <Text ml={5}>{year}</Text>
+            </Flex>
+          ) : (
+            <Flex align="center" mb={2}>
+              <strong>establishment_year:</strong>
+              <Text ml={5}>-----</Text>
+            </Flex>
+          )}
+          {email !== "undefined" ? (
+            <Flex align="center" mb={2}>
+              <EmailIcon mr={2} />
+              <Text>{email}</Text>
+            </Flex>
+          ) : (
+            <Flex align="center" mb={2}>
+              <EmailIcon mr={2} />
+              <Text>-----</Text>
+            </Flex>
+          )}
+          {phone !== "undefined" ? (
+            <Flex align="center" mb={2}>
+              <PhoneIcon mr={2} />
+              <Text>{phone}</Text>
+            </Flex>
+          ) : (
+            <Flex align="center" mb={2}>
+              <PhoneIcon mr={2} />
+              <Text>-----</Text>
+            </Flex>
+          )}
+          {location !== "undefined" ? (
+            <Flex align="center" mb={2}>
+              <Icon as={FiMapPin} mr={2} />
+              <Text>
+                {location?.city}, {location?.state}, {location?.pincode}
+              </Text>
+            </Flex>
+          ) : (
+            <Flex align="center" mb={2}>
+              <Icon as={FiMapPin} mr={2} />
+              <Text>-----</Text>
+            </Flex>
+          )}
+          {summary !== "undefined" ? (
+            <>
+              <Flex align="center">
+                <strong>Summary:</strong>
+              </Flex>
+              <Text
+                ml={5}
+                maxW="400px"
+                overflow="hidden"
+                textOverflow="ellipsis"
+                whiteSpace="nowrap"
+              >
+                {summary && summary.length > 160
+                  ? `${summary.slice(0, 160)}...`
+                  : summary}
+              </Text>
+            </>
+          ) : (
+            <>
+              <Flex align="center">
+                <strong>Summary:</strong>
+              </Flex>
+              <Text
+                ml={5}
+                maxW="400px"
+                overflow="hidden"
+                textOverflow="ellipsis"
+                whiteSpace="nowrap"
+              >
+                -----
+              </Text>
+            </>
+          )}
+        </Box>
+
+        <HStack>
+          <Box ml={"190px"}>
+            <Button
+              fontSize={"xs"}
+              _hover={{ color: "red.500" }}
+              onClick={() => {
+                ShowProfile();
+              }}
+              variant={"link"}
+            >
+              View More
+            </Button>
+          </Box>
+        </HStack>
+        {isDeleteDialogOpen && (
+          <DeleteConfirmationDialog
+            isOpen={isDeleteDialogOpen}
+            onClose={handleDeleteCancel}
+            onDelete={handleDeleteConfirmation}
           />
         )}
       </Box>
-
-      <Text fontSize="lg" fontWeight="bold" mt={"-1"} align={"center"}>
-        {name}
-      </Text>
-      <Divider width={"80%"} ml={"10%"} mb={"3"}></Divider>
-      <Box fontSize={"sm"}>
-        <Flex align="center" mb={2}>
-          <EmailIcon mr={2} />
-          <Text>{email}</Text>
-        </Flex>
-        <Flex align="center" mb={2}>
-          <PhoneIcon mr={2} />
-          <Text>{phone}</Text>
-        </Flex>
-        <Flex align="center">
-          <Icon as={FiMapPin} mr={2} />
-          <Text>
-            {location?.city} , {location?.state} , {location?.pincode}
-          </Text>
-        </Flex>
-      </Box>
-      <HStack>
-        <Box ml={"190px"}>
-          <Button
-            fontSize={"xs"}
-            _hover={{ color: "red.500" }}
-            onClick={() => {
-              ShowProfile();
-            }}
-            variant={"link"}
-          >
-            View More
-          </Button>
-        </Box>
-      </HStack>
-      {isDeleteDialogOpen && (
-        <DeleteConfirmationDialog
-          isOpen={isDeleteDialogOpen}
-          onClose={handleDeleteCancel}
-          onDelete={handleDeleteConfirmation}
-        />
-      )}
-    </Box>
+    </>
   );
 };
 

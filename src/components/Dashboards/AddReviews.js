@@ -321,11 +321,21 @@ const ReviewComponent = ({ ngoID, userType }) => {
               ))}
             </Box>
           </Box>
-          <VStack overflowY={"auto"}>
+          <VStack>
             <Text mr={"40vw"}>
               <strong>Top Reviews:</strong>
             </Text>
-            <Box>
+            <Box
+              maxH={"57vh"}
+              overflowY="scroll"
+              paddingRight="5"
+              css={{
+                "&::-webkit-scrollbar": { width: "5px" },
+                "&::-webkit-scrollbar-track": { background: "#f1f1f1" },
+                "&::-webkit-scrollbar-thumb": { background: "gray" },
+                "&::-webkit-scrollbar-thumb:hover": { background: "#555" },
+              }}
+            >
               {displayedReviews.map((review) => (
                 <Box
                   key={review._id}
