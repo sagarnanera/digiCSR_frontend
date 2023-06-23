@@ -302,7 +302,13 @@ const Post = ({ userType }) => {
         bgColor={"rgba(255, 255, 255, 0.76)"}
         backdropFilter="auto"
         backdropBlur="8px"
-        overflowX={"scroll"}
+        overflowY={"scroll"}
+        css={{
+          "&::-webkit-scrollbar": { width: "5px" },
+          "&::-webkit-scrollbar-track": { background: "#f1f1f1" },
+          "&::-webkit-scrollbar-thumb": { background: "rgba(107,164,245, 0.6)" },
+          "&::-webkit-scrollbar-thumb:hover": { background: "rgba(107,164,245,1)" },
+        }}
       >
         <Heading as="h4" mb={5} noOfLines={{ base: 2, md: 4 }} textOverflow={"ellipsis"}>
           {blog.title}
