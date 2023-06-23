@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import jwt_decode from "jwt-decode";
+// import jwt_decode from "jwt-decode";
 import {
   Box,
   Container,
@@ -24,7 +24,6 @@ import {
   Checkbox,
   Tooltip,
   // WrapItem,
-  Wrap,
   useToast,
   IconButton,
   Modal,
@@ -70,7 +69,6 @@ const AddNgoProfile = () => {
   const [states, setStates] = useState([]);
   const [sector, setSector] = useState([]);
   const [CSRBudget, setCSRBudget] = useState();
-  const [userId, setUserId] = useState("");
   const [selectedStates, setSelectedStates] = useState([]);
   const [isSectorDropdownOpen, setIsSectorDropdownOpen] = useState(false);
   const [selectedStatesText, setSelectedStatesText] = useState("");
@@ -88,6 +86,7 @@ const AddNgoProfile = () => {
   const [cities, setCities] = useState([]);
   const [selectedcities, setselectedCities] = useState([]);
   const [pincode, setPincode] = useState();
+  const [imageURL, setImageURL] = useState("");
 
   const handleAddMember = () => {
     setShowModal(true);
@@ -196,10 +195,10 @@ const AddNgoProfile = () => {
       const fetchedStates = await fetchStates();
       setStates(fetchedStates);
     };
-    const token = localStorage.getItem("NgoAuthToken");
-    const decodedToken = jwt_decode(token);
-    // Set the user's ID in the state variable
-    setUserId(decodedToken._id);
+    // const token = localStorage.getItem("NgoAuthToken");
+    // const decodedToken = jwt_decode(token);
+    // // Set the user's ID in the state variable
+    // setUserId(decodedToken._id);
     getStatesAndCompanyId();
   }, []);
 
@@ -241,7 +240,16 @@ const AddNgoProfile = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     // const reader = new FileReader();
+    const file1 = e.target.files[0];
+    const reader = new FileReader();
 
+    reader.onload = () => {
+      setImageURL(reader.result);
+    };
+
+    if (file1) {
+      reader.readAsDataURL(file1);
+    }
     // reader.onload = () => {
     //   setImage(reader.result);
     // };
@@ -294,19 +302,20 @@ const AddNgoProfile = () => {
     }
 
     try {
-
-
       const logoData = new FormData();
       const ngoLogoFile = new File([image], "ngo_logo.jpg");
       logoData.append("file", ngoLogoFile);
 
-      const logoUploadRes = await fetch(`http://localhost:4000/ngo/upload-logo`, {
-        method: "POST",
-        headers: {
-          authorization: localStorage.getItem("CompanyAuthToken"),
-        },
-        body: logoData,
-      });
+      const logoUploadRes = await fetch(
+        `http://localhost:4000/ngo/upload-logo`,
+        {
+          method: "POST",
+          headers: {
+            authorization: localStorage.getItem("CompanyAuthToken"),
+          },
+          body: logoData,
+        }
+      );
       const logoRes = await logoUploadRes.json();
 
       console.log(logoRes);
@@ -439,11 +448,19 @@ const AddNgoProfile = () => {
                     overflow: "hidden",
                   }}
                 >
-                  <img
-                    src={image || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
-                    alt="Profile"
-                    style={{ width: "100%", height: "100%" }}
-                  />
+                  {imageURL ? (
+                    <img
+                      src={imageURL || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
+                      alt="Profile"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  ) : (
+                    <img
+                      src={image || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
+                      alt="Profile"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  )}
                   <input
                     type="file"
                     id="profile-image"
@@ -688,8 +705,9 @@ const AddNgoProfile = () => {
                   value={
                     selectedStates.length <= 6
                       ? selectedStatesText
-                      : `${selectedStates.slice(0, 6)},..+${selectedStates.length - 6
-                      } more`
+                      : `${selectedStates.slice(0, 6)},..+${
+                          selectedStates.length - 6
+                        } more`
                   }
                 ></Textarea>
               </Tooltip>

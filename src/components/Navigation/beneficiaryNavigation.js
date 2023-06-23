@@ -19,7 +19,7 @@ import {
 import { FiMenu } from "react-icons/fi";
 import { useState } from "react";
 
-const BenificiaryNavigation = () => {
+const BeneficiaryNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobile] = useMediaQuery("(max-width: 800px)");
@@ -118,7 +118,9 @@ const BenificiaryNavigation = () => {
               <Link
                 to="/Beneficiary/ngos"
                 className={
-                  location.pathname === "/Beneficiary/ngos" ? classes.active : ""
+                  location.pathname === "/Beneficiary/ngos"
+                    ? classes.active
+                    : ""
                 }
               >
                 NGOs
@@ -157,4 +159,4 @@ const BenificiaryNavigation = () => {
   );
 };
 
-export default BenificiaryNavigation;
+export default BeneficiaryNavigation;

@@ -1,12 +1,12 @@
 import React from "react";
-import BenificiaryNavigation from "../../Navigation/beneficiaryNavigation";
+import BeneficiaryNavigation from "../../Navigation/beneficiaryNavigation";
 
-const ShowBenificiaryprofile = () => {
+const ShowBeneficiaryprofile = () => {
   return (
     <div>
-      <BenificiaryNavigation />
+      <BeneficiaryNavigation />
     </div>
   );
 };
 
-export default ShowBenificiaryprofile;
+export default ShowBeneficiaryprofile;

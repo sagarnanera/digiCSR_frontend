@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import CompanyAuth from "../pages/Authentication/companyAuth";
 import NgoAuth from "../pages/Authentication/NgoAuth";
-import BenificiaryAuth from "../pages/Authentication/benificiaryAuth";
+import BeneficiaryAuth from "../pages/Authentication/BeneficiaryAuth";
 
 export const SelectedOptionContext = createContext();
 
@@ -30,7 +30,7 @@ const ChooseUserComponent = () => {
           backgroundSize: "cover",
           backgroundPosition: "center",
           minHeight: "100vh",
-          minWidth: "100vw"
+          minWidth: "100vw",
         }}
       >
         <Container
@@ -66,7 +66,7 @@ const ChooseUserComponent = () => {
                 <HStack align="start" spacing={10}>
                   <Radio value="Company">Company</Radio>
                   <Radio value="Ngo">NGO</Radio>
-                  <Radio value="Benificiary">Benificiary or Common User</Radio>
+                  <Radio value="Beneficiary">Beneficiary or Common User</Radio>
                 </HStack>
               </RadioGroup>
             </FormControl>
@@ -75,7 +75,7 @@ const ChooseUserComponent = () => {
             {selectedOption && (
               <div>
                 {selectedOption === "Company" && <CompanyAuth />}
-                {selectedOption === "Benificiary" && <BenificiaryAuth />}
+                {selectedOption === "Beneficiary" && <BeneficiaryAuth />}
                 {selectedOption === "Ngo" && <NgoAuth />}
               </div>
             )}

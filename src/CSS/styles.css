@@ -14,17 +14,18 @@ body {
 }
 
 .map-container svg {
-  height: 650px;
+  height: 1000px;
+  width: "80vw";
   position: unset !important;
   top: 110vh !important;
-  margin-left: 15vw !important;
+  margin-left: 22vw !important;
 }
 
 .mapchart {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 75%;
+  width: 100vw;
   /* Adjust the width as needed */
   /* margin-right: 500px; */
   /* margin-bottom: 5rem; */

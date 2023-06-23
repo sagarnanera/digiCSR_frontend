@@ -149,7 +149,7 @@ function AllUserLogin() {
         });
         setLoading(false);
       }
-    } else if (selectedOption === "Benificiary") {
+    } else if (selectedOption === "Beneficiary") {
       try {
         const response = await fetch(
           "http://localhost:4000/Beneficiary/login",
@@ -309,7 +309,6 @@ function AllUserLogin() {
           });
           const { result } = data;
 
-
           // TODO : get the userData from the server and save it into context
 
           localStorage.setItem("NgoAuthToken", result);
@@ -341,7 +340,7 @@ function AllUserLogin() {
         setLoading(false);
         return; // Prevent further execution
       }
-    } else if (selectedOption === "Benificiary") {
+    } else if (selectedOption === "Beneficiary") {
       try {
         const config = {
           headers: {
@@ -373,12 +372,11 @@ function AllUserLogin() {
           });
           const { result } = data;
 
-
           // TODO : get the userData from the server and save it into context
 
-          localStorage.setItem("BenificiaryAuthToken", result);
+          localStorage.setItem("BeneficiaryAuthToken", result);
           setLoading(false);
-          navigate("/Beneficiary/addprofile", { replace: true });
+          navigate("/Beneficiary", { replace: true });
         } else {
           throw new Error("Failed to verify. Please try again later.");
         }

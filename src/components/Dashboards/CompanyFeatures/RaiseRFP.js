@@ -31,6 +31,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import { fetchStates } from "../../geoData";
 import { sectorOptions } from "../../sectorData";
+import RaiseConfirmationDialog from "./RFPRaiseAlert";
 // import jwt_decode from "jwt-decode";
 
 function RaiseRFP({ onClose, onRFPRaised }) {
@@ -48,6 +49,8 @@ function RaiseRFP({ onClose, onRFPRaised }) {
   const [selectedStatesText, setSelectedStatesText] = useState("");
   const [selectedSectorText, setSelectedSectorText] = useState("");
   const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
+
   // const [company, setCompany] = useState("");
   const toast = useToast();
 
@@ -90,7 +93,12 @@ function RaiseRFP({ onClose, onRFPRaised }) {
     setIsStateDropdownOpen((prevIsDropdownOpen) => !prevIsDropdownOpen);
   };
 
-  const submitHandler = async () => {
+  const handleRaiseRFP = () => {
+    setIsAlertDialogOpen(true);
+  };
+
+  const handleRaiseConfirmation = async () => {
+    setIsAlertDialogOpen(false);
     setLoading(true);
     if (
       !title ||
@@ -161,6 +169,10 @@ function RaiseRFP({ onClose, onRFPRaised }) {
       setLoading(false);
       return;
     }
+  };
+
+  const handleRaiseCancel = () => {
+    setIsAlertDialogOpen(false);
   };
 
   return (
@@ -339,7 +351,7 @@ function RaiseRFP({ onClose, onRFPRaised }) {
               type="submit"
               colorScheme="blue"
               w="100%"
-              onClick={submitHandler}
+              onClick={handleRaiseRFP}
               style={{ marginTop: 15 }}
               isLoading={loading}
             >
@@ -348,6 +360,13 @@ function RaiseRFP({ onClose, onRFPRaised }) {
           </VStack>
         </ModalBody>
       </ModalContent>
+      {isAlertDialogOpen && (
+        <RaiseConfirmationDialog
+          isOpen={isAlertDialogOpen}
+          onClose={handleRaiseCancel}
+          onDelete={handleRaiseConfirmation}
+        />
+      )}
     </Modal>
   );
 }

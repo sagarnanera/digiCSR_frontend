@@ -10,7 +10,7 @@ import {
 import { CardComponent, FilterDrawer } from "./NGOsCompanent";
 import { SearchIcon } from "@chakra-ui/icons";
 import CompanyNavigation from "../Navigation/companyNavigation";
-import BenificiaryNavigation from "../Navigation/beneficiaryNavigation";
+import BeneficiaryNavigation from "../Navigation/beneficiaryNavigation";
 
 const NGOs = ({ userType }) => {
   const [ngos, setNgos] = useState([]);
@@ -28,7 +28,7 @@ const NGOs = ({ userType }) => {
       const token =
         userType === "company"
           ? localStorage.getItem("CompanyAuthToken")
-          : localStorage.getItem("BenificiaryAuthToken");
+          : localStorage.getItem("BeneficiaryAuthToken");
 
       options = {
         headers: {
@@ -96,7 +96,7 @@ const NGOs = ({ userType }) => {
       {userType === "company" ? (
         <CompanyNavigation />
       ) : (
-        <BenificiaryNavigation />
+        <BeneficiaryNavigation />
       )}
       <Box
         display={"flex"}

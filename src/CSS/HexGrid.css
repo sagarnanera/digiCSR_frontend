@@ -1,11 +1,11 @@
 .hex-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0px, 1.3fr));
-  grid-gap: 5px;
+  grid-template-columns: repeat(3, minmax(0px, 0.3fr));
+  grid-gap: 2px;
   /* grid-row: inherit; */
-  margin-left: -35vw;
-  margin-right: 15vw;
-  margin-top: 5vh;
+  margin-left: 15vw;
+  margin-right: 13vw;
+  margin-top: 0vh;
   height: 400px;
   min-height: 400px;
   max-height: 400px;
