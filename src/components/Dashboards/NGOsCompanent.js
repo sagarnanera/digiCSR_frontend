@@ -373,11 +373,12 @@ export const CardComponent = ({
               onClick={() => {
                 handleDeleteUser(Id);
               }}
-              colorScheme="blue"
+              colorScheme="red"
               color={"red"}
               position="absolute"
-              top="0px"
-              right="3px"
+              top="4px"
+              right="4px"
+              // height={10}
               opacity={0}
               transition="opacity 0.3s"
               className="delete-button"

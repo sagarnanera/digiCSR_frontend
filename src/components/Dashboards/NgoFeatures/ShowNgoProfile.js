@@ -131,13 +131,13 @@ const ShowNgoProfile = ({ userType }) => {
   };
   return (
     <div
-      style={{
-        backgroundImage: "url('../bg3.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        minHeight: "100vh",
-        minWidth: "100vw",
-      }}
+      // style={{
+      //   backgroundImage: "url('../bg3.png')",
+      //   backgroundSize: "cover",
+      //   backgroundPosition: "center",
+      //   minHeight: "100vh",
+      //   minWidth: "100vw",
+      // }}
     >
       <Box>
         <NavBar userType={userType} />

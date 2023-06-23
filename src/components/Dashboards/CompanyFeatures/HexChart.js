@@ -59,13 +59,13 @@ const PieChartComponent = ({ userType }) => {
   };
 
   return (
-    <div style={{ marginLeft: "60vw", marginTop: "10vh" }}>
+    <div style={{ marginLeft: "40vw", marginTop: "10vh" }}>
       <Chart
         options={chartOptions}
         series={data.map((item) => item.totalAmount)}
         type="pie"
-        width={"900"}
-        height={"900"}
+        width={"200%"}
+        height={"150%"}
       />
       <Text
         display={"flex"}
