@@ -137,6 +137,12 @@ const MediaSection = ({ userType }) => {
         backdropBlur="8px"
         borderRadius="md"
         boxShadow="xl"
+        css={{
+          "&::-webkit-scrollbar": { width: "5px" },
+          "&::-webkit-scrollbar-track": { background: "#f1f1f1" },
+          "&::-webkit-scrollbar-thumb": { background: "rgba(107,164,245, 0.6)" },
+          "&::-webkit-scrollbar-thumb:hover": { background: "rgba(107,164,245,1)" },
+        }}
       >
         <Flex justifyContent={userType === "ngo" ? "space-between" : "center"}>
           <Heading
