@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, Flex, Heading, IconButton, useMediaQuery } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import PostCard from "./PostCard";
-import NavBar from "../../NavBar";
+import NavBar from "../NavBar";
 import { FiPlus } from "react-icons/fi";
 
 const MediaSection = ({ userType }) => {
@@ -65,22 +65,35 @@ const MediaSection = ({ userType }) => {
         <NavBar userType={userType} />
 
         <Box
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          flexDirection={"column"}
           maxWidth={{ base: "95vw", lg: "80vw" }}
+          height={"85vh"}
           mx="auto"
-          mt={8}
           borderWidth="1px"
           p={2}
           bg={"white"}
           borderRadius="md"
           boxShadow="md"
+          mt={4}
+          mb={2}
+          bgColor={"rgba(186, 182, 182, 0.4)"}
         >
-          <h2>NO Blogs</h2>
+          <Heading as={"h1"} mb={4}>NO Blogs</Heading>
           <Button
             onClick={() =>
               userType !== "ngo" ? navigate(-1) : navigate("/Ngo/media/create")
             }
             colorScheme="teal"
             mb={4}
+            bg="white"
+            color="skyblue"
+            // w={"15vw"}
+            boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+            _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+            _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
           >
             {userType !== "ngo" ? "Back" : "Create New Blog"}
           </Button>
@@ -125,7 +138,7 @@ const MediaSection = ({ userType }) => {
             onClick={() => navigate("/Ngo/media/create")}
             bg="white"
             color="skyblue"
-            w={"15vw"}
+            // w={"15vw"}
             boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
             _hover={{ boxShadow: "0px 4px 6px skyblue" }}
             _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}

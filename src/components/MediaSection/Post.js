@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NgoNavigation from "../../Navigation/NgoNavigation";
+import NgoNavigation from "../Navigation/NgoNavigation";
 import {
   Box,
   Heading,
@@ -15,14 +15,19 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { extendTheme } from "@chakra-ui/react";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
-import NavBar from "../../NavBar";
+import NavBar from "../NavBar";
+import PostDeleteAlert from "./PostDeleteAlert";
+import PostUpdateAlert from "./PostUpdateAlert";
 
 const Post = ({ userType }) => {
   const { id } = useParams();
-  const [blog, setBlog] = useState({});
+  const [blog, setBlog] = useState();
 
   const navigate = useNavigate();
   const toast = useToast();
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
 
   const theme = extendTheme({
     styles: {
@@ -153,10 +158,8 @@ const Post = ({ userType }) => {
   }, [id]);
 
   const handleDeleteBlog = async (blogId) => {
-    console.log({
-      method: "DELETE",
-      ...options,
-    });
+
+    setIsDeleteDialogOpen(false);
 
     if (userType !== "ngo" && userType !== "admin") {
       toast({
@@ -215,6 +218,9 @@ const Post = ({ userType }) => {
   };
 
   const handleEditBlog = (blogId) => {
+
+    setIsUpdateDialogOpen(false);
+
     if (userType !== "ngo") {
       toast({
         title: "Not Allowed",
@@ -232,29 +238,42 @@ const Post = ({ userType }) => {
   if (!blog) {
     return (
       <div style={{
-        backgroundImage: "url('../bg.png')",
+        backgroundImage: "url('/bg.png')",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover"
       }}>
-        <NgoNavigation />
+        <NavBar userType={userType} />
         <Box
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          flexDirection={"column"}
           maxWidth={{ base: "95vw", lg: "80vw" }}
+          height={"80vh"}
           mx="auto"
           mt={8}
           mb={2}
+          p={{ base: 4, lg: 8 }}
           borderWidth="1px"
-          p={2}
-          bg={"white"}
           borderRadius="md"
           boxShadow="md"
+          bgColor={"rgba(255, 255, 255, 0.76)"}
+          backdropFilter="auto"
+          backdropBlur="8px"
+          overflowX={"scroll"}
         >
-          <h2>Blog Not Found</h2>
+          <Heading as={"h1"} mb={4}>Blog Not Found</Heading>
           <Button
             onClick={() =>
               userType !== "ngo" ? navigate(-1) : navigate("/Ngo/media/create")
             }
             colorScheme="teal"
             mb={4}
+            bg="white"
+            color="skyblue"
+            boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
+            _hover={{ boxShadow: "0px 4px 6px skyblue" }}
+            _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
           >
             {userType !== "ngo" ? "Back" : "Create New Blog"}
           </Button>
@@ -285,39 +304,56 @@ const Post = ({ userType }) => {
         backdropBlur="8px"
         overflowX={"scroll"}
       >
-        <Heading as="h1" mb={5} fontSize={"5xl"}>
+        <Heading as="h4" mb={5} noOfLines={{ base: 2, md: 4 }} textOverflow={"ellipsis"}>
           {blog.title}
         </Heading>
-        <Box
-          display="flex"
-          alignItems="center"
+        <Flex
+          alignItems={"center"}
           justifyContent={"space-between"}
           mb={4}
         >
-          <Box display="flex" alignItems="center">
+          <Flex alignItems="center" color="gray.400" justifyItems={"center"} width={"80%"}>
             <Image
-              src={blog.ngoLogo}
-              alt={blog.author}
               boxSize="40px"
               borderRadius="full"
               m={0}
               mr={2}
+              src={blog.ngoLogo ? blog.ngoLogo : "/user-avatar.jpg"}
+              alt={blog.author}
+              title={blog.author}
             />
-            <Text>{blog.author} &nbsp;  </Text>
-            -{"  "}
-            {new Date(blog.createdAt).toLocaleString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </Box>
+            <Text
+              display={"inline-block"}
+              title={blog.author}
+              maxWidth={"40%"}
+              overflow="hidden"
+              textOverflow="ellipsis"
+              whiteSpace="nowrap">
+              {blog.author}&nbsp;
+            </Text> -{" "}
+            <Text
+              display={"inline-block"}
+              width={"40%"}
+              title={new Date(blog.createdAt).toLocaleString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
+              overflow="hidden"
+              textOverflow="ellipsis"
+              whiteSpace="nowrap">
+              {new Date(blog.createdAt).toLocaleString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </Text>
+          </Flex>
 
           {(userType === "ngo" || userType === "admin") && (
             <Flex
               alignItems="center"
               justifyContent="center"
-              // opacity={0} // Initially hidden
-              // transition="opacity 0.2s"
               _groupHover={{ opacity: 1 }} // Visible on hover
             >
               <IconButton
@@ -327,8 +363,9 @@ const Post = ({ userType }) => {
                 color="red"
                 aria-label="Delete"
                 size="md"
-                mr={2}
-                onClick={() => handleDeleteBlog(blog._id)}
+                onClick={() => {
+                  setIsDeleteDialogOpen(true);
+                }}
               />
               {userType === "ngo" && <IconButton
                 icon={<EditIcon />}
@@ -337,11 +374,13 @@ const Post = ({ userType }) => {
                 color="black"
                 aria-label="Edit"
                 size="md"
-                onClick={() => handleEditBlog(blog._id)}
+                onClick={() => {
+                  setIsUpdateDialogOpen(true);
+                }}
               />}
             </Flex>
           )}
-        </Box>
+        </Flex>
 
         <Box width="100%" overflowWrap="break-word">
           <ChakraProvider theme={theme}>
@@ -349,6 +388,16 @@ const Post = ({ userType }) => {
           </ChakraProvider>
         </Box>
       </Box>
+      <PostDeleteAlert
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onDelete={() => handleDeleteBlog(blog._id)}
+      />
+      <PostUpdateAlert
+        isOpen={isUpdateDialogOpen}
+        onClose={() => setIsUpdateDialogOpen(false)}
+        onDelete={() => handleEditBlog(blog._id)}
+      />
     </div >
   );
 };
