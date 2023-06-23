@@ -113,9 +113,9 @@ function MapChart({ userType }) {
         )}
         <div
           style={{
-            marginLeft: "75vw",
-            marginTop: "-45vh",
-            marginBottom: "40vh",
+            marginLeft: "65vw",
+            marginTop: "-55vh",
+            marginBottom: "50vh",
           }}
         >
           <div>
@@ -142,7 +142,7 @@ function MapChart({ userType }) {
           <div>
             <span
               className="color-box"
-              style={{ backgroundColor: "#3388f6" }}
+              style={{ backgroundColor: "#1a7cfc" }}
             />
             <span>More than Average Donations</span>
           </div>

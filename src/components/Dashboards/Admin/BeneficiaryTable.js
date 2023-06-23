@@ -284,8 +284,8 @@ const BeneficiaryTable = () => {
                         onClick={() => {
                           handleDeleteRFP(user);
                         }}
-                        colorScheme="blue"
-                        color={"blue"}
+                        colorScheme="red"
+                        color={"red"}
                       />
                     </Td>
                   </Tr>

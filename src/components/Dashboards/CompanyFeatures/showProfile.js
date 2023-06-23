@@ -195,8 +195,7 @@ const ShowProfile = () => {
                       <img
                         src={image}
                         alt="company logo"
-                        width="100%"
-                        height="100%"
+                        style={{ width: "100%", height: "100%" }}
                       />
                     ) : (
                       <img
@@ -241,7 +240,7 @@ const ShowProfile = () => {
                     display={"flex"}
                     justifyContent={"start"}
                     flexWrap={"wrap"}
-                  // gap={{ base: "10%", md: "10%" }}
+                    // gap={{ base: "10%", md: "10%" }}
                   >
                     <Box
                       mr={{ base: "4%", md: "4%" }}

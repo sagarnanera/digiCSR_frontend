@@ -322,6 +322,7 @@ export const CardComponent = ({
         marginLeft="0.5rem"
         mr={"1rem"}
         mb={"2rem"}
+        mt={"4.5vh"}
         position="relative"
         _hover={{
           ".delete-button": { opacity: 1 },
@@ -329,8 +330,8 @@ export const CardComponent = ({
       >
         <Box
           position="absolute"
-          top="-2.6vh"
-          left="78%"
+          top="1.3vh"
+          left="76%"
           width={"70%"}
           transform="translateX(-50%)"
           zIndex={1}
@@ -339,9 +340,9 @@ export const CardComponent = ({
             <div
               style={{
                 position: "relative",
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
+                width: "60px",
+                height: "60px",
+                // borderRadius: "50%",
                 overflow: "hidden",
               }}
             >
@@ -349,8 +350,9 @@ export const CardComponent = ({
                 <img
                   src={image}
                   alt="company logo"
-                  width="100%"
-                  height="100%"
+                  // width="100%"
+                  // height="100%"
+                  style={{ width: "100%", height: "100%" }}
                 />
               ) : (
                 <img
@@ -384,27 +386,16 @@ export const CardComponent = ({
         </Box>
 
         {name !== "undefined" ? (
-          <Text fontSize="lg" fontWeight="bold" mt={1} align="center">
+          <Text fontSize="lg" fontWeight="bold" mt={"8vh"} align="center">
             {name}
           </Text>
         ) : (
-          <Text fontSize="lg" fontWeight="bold" mt={1} align="center">
+          <Text fontSize="lg" fontWeight="bold" mt={"8vh"} align="center">
             ------
           </Text>
         )}
         <Divider width="80%" ml="10%" mb="3" />
         <Box fontSize="sm">
-          {year !== "undefined" ? (
-            <Flex align="center" mb={2}>
-              <strong>establishment_year:</strong>
-              <Text ml={5}>{year}</Text>
-            </Flex>
-          ) : (
-            <Flex align="center" mb={2}>
-              <strong>establishment_year:</strong>
-              <Text ml={5}>-----</Text>
-            </Flex>
-          )}
           {email !== "undefined" ? (
             <Flex align="center" mb={2}>
               <EmailIcon mr={2} />
@@ -438,6 +429,17 @@ export const CardComponent = ({
             <Flex align="center" mb={2}>
               <Icon as={FiMapPin} mr={2} />
               <Text>-----</Text>
+            </Flex>
+          )}
+          {year !== "undefined" ? (
+            <Flex align="center" mb={2}>
+              <strong>establishment_year:</strong>
+              <Text ml={5}>{year}</Text>
+            </Flex>
+          ) : (
+            <Flex align="center" mb={2}>
+              <strong>establishment_year:</strong>
+              <Text ml={5}>-----</Text>
             </Flex>
           )}
           {summary !== "undefined" ? (

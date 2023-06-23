@@ -140,7 +140,6 @@ const ShowNgoProfile = ({ userType }) => {
       }}
     >
       <Box>
-
         <NavBar userType={userType} />
 
         <div
@@ -173,8 +172,7 @@ const ShowNgoProfile = ({ userType }) => {
                       <img
                         src={image}
                         alt="company logo"
-                        width="100%"
-                        height="100%"
+                        style={{ width: "100%", height: "100%" }}
                       />
                     ) : (
                       <img

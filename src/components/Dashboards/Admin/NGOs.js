@@ -113,7 +113,7 @@ const AdminNGOs = () => {
               handleCheckboxChange={handleCheckboxChange}
             />
             <Box flex="1" p="4" marginLeft="auto">
-              <InputGroup mb={4}>
+              <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
                   children={<SearchIcon />}
@@ -127,7 +127,8 @@ const AdminNGOs = () => {
               </InputGroup>
               <Box
                 display="flex"
-                pt="6"
+                pt="5"
+                pb="5"
                 pl={"0"}
                 flexWrap="wrap"
                 maxH={"65vh"}

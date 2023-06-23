@@ -393,11 +393,11 @@ const TrackRFP = () => {
             <Table variant="simple" colorScheme="blue" size="sm">
               <Thead style={{ background: "skyblue", marginBottom: "1rem" }}>
                 <Tr>
-                  <Th>Sr. No.</Th>
-                  <Th>Proposal Name</Th>
-                  <Th>Development Sector</Th>
-                  <Th>States</Th>
-                  <Th>Action</Th>
+                  <Th style={{ textAlign: "center" }}>Sr. No.</Th>
+                  <Th style={{ textAlign: "center" }}>Proposal Name</Th>
+                  <Th style={{ textAlign: "center" }}>Development Sector</Th>
+                  <Th style={{ textAlign: "center" }}>States</Th>
+                  <Th style={{ textAlign: "center" }}>Action</Th>
                 </Tr>
               </Thead>
               <Tbody style={{ zoom: 0.85 }}>
@@ -419,7 +419,7 @@ const TrackRFP = () => {
                         </span>
                       )}
                     </Td>
-                    <Td className="divider">
+                    <Td className="divider" maxW={"20vw"}>
                       {proposal.states.length > 3 ? (
                         <Tooltip label={proposal.states.join(", ")}>
                           <span>
@@ -450,8 +450,8 @@ const TrackRFP = () => {
                           // setSelectedRFPId(proposal._id);
                           handleShowDetails(proposal);
                         }}
-                        colorScheme="blue"
-                        color={"blue"}
+                        colorScheme="gray"
+                        color={"gray"}
                       />
                       <IconButton
                         aria-label="View proposal"
@@ -461,8 +461,8 @@ const TrackRFP = () => {
                         onClick={() => {
                           handleDeleteRFP(proposal);
                         }}
-                        colorScheme="blue"
-                        color={"blue"}
+                        colorScheme="red"
+                        color={"red"}
                       />
                     </Td>
                   </Tr>

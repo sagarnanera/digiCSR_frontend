@@ -99,14 +99,14 @@ const YearChart = ({userType}) => {
   }, [userType]);
 
   return (
-    <VStack ml={"-900px"} mt={"-440px"}>
+    <VStack ml={"-900px"} mt={"-550px"}>
       <Chart
         options={chartData.options}
         series={chartData.barSeries}
         type="bar"
         width={chartData.options.chart.width}
       />
-      <Text>
+      <Text pt={5}>
         <strong>Donations per Year</strong>
       </Text>
     </VStack>

@@ -1,18 +1,11 @@
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Text,
-} from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import "../../../CSS/HexGrid.css";
+import Chart from "react-apexcharts";
 
-const HexGrid = ({ userType }) => {
-  const [items, setItems] = useState([]);
-  const [hoveredItem, setHoveredItem] = useState(null);
+const PieChartComponent = ({ userType }) => {
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    console.log(userType);
     if (userType === "company") {
       const fetchData = async () => {
         try {
@@ -23,7 +16,7 @@ const HexGrid = ({ userType }) => {
           });
           const data = await response.json();
           if (data.success) {
-            setItems(data.result);
+            setData(data.result);
           } else {
             console.error(data.message);
           }
@@ -45,7 +38,7 @@ const HexGrid = ({ userType }) => {
           );
           const data = await response.json();
           if (data.success) {
-            setItems(data.result);
+            setData(data.result);
           } else {
             console.error(data.message);
           }
@@ -57,48 +50,35 @@ const HexGrid = ({ userType }) => {
     }
   }, [userType]);
 
-  const handleItemHover = (item) => {
-    setHoveredItem(item);
+  const chartOptions = {
+    labels: data.map((item) => item._id),
+    colors: ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AF19FF"],
+    legend: {
+      textWrap: "wrap",
+    },
   };
 
   return (
-    <div style={{ marginLeft: "50vw", marginTop: "10vh" }}>
-      <div className="hex-grid">
-        {items.map((item, index) => (
-          <Popover
-            key={index}
-            placement="top"
-            isLazy
-            closeOnBlur={false}
-            onClose={() => handleItemHover(null)}
-          >
-            <PopoverTrigger>
-              <div
-                className={`hex-item ${hoveredItem === item ? "hovered" : ""}`}
-                onMouseEnter={() => handleItemHover(item)}
-                onMouseLeave={() => handleItemHover(null)}
-              >
-                {item._id}
-              </div>
-            </PopoverTrigger>
-            <PopoverContent
-              bg="white"
-              border="none"
-              boxShadow="md"
-              p={3}
-              borderRadius="md"
-            >
-              <h3>{item._id}</h3>
-              <p>Total Amount: {item.totalAmount}</p>
-            </PopoverContent>
-          </Popover>
-        ))}
-        <Text display={"flex"} justifyContent={"flex-start"} ml={"8"} mt={10} width={"25vw"}>
-          <strong>Donations in each Sectors</strong>
-        </Text>
-      </div>
+    <div style={{ marginLeft: "60vw", marginTop: "10vh" }}>
+      <Chart
+        options={chartOptions}
+        series={data.map((item) => item.totalAmount)}
+        type="pie"
+        width={"900"}
+        height={"900"}
+      />
+      <Text
+        display={"flex"}
+        justifyContent={"flex-start"}
+        ml={"8"}
+        pl={12}
+        mt={10}
+        width={"25vw"}
+      >
+        <strong>Donations in each Sectors</strong>
+      </Text>
     </div>
   );
 };
 
-export default HexGrid;
+export default PieChartComponent;

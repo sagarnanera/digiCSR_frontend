@@ -95,7 +95,7 @@ const AdminCompanies = () => {
       <Box
         display={"flex"}
         justifyContent={"center"}
-        mt={"5"}
+        mt={"6vh"}
         borderRadius="lg"
         borderWidth="1px"
         width={"90vw"}
@@ -111,7 +111,7 @@ const AdminCompanies = () => {
               handleCheckboxChange={handleCheckboxChange}
             />
             <Box flex="1" p="4" marginLeft="auto">
-              <InputGroup mb={4}>
+              <InputGroup>
                 <InputLeftElement
                   pointerEvents="none"
                   children={<SearchIcon />}
@@ -125,7 +125,8 @@ const AdminCompanies = () => {
               </InputGroup>
               <Box
                 display="flex"
-                pt="6"
+                pt="5"
+                pb="4"
                 pl={"0"}
                 flexWrap="wrap"
                 maxH={"65vh"}

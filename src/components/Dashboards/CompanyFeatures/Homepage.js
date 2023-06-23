@@ -24,6 +24,7 @@ import MapChart from "./MapChart";
 import HexGrid from "./HexChart";
 import YearChart from "./YearChart";
 import "../../../CSS/styles.css";
+import PieChartComponent from "./HexChart";
 function Homepage({ userType }) {
   const breakPoints = [
     { width: 500, itemsToShow: 1 },
@@ -116,15 +117,24 @@ function Homepage({ userType }) {
               // textAlign="center"
             >
               with DigiCSR{" "}
-              <Divider
+              <Box
+                ml={"35%"}
+                mt={"-7"}
+                width={"66%"}
+                height={"5"}
+                bg={"rgba(135, 206, 235, 1)"}
+                zIndex={-1}
+              ></Box>
+              {/* <Divider
                 height={"1"}
                 ml={"35%"}
                 mt={"-7"}
                 mb={8}
-                w={"65%"}
+                w={"66%"}
                 borderBottomWidth="20px"
                 borderColor={"skyblue"}
-              />
+                zIndex={-1}
+              /> */}
             </Text>
             <Text
               mt={8}
@@ -135,15 +145,6 @@ function Homepage({ userType }) {
             </Text>
           </Flex>
         </Box>
-      </Box>
-      <div className="mapchart" style={{ overflowX: "hidden" }}>
-        <HStack mb={"5rem"}>
-          <HexGrid userType={userType} />
-        </HStack>
-      </div>
-      <YearChart userType={userType} />
-      <Box mr={"100px"}>
-        <MapChart userType={userType} />
       </Box>
       <Box
         my={8}
@@ -244,7 +245,7 @@ function Homepage({ userType }) {
               alignItems="center"
             >
               <Text fontSize="30px" fontFamily="Hind Vadodara" fontWeight="700">
-                0
+                {carouselData?.companies + carouselData?.ngos || 0}
               </Text>
               <Text fontSize="15px" fontFamily="Hind Vadodara" fontWeight="400">
                 Users
@@ -272,6 +273,15 @@ function Homepage({ userType }) {
         </Box>
         {/* </Flex> */}
       </Box>
+      <div className="mapchart" style={{ overflowX: "hidden" }}>
+        <HStack mb={"5rem"}>
+          <PieChartComponent userType={userType} />
+        </HStack>
+      </div>
+      <YearChart userType={userType} />
+      <Box mr={"100px"}>
+        <MapChart userType={userType} />
+      </Box>
 
       {/* <div className="mapchart">
         <HStack>
@@ -287,14 +297,14 @@ function Homepage({ userType }) {
       {/* <MapChart userType={userType} /> */}
 
       {/* <PieChart /> */}
-      {/* <Image
+      <Image
         src="../about-photo.png"
         width={"28vw"}
         height={"28vw"}
-        ml={"78vw"}
+        mr={"78vw"}
         mb={"-45vh"}
         mt={"-5vw"}
-      /> */}
+      />
 
       <Box
         my={8}
@@ -303,6 +313,7 @@ function Homepage({ userType }) {
         borderRadius="450px 0px 0px 0px"
         bg="#0CB6F047"
         // maxH={"15vw"}
+        mb={"8vh"}
         zIndex={-1}
         height={"32vh"}
       >

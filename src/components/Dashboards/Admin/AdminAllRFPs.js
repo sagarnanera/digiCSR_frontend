@@ -306,20 +306,23 @@ const AdminRFP = () => {
         </Box>
         <div className="container">
           <HStack w={"90%"} justifyContent="space-between" mb={"1%"}>
-            <div className="input-container">
-              <Input
-                type="number"
-                min={1}
-                ml={"5vw"}
-                value={rowsPerPage}
-                onChange={handleRowsPerPageChange}
-                style={{ width: "120px", marginRight: "1rem" }}
-              />
+            <VStack>
               <span className="label">Rows per page</span>
-            </div>
+              <div className="input-container">
+                <Input
+                  type="number"
+                  min={1}
+                  ml={"5vw"}
+                  height={"8"}
+                  value={rowsPerPage}
+                  onChange={handleRowsPerPageChange}
+                  style={{ width: "120px", marginRight: "1rem" }}
+                />
+              </div>
+            </VStack>
             <Box>
               <HStack
-                mt={"-10"}
+                mt={"-3"}
                 display={"flex"}
                 justifyContent={"center"}
                 flexWrap={"wrap"}
@@ -366,12 +369,12 @@ const AdminRFP = () => {
             <Table variant="simple" colorScheme="blue" size="sm">
               <Thead style={{ background: "skyblue", marginBottom: "1rem" }}>
                 <Tr>
-                  <Th>Sr. No.</Th>
-                  <Th>Proposal Name</Th>
-                  <Th>Development Sector</Th>
-                  <Th>States</Th>
-                  <Th>Company Name</Th>
-                  <Th>Action</Th>
+                  <Th style={{ textAlign: "center" }}>Sr. No.</Th>
+                  <Th style={{ textAlign: "center" }}>Proposal Name</Th>
+                  <Th style={{ textAlign: "center" }}>Development Sector</Th>
+                  <Th style={{ textAlign: "center" }}>States</Th>
+                  <Th style={{ textAlign: "center" }}>Company Name</Th>
+                  <Th style={{ textAlign: "center" }}>Action</Th>
                 </Tr>
               </Thead>
               <Tbody style={{ zoom: 0.85 }}>
@@ -393,7 +396,7 @@ const AdminRFP = () => {
                         </span>
                       )}
                     </Td>
-                    <Td className="divider">
+                    <Td className="divider" maxW={"20vw"}>
                       {proposal.states.length > 3 ? (
                         <Tooltip label={proposal.states.join(", ")}>
                           <span>
@@ -425,8 +428,8 @@ const AdminRFP = () => {
                           // setSelectedRFPId(proposal._id);
                           handleShowDetails(proposal);
                         }}
-                        colorScheme="blue"
-                        color={"blue"}
+                        colorScheme="gray"
+                        color={"gray"}
                       />
                       <IconButton
                         aria-label="View proposal"
@@ -436,8 +439,8 @@ const AdminRFP = () => {
                         onClick={() => {
                           handleDeleteRFP(proposal);
                         }}
-                        colorScheme="blue"
-                        color={"blue"}
+                        colorScheme="red"
+                        color={"red"}
                       />
                     </Td>
                   </Tr>
