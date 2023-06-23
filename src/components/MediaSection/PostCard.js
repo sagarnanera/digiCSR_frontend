@@ -12,6 +12,8 @@ import {
     Text,
     useToast,
 } from "@chakra-ui/react";
+import PostDeleteAlert from "./PostDeleteAlert";
+import PostUpdateAlert from "./PostUpdateAlert";
 
 const PostCard = ({ blog, userType, setBlogs }) => {
     const navigate = useNavigate();
@@ -19,6 +21,9 @@ const PostCard = ({ blog, userType, setBlogs }) => {
 
     const [content, setContent] = useState("");
     const [thumbnail, setThumbnail] = useState("");
+
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
 
     useEffect(() => {
         const parser = new DOMParser();
@@ -45,7 +50,7 @@ const PostCard = ({ blog, userType, setBlogs }) => {
     }, []);
 
     const handleBlogClick = (blogId) => {
-        console.log(userType === "company" || "beneficiary");
+        console.log(userType === "company" || userType === "beneficiary");
 
         return userType === "company" || "beneficiary" || "admin"
             ? navigate(`/${userType}/media/${blogId}`)
@@ -53,7 +58,10 @@ const PostCard = ({ blog, userType, setBlogs }) => {
     };
 
     const handleDeleteBlog = async (blogId, event) => {
+
         event.stopPropagation();
+
+        setIsDeleteDialogOpen(false);
 
         if (userType !== "ngo" && userType !== "admin") {
             toast({
@@ -121,6 +129,8 @@ const PostCard = ({ blog, userType, setBlogs }) => {
     };
     const handleEditBlog = (blogId, event) => {
         event.stopPropagation();
+
+        setIsUpdateDialogOpen(false);
 
         if (userType !== "ngo") {
             toast({
@@ -225,7 +235,10 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                                 color="red"
                                 aria-label="Delete"
                                 size="md"
-                                onClick={(e) => handleDeleteBlog(blog._id, e)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsDeleteDialogOpen(true);
+                                }}
                                 title='Delete Post'
                             />
                             {userType === "ngo" && <IconButton
@@ -235,7 +248,10 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                                 color="black"
                                 aria-label="Edit"
                                 size="md"
-                                onClick={(e) => handleEditBlog(blog._id, e)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsUpdateDialogOpen(true);
+                                }}
                                 title='Edit Post'
                             />}
                         </Flex>
@@ -245,6 +261,16 @@ const PostCard = ({ blog, userType, setBlogs }) => {
                     {content}
                 </Text>
             </Box>
+            <PostDeleteAlert
+                isOpen={isDeleteDialogOpen}
+                onClose={() => setIsDeleteDialogOpen(false)}
+                onDelete={(e) => handleDeleteBlog(blog._id, e)}
+            />
+            <PostUpdateAlert
+                isOpen={isUpdateDialogOpen}
+                onClose={() => setIsUpdateDialogOpen(false)}
+                onDelete={(e) => handleEditBlog(blog._id, e)}
+            />
         </Box >
     );
 };

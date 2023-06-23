@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import NgoNavigation from "../../Navigation/NgoNavigation";
+import React, { useEffect, useState } from "react";
+import NgoNavigation from "../Navigation/NgoNavigation";
 import {
   Box,
   Button,
@@ -8,24 +8,46 @@ import {
   Input,
   Flex,
   useToast,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
-import PostEditor from "../../PostEditor";
+import { useNavigate, useParams } from "react-router-dom";
+import PostEditor from "../PostEditor";
 
-const PostBlogs = () => {
+const UpdateBlog = () => {
+  const { id } = useParams();
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
-  const [isPreviewOpen, setPreviewOpen] = useState(false);
-
   const navigate = useNavigate();
   const toast = useToast();
+
+  useEffect(() => {
+    const fetchBlog = async () => {
+      const url = `http://localhost:4000/media/post/${id}`;
+      const token = localStorage.getItem("NgoAuthToken");
+      const options = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: token,
+        },
+      };
+
+      try {
+        // Replace this with your logic to fetch the blog post using the id
+        const response = await fetch(url, options);
+        const Data = await response.json();
+        console.log(Data);
+
+        // setBlog(Data.postData);
+        setTitle(Data.postData.title);
+        setContent(Data.postData.content);
+      } catch (error) {
+        console.error("Error fetching blog:", error);
+      }
+    };
+
+    fetchBlog();
+  }, []);
 
   const handleSubmit = async () => {
     let errorMessage = "";
@@ -56,8 +78,8 @@ const PostBlogs = () => {
     const token = localStorage.getItem("NgoAuthToken");
 
     try {
-      const response = await fetch("http://localhost:4000/media/createPost", {
-        method: "POST",
+      const response = await fetch(`http://localhost:4000/media/update/${id}`, {
+        method: "PUT",
         headers: {
           "Content-type": "application/json",
           Authorization: token,
@@ -66,11 +88,11 @@ const PostBlogs = () => {
       });
 
       if (response.ok) {
-        const createdPost = await response.json();
-        console.log("Post created:", createdPost);
+        const data = await response.json();
+        console.log("Post updated :", data);
         // Perform any additional actions after successful post creation
         toast({
-          title: "Successfully created the post.",
+          title: "Successfully updated the post.",
           status: "success",
           duration: 5000,
           isClosable: true,
@@ -80,11 +102,11 @@ const PostBlogs = () => {
         setTitle("");
         setContent("");
 
-        navigate(`/Ngo/media/${createdPost._id}`);
+        navigate(`/Ngo/media/${data.postData._id}`);
       } else {
-        console.log("Post creation failed");
+        console.log("Post updation failed");
         // Handle error case
-        errorMessage = "Error creating post else case.";
+        errorMessage = "Error updating post else case.";
 
         toast({
           title: errorMessage,
@@ -95,9 +117,9 @@ const PostBlogs = () => {
         });
       }
     } catch (error) {
-      console.error("Error creating post:", error);
+      console.error("Error updating post:", error);
 
-      errorMessage = "Error creating post";
+      errorMessage = "Error updating post";
 
       toast({
         title: errorMessage,
@@ -115,55 +137,16 @@ const PostBlogs = () => {
 
   const handlePreview = () => {
     console.log("preview button clicked");
-
-
-    if (!title.trim() && !content.trim()) {
-      toast({
-        title: "Please provide a title and content!",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "top-right",
-      });
-      return;
-    } else if (!title.trim()) {
-      toast({
-        title: "Post title is required!",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "top-right",
-      });
-      return;
-    } else if (!content.trim()) {
-      toast({
-        title: "Post content is required!",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "top-right",
-      });
-      return;
-    }
-
-    setPreviewOpen(true);
-
   };
 
   return (
-    <div style={{
-      backgroundImage: "url('/bg.png')",
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "cover",
-    }}>
-
+    <div>
       <NgoNavigation />
 
       <Box
         mx={{ base: 2, md: "auto" }}
         maxW={{ base: "none", md: "80vw" }}
-        // height={"90vh"}
-        mt={5}
+        mt={8}
         borderWidth="1px"
         p={2}
         bg={"white"}
@@ -185,32 +168,13 @@ const PostBlogs = () => {
           <Button onClick={handlePreview} mx={1}>
             preview
           </Button>
-          <Button
-            onClick={handleSubmit}
-            mx={1}
-            bgColor={"#28B5E1"}
-            color={"#FFFFFF"}
-            _hover={{ bgColor: "#23a7d0" }}
-          >
+          <Button onClick={handleSubmit} mx={1}>
             Submit
           </Button>
         </Flex>
-
-
-        <Modal isOpen={isPreviewOpen} onClose={() => setPreviewOpen(false)}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Preview</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <h2>{title}</h2>
-              <p dangerouslySetInnerHTML={{ __html: content }}></p>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
       </Box>
     </div>
   );
 };
 
-export default PostBlogs;
+export default UpdateBlog;
