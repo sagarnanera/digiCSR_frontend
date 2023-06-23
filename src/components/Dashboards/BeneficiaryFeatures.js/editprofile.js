@@ -1,12 +1,8 @@
-import React from 'react'
-// import BenificiaryNavigation from '../beneficiaryNavigation'
+import React from "react";
+// import BeneficiaryNavigation from '../beneficiaryNavigation'
 
 const EditBeneficiaryprofile = () => {
-  return (
-    <div>
-      {/* <BenificiaryNavigation /> */}
-    </div>
-  )
-}
+  return <div>{/* <BeneficiaryNavigation /> */}</div>;
+};
 
-export default EditBeneficiaryprofile
+export default EditBeneficiaryprofile;

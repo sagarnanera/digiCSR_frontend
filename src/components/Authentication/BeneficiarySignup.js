@@ -14,7 +14,7 @@ import {
 import { PhoneIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 
-function BenificiarySignup() {
+function BeneficiarySignup() {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNo, setPhoneNo] = useState();
@@ -166,7 +166,7 @@ function BenificiarySignup() {
           isClosable: true,
           position: "bottom",
         });
-        localStorage.setItem("BenificiaryAuthToken", result);
+        localStorage.setItem("BeneficiaryAuthToken", result);
 
         // TODO : get the userData from the server and save it into context
 
@@ -280,4 +280,4 @@ function BenificiarySignup() {
   );
 }
 
-export default BenificiarySignup;
+export default BeneficiarySignup;

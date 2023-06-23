@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../../CSS/homepage.css";
 import {
   BsFacebook,
@@ -22,17 +22,52 @@ function Homepage({ userType }) {
     { width: 768, itemsToShow: 3 },
     { width: 1200, itemsToShow: 4 },
   ];
+  const [carouselData, setCarouselData] = useState(null);
 
+  useEffect(() => {
+    const fetchCarouselData = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/charts/courosel");
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          setCarouselData(data.data);
+          console.log(data);
+        } else {
+          console.error("Failed to fetch carousel data:", data.error);
+        }
+      } catch (error) {
+        console.error("Failed to fetch carousel data:", error);
+      }
+    };
+
+    fetchCarouselData();
+  }, []);
   return (
     <Box style={{ overflowX: "hidden" }}>
-      <Box w="100vw" h="100vh" pos="relative">
+      <Box
+        w="100vw"
+        h="100vh"
+        pos="relative"
+        // bgColor={"skyblue"}
+        style={{
+          backdropFilter: "blur(10px)",
+          backgroundColor: "rgba(135, 206, 235, 0.3)", // Adjust the background color and opacity as needed
+        }}
+      >
         <Image
           className="background-img"
-          src="../HOME.png"
+          src="../image 79.png"
           alt="home"
-          w="100vw"
+          w="50vw"
           h="100vh"
           pos="absolute"
+          marginTop={"-10"}
+          marginLeft={"50vw"}
+          // marginBottom={10}
+          // mb={"10vh"}
+          // justifyContent={"flex-end"}
+          // backdropBlur={"2xl"}
           zIndex={-1}
           overflowX={"hidden"}
         />
@@ -93,19 +128,21 @@ function Homepage({ userType }) {
       </Box>
       <div className="mapchart" style={{ overflowX: "hidden" }}>
         <HStack mb={"5rem"}>
-          <Box mr={"100px"}>
-            <MapChart userType={userType} />
-          </Box>
           <HexGrid userType={userType} />
         </HStack>
       </div>
       <YearChart userType={userType} />
+      <Box mr={"100px"}>
+        <MapChart userType={userType} />
+      </Box>
       <Box
         my={8}
         width={"100vw"}
         style={{ overflowX: "hidden" }}
         borderRadius="0 450px 0 0"
         bg="#CDEBFF"
+        height={"32vh"}
+        mb={-2}
       >
         <Text
           className="font1"
@@ -142,7 +179,7 @@ function Homepage({ userType }) {
               alignItems="center"
             >
               <Text fontSize="30px" fontFamily="Hind Vadodara" fontWeight="700">
-                0
+                {carouselData?.companies || 0}
               </Text>
               <Text fontSize="15px" fontFamily="Hind Vadodara" fontWeight="400">
                 Companies
@@ -160,10 +197,10 @@ function Homepage({ userType }) {
               alignItems="center"
             >
               <Text fontSize="30px" fontFamily="Hind Vadodara" fontWeight="700">
-                0
+                {carouselData?.rfps || 0}
               </Text>
               <Text fontSize="15px" fontFamily="Hind Vadodara" fontWeight="400">
-                Reports Generated
+                RFP Generated
               </Text>
             </Box>
             <Box
@@ -178,10 +215,10 @@ function Homepage({ userType }) {
               alignItems="center"
             >
               <Text fontSize="30px" fontFamily="Hind Vadodara" fontWeight="700">
-                0
+                {carouselData?.ngos || 0}
               </Text>
               <Text fontSize="15px" fontFamily="Hind Vadodara" fontWeight="400">
-                Auditors
+                NGOs
               </Text>
             </Box>
             <Box
@@ -239,19 +276,37 @@ function Homepage({ userType }) {
       {/* <MapChart userType={userType} /> */}
 
       {/* <PieChart /> */}
+      <Image
+        src="../about-photo.png"
+        width={"28vw"}
+        height={"28vw"}
+        ml={"78vw"}
+        mb={"-45vh"}
+        mt={"-5vw"}
+      />
 
       <Box
         my={8}
         width={"100vw"}
-        style={{ overflowX: "hidden" }}
+        style={{ overflowX: "visible" }}
         borderRadius="0 450px 0 0"
         bg="#0CB6F047"
+        // maxH={"15vw"}
+        zIndex={-1}
+        height={"32vh"}
       >
         <Box className="social-icons" maxW={"80%"} mx={5}>
-          <Text as="h1" fontWeight={"bold"} pt={8} fontSize={"2xl"}>
+          <Text
+            as="h1"
+            fontWeight={"bold"}
+            pt={8}
+            fontSize={"2xl"}
+            mb={10}
+            mt={"5"}
+          >
             About Us
           </Text>
-          <Text as="p" fontSize={"sm"} textAlign={"justify"} py={4}>
+          <Text as="p" fontSize={"sm"} textAlign={"justify"} py={4} mt={-5}>
             At <b>DigiCSR</b> , we believe in the power of Corporate Social
             Responsibility (CSR) to make a positive impact on society and the
             environment. As a leading provider of CSR management solutions, we
@@ -267,6 +322,7 @@ function Homepage({ userType }) {
         borderRadius="0 450px 0 0"
         bg="#DAF0FC"
         mb={0}
+        height={"32vh"}
       >
         <Box maxW={"80%"}>
           <Flex
@@ -300,7 +356,7 @@ function Homepage({ userType }) {
             <Flex
               justifyContent="space-between"
               flexDirection={"column"}
-              mt={4}
+              // mt={4}
               mx={1}
             >
               <Text>Home</Text>

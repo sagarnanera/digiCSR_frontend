@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Flex, Heading, IconButton, useMediaQuery } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  IconButton,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import PostCard from "./PostCard";
 import NavBar from "../NavBar";
@@ -23,7 +30,7 @@ const MediaSection = ({ userType }) => {
         const token =
           userType === "company"
             ? localStorage.getItem("CompanyAuthToken")
-            : localStorage.getItem("BenificiaryAuthToken");
+            : localStorage.getItem("BeneficiaryAuthToken");
 
         options = {
           headers: {
@@ -32,7 +39,10 @@ const MediaSection = ({ userType }) => {
           },
         };
       } else {
-        const token = userType === "ngo" ? localStorage.getItem("NgoAuthToken") : localStorage.getItem("AdminAuthToken");
+        const token =
+          userType === "ngo"
+            ? localStorage.getItem("NgoAuthToken")
+            : localStorage.getItem("AdminAuthToken");
 
         options = {
           headers: {
@@ -56,12 +66,13 @@ const MediaSection = ({ userType }) => {
 
   if (!blogs || blogs.length === 0) {
     return (
-      <div style={{
-        backgroundImage: "url('../bg.png')",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover"
-      }}>
-
+      <div
+        style={{
+          backgroundImage: "url('../bg.png')",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+        }}
+      >
         <NavBar userType={userType} />
 
         <Box
@@ -103,11 +114,13 @@ const MediaSection = ({ userType }) => {
   }
 
   return (
-    <div style={{
-      backgroundImage: "url('../bg.png')",
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "cover"
-    }}>
+    <div
+      style={{
+        backgroundImage: "url('../bg.png')",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+      }}
+    >
       <NavBar userType={userType} />
       <Box
         maxWidth={{ base: "95vw", lg: "90vw" }}
@@ -126,11 +139,15 @@ const MediaSection = ({ userType }) => {
         boxShadow="xl"
       >
         <Flex justifyContent={userType === "ngo" ? "space-between" : "center"}>
-          <Heading as="h1" mb={4} style={{
-            textDecorationLine: "underline",
-            textDecorationColor: "#29B5E2",
-            textDecorationThickness: "4px",
-          }}>
+          <Heading
+            as="h1"
+            mb={4}
+            style={{
+              textDecorationLine: "underline",
+              textDecorationColor: "#29B5E2",
+              textDecorationThickness: "4px",
+            }}
+          >
             All Blogs
           </Heading>
 
@@ -138,7 +155,6 @@ const MediaSection = ({ userType }) => {
             onClick={() => navigate("/Ngo/media/create")}
             bg="white"
             color="skyblue"
-            // w={"15vw"}
             boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
             _hover={{ boxShadow: "0px 4px 6px skyblue" }}
             _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
@@ -168,7 +184,7 @@ const MediaSection = ({ userType }) => {
           </Flex>
         </Flex>
       </Box>
-    </div >
+    </div>
   );
 };
 

@@ -90,6 +90,7 @@ const EditNgoProfile = () => {
   const [cities, setCities] = useState([]);
   const [selectedcities, setselectedCities] = useState([]);
   const [pincode, setPincode] = useState();
+  const [imageURL, setImageURL] = useState("");
 
   const handleAddMember = () => {
     setShowModal(true);
@@ -213,7 +214,7 @@ const EditNgoProfile = () => {
           `http://localhost:4000/NGO/logo/${userId}`
         );
 
-        const res = await response.json()
+        const res = await response.json();
         // console.log(res);
         setImage(res.LogoURL);
       } catch (error) {
@@ -301,11 +302,17 @@ const EditNgoProfile = () => {
   };
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    // const reader = new FileReader();
+    const file1 = e.target.files[0];
+    const reader = new FileReader();
 
+    reader.onload = () => {
+      setImageURL(reader.result);
+    };
+
+    if (file1) {
+      reader.readAsDataURL(file1);
+    }
     // reader.onload = () => {
-    //   setImage(reader.result);
-    // };
     setImage(file);
 
     if (file) {
@@ -355,19 +362,21 @@ const EditNgoProfile = () => {
     }
 
     try {
-
       // logo upload start
       const logoData = new FormData();
       if (isImageChanged) {
         const ngoLogoFile = new File([image], "ngo_logo.jpg");
         logoData.append("file", ngoLogoFile);
-        const logoUploadRes = await fetch(`http://localhost:4000/ngo/upload-logo`, {
-          method: "POST",
-          headers: {
-            authorization: localStorage.getItem("NgoAuthToken"),
-          },
-          body: logoData,
-        });
+        const logoUploadRes = await fetch(
+          `http://localhost:4000/ngo/upload-logo`,
+          {
+            method: "POST",
+            headers: {
+              authorization: localStorage.getItem("NgoAuthToken"),
+            },
+            body: logoData,
+          }
+        );
         const logoRes = await logoUploadRes.json();
 
         console.log(logoRes);
@@ -506,11 +515,19 @@ const EditNgoProfile = () => {
                       overflow: "hidden",
                     }}
                   >
-                    <img
-                      src={image || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
-                      alt="Profile"
-                      style={{ width: "100%", height: "100%" }}
-                    />
+                    {imageURL ? (
+                      <img
+                        src={imageURL || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
+                        alt="Profile"
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    ) : (
+                      <img
+                        src={image || "/user-avatar.jpg"} // Replace "user-avatar.jpg" with your initial image source
+                        alt="Profile"
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    )}
                     <input
                       type="file"
                       id="profile-image"
@@ -755,8 +772,9 @@ const EditNgoProfile = () => {
                     value={
                       selectedStates.length <= 6
                         ? selectedStatesText
-                        : `${selectedStates.slice(0, 6)},..+${selectedStates.length - 6
-                        } more`
+                        : `${selectedStates.slice(0, 6)},..+${
+                            selectedStates.length - 6
+                          } more`
                     }
                   ></Textarea>
                 </Tooltip>
@@ -1007,7 +1025,7 @@ const EditNgoProfile = () => {
                                 value={
                                   currentMemberIndex !== null
                                     ? boardMembers[currentMemberIndex]
-                                      .designation
+                                        .designation
                                     : ""
                                 }
                                 onChange={(e) =>

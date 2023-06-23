@@ -8,10 +8,10 @@ import {
   TabPanels,
   Tabs,
 } from "@chakra-ui/react";
-import BenificiarySignup from "../../components/Authentication/benificiarySignup";
+import BeneficiarySignup from "../../components/Authentication/BeneficiarySignup";
 import AllUserLogin from "../../components/Authentication/AllUserLogin";
 
-const BenificiaryAuth = () => {
+const BeneficiaryAuth = () => {
   return (
     <Box
       p={4}
@@ -40,7 +40,7 @@ const BenificiaryAuth = () => {
               Welcome Beneficiary
             </strong>
             <Divider></Divider>
-            <BenificiarySignup />
+            <BeneficiarySignup />
           </TabPanel>
         </TabPanels>
       </Tabs>
@@ -48,4 +48,4 @@ const BenificiaryAuth = () => {
   );
 };
 
-export default BenificiaryAuth;
+export default BeneficiaryAuth;

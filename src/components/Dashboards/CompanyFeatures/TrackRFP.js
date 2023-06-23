@@ -314,20 +314,23 @@ const TrackRFP = () => {
         </Box>
         <div className="container">
           <HStack w={"100%"} justifyContent="space-between">
-            <div className="input-container">
-              <Input
-                type="number"
-                min={1}
-                ml={"5vw"}
-                value={rowsPerPage}
-                onChange={handleRowsPerPageChange}
-                style={{ width: "120px", marginRight: "1rem" }}
-              />
+            <VStack>
               <span className="label">Rows per page</span>
-            </div>
+              <div className="input-container">
+                <Input
+                  type="number"
+                  min={1}
+                  ml={"5vw"}
+                  height={"8"}
+                  value={rowsPerPage}
+                  onChange={handleRowsPerPageChange}
+                  style={{ width: "120px", marginRight: "1rem" }}
+                />
+              </div>
+            </VStack>
             <Box>
               <HStack
-                mt={"-10"}
+                mt={"-13.8"}
                 display={"flex"}
                 justifyContent={"center"}
                 flexWrap={"wrap"}
@@ -373,7 +376,7 @@ const TrackRFP = () => {
                 color="white"
                 w={"15vw"}
                 mr={"5vw"}
-                mt={"-5"}
+                mt={"3"}
                 boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
                 _hover={{ boxShadow: "0px 4px 6px rgb(45, 38, 38)" }}
                 _active={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}

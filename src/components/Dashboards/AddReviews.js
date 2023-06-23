@@ -52,7 +52,7 @@ const ReviewComponent = ({ ngoID, userType }) => {
       const token =
         userType === "company"
           ? localStorage.getItem("CompanyAuthToken")
-          : localStorage.getItem("BenificiaryAuthToken");
+          : localStorage.getItem("BeneficiaryAuthToken");
 
       options = {
         headers: {
@@ -147,7 +147,7 @@ const ReviewComponent = ({ ngoID, userType }) => {
       const token =
         userType === "company"
           ? localStorage.getItem("CompanyAuthToken")
-          : localStorage.getItem("BenificiaryAuthToken");
+          : localStorage.getItem("BeneficiaryAuthToken");
 
       options = {
         headers: {
@@ -247,7 +247,7 @@ const ReviewComponent = ({ ngoID, userType }) => {
         height={"80vh"}
         maxH={"80vh"}
         fontFamily={"serif"}
-        overflowY={"auto"}
+        // overflowY={"auto"}
       >
         <Box
           display={"flex"}
@@ -286,8 +286,8 @@ const ReviewComponent = ({ ngoID, userType }) => {
           <Box
             left={0}
             top={0}
-            h="35vw"
-            overflow="auto"
+            h="30vw"
+            // overflow="auto"
             padding="1%"
             w={"25%"}
             maxW="25%"
@@ -321,7 +321,7 @@ const ReviewComponent = ({ ngoID, userType }) => {
               ))}
             </Box>
           </Box>
-          <VStack>
+          <VStack overflowY={"auto"}>
             <Text mr={"40vw"}>
               <strong>Top Reviews:</strong>
             </Text>

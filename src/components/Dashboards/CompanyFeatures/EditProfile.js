@@ -200,7 +200,7 @@ const EditProfile = () => {
     };
 
     if (file1) {
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file1);
     }
     // reader.onload = () => {
     setImage(file);

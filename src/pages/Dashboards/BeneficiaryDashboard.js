@@ -1,14 +1,14 @@
-import React from 'react'
-import BenificiaryNavigation from '../../components/Navigation/beneficiaryNavigation'
-import Homepage from '../../components/Dashboards/CompanyFeatures/Homepage'
+import React from "react";
+import BeneficiaryNavigation from "../../components/Navigation/beneficiaryNavigation";
+import Homepage from "../../components/Dashboards/CompanyFeatures/Homepage";
 
 const BeneficiaryDashboard = () => {
   return (
     <div>
-      <BenificiaryNavigation />
+      <BeneficiaryNavigation />
       <Homepage userType={"beneficiary"} />
     </div>
-  )
-}
+  );
+};
 
-export default BeneficiaryDashboard
+export default BeneficiaryDashboard;

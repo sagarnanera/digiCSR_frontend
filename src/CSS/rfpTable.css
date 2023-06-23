@@ -28,7 +28,9 @@
     display: flex;
     /* margin-left: 2.5vw; */
     justify-content: flex-start;
-    margin-bottom: 1rem;
+    /* margin-top: -5vh; */
+    padding-bottom: 1.5vh;
+    /* margin-bottom: 5vh; */
 }
 .AddRFP {
     /* display: flex; */
@@ -43,6 +45,7 @@
 }
 
 .label {
+    margin-right: -4vw;
     font-size: 0.8rem;
 }
 
