@@ -270,8 +270,10 @@ function RaiseRFP({ onClose, onRFPRaised }) {
             </Tooltip>
             <FormControl id="timeline" isRequired>
               <FormLabel>
-                Timeline for money utilization(least value should be of 12
-                months)
+                Timeline for money utilization
+                <span style={{ fontSize: "15px", color: "gray" }}>
+                  {"   "}(least value should be of 12 months)
+                </span>
               </FormLabel>
               <NumberInput>
                 <NumberInputField
