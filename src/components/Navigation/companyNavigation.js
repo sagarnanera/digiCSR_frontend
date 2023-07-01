@@ -53,7 +53,7 @@ const CompanyNavigation = () => {
           `http://localhost:4000/company/logo/${companyId}`
         );
 
-        const res = await response.json()
+        const res = await response.json();
         // console.log(res);
         setImage(res.LogoURL);
       } catch (error) {
@@ -125,7 +125,7 @@ const CompanyNavigation = () => {
       } else {
         throw new Error(
           data.message ||
-          "Failed to mark notification as read. Please try again."
+            "Failed to mark notification as read. Please try again."
         );
       }
     } catch (error) {
@@ -201,7 +201,18 @@ const CompanyNavigation = () => {
       // Handle error
     }
   };
-
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+    };
+    return date.toLocaleDateString("en-US", options);
+  };
   const handleBellIconClick = () => {
     setIsDrawerOpen(true);
   };
@@ -238,7 +249,9 @@ const CompanyNavigation = () => {
                           <Link
                             to="/Company"
                             className={
-                              location.pathname === "/Company" ? classes.active : ""
+                              location.pathname === "/Company"
+                                ? classes.active
+                                : ""
                             }
                           >
                             Home
@@ -281,7 +294,9 @@ const CompanyNavigation = () => {
               <li>
                 <Link
                   to="/Company"
-                  className={location.pathname === "/Company" ? classes.active : ""}
+                  className={
+                    location.pathname === "/Company" ? classes.active : ""
+                  }
                 >
                   Home
                 </Link>
@@ -290,7 +305,9 @@ const CompanyNavigation = () => {
                 <Link
                   to="/Company/TrackRFP"
                   className={
-                    location.pathname === "/Company/TrackRFP" ? classes.active : ""
+                    location.pathname === "/Company/TrackRFP"
+                      ? classes.active
+                      : ""
                   }
                 >
                   RFPs
@@ -416,7 +433,7 @@ const CompanyNavigation = () => {
                               </Text>
                               <br />
                               <Text fontSize="xs" color="gray.500" mb={2}>
-                                {notification.timestamp}
+                                {formatDate(notification.timestamp)}
                               </Text>
                               <Text
                                 fontSize="xs"
@@ -446,7 +463,7 @@ const CompanyNavigation = () => {
                               </Text>
                               <br />
                               <Text fontSize="xs" color="gray.500" mb={2}>
-                                {notification.timestamp}
+                                {formatDate(notification.timestamp)}
                               </Text>
                               <Text fontSize="xs" color="red" ml={"55%"} mb={2}>
                                 Status: Not Readed

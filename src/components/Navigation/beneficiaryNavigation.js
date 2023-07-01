@@ -146,9 +146,6 @@ const BeneficiaryNavigation = () => {
             <Menu>
               <MenuButton as={Avatar} size="sm" src={"/user-avatar"} />
               <MenuList>
-                <Link to="/Company/profile">
-                  <MenuItem>Show Company Profile</MenuItem>
-                </Link>
                 <MenuItem onClick={handleClick}>Logout</MenuItem>
               </MenuList>
             </Menu>

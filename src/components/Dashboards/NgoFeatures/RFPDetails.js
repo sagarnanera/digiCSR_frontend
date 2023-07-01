@@ -55,7 +55,14 @@ const RFPDetails = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    const options = { year: "numeric", month: "long", day: "numeric" };
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+    };
     return date.toLocaleDateString("en-US", options);
   };
 
@@ -124,7 +131,7 @@ const RFPDetails = () => {
                       <VStack mt={4} ml={4} align="flex-start" spacing={2}>
                         <Text mt={2}>
                           <strong>Created by:</strong>{" "}
-                          {companyDetails.company_name}
+                          {companyDetails.company_name ?? "-----"}
                         </Text>
                         <Text mt={2}>
                           <strong>Title of RFP:</strong> {rfpDetails.title}
@@ -143,11 +150,12 @@ const RFPDetails = () => {
                         </Text>
                         <Text mt={2}>
                           <strong>Communication Person:</strong>{" "}
-                          {companyDetails.profile.comunication_person.cp_name}
+                          {companyDetails.profile.comunication_person?.cp_name ??
+                            "-----"}
                         </Text>
                         <Text mt={2}>
                           <strong>Email:</strong>{" "}
-                          {companyDetails.profile.comunication_person.cp_email}
+                          {companyDetails.profile.comunication_person?.cp_email ?? "-----"}
                         </Text>
                       </VStack>
                     </Flex>
@@ -365,15 +373,15 @@ const RFPDetails = () => {
                     <strong>Company Summary:</strong>
                   </Box>
                   <p style={{ padding: "1%" }}>
-                    {companyDetails.profile.summary}
+                    {companyDetails.profile.summary ?? "-----"}
                   </p>
                   {/* <br /> */}
                   <VStack mt={4} align="flex-start" spacing={2}>
                     <Text>
                       <strong>Registered Office:</strong>{" "}
-                      {companyDetails.profile.location.city},
-                      {companyDetails.profile.location.state}{" "}
-                      {companyDetails.profile.location.pincode}
+                      {companyDetails.profile.location?.city ?? "-----"},
+                      {companyDetails.profile.location?.state ?? "-----"}{" "}
+                      {companyDetails.profile.location?.pincode ?? "-----"}
                     </Text>
                     <Divider height={"0.5"} borderColor={"transparent"} />
 

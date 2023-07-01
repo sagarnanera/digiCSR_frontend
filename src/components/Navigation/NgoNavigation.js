@@ -25,7 +25,6 @@ import classes from "../../CSS/ComCss.module.css";
 import { FiBell, FiCheck, FiMenu, FiTrash } from "react-icons/fi";
 import jwt_decode from "jwt-decode";
 
-
 const NgoNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -47,10 +46,9 @@ const NgoNavigation = () => {
       try {
         const response = await fetch(`http://localhost:4000/NGO/logo/${ngoId}`);
 
-        const res = await response.json()
+        const res = await response.json();
         // console.log(res);
         setImage(res.LogoURL);
-
       } catch (error) {
         console.error(error);
       }
@@ -120,7 +118,7 @@ const NgoNavigation = () => {
       } else {
         throw new Error(
           data.message ||
-          "Failed to mark notification as read. Please try again."
+            "Failed to mark notification as read. Please try again."
         );
       }
     } catch (error) {
@@ -200,7 +198,13 @@ const NgoNavigation = () => {
   const handleBellIconClick = () => {
     setIsDrawerOpen(true);
   };
-
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: "numeric", month: "long", day: "numeric",hour: "numeric",
+      minute: "numeric",
+      second: "numeric", };
+    return date.toLocaleDateString("en-US", options);
+  };
   const handleClick = () => {
     localStorage.removeItem("NgoAuthToken");
     navigate("/", { replace: true });
@@ -379,7 +383,7 @@ const NgoNavigation = () => {
                 />
                 <MenuList>
                   <Link to="/Ngo/profile">
-                    <MenuItem>Show Company Profile</MenuItem>
+                    <MenuItem>Show NGO Profile</MenuItem>
                   </Link>
                   <MenuItem onClick={handleClick}>Logout</MenuItem>
                 </MenuList>
@@ -450,7 +454,7 @@ const NgoNavigation = () => {
                               </Text>
                               <br />
                               <Text fontSize="xs" color="gray.500" mb={2}>
-                                {notification.timestamp}
+                                {formatDate(notification.timestamp)}
                               </Text>
                               <Text
                                 fontSize="xs"
@@ -480,7 +484,7 @@ const NgoNavigation = () => {
                               </Text>
                               <br />
                               <Text fontSize="xs" color="gray.500" mb={2}>
-                                {notification.timestamp}
+                                {formatDate(notification.timestamp)}
                               </Text>
                               <Text fontSize="xs" color="red" ml={"55%"} mb={2}>
                                 Status: Not Readed

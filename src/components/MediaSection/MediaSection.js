@@ -26,7 +26,7 @@ const MediaSection = ({ userType }) => {
       const url = "http://localhost:4000/media/posts";
       var options;
 
-      if (userType === "company" || userType === "Beneficiary") {
+      if (userType === "company" || userType === "beneficiary") {
         const token =
           userType === "company"
             ? localStorage.getItem("CompanyAuthToken")
@@ -55,6 +55,7 @@ const MediaSection = ({ userType }) => {
       try {
         const res = await fetch(url, options);
         const blogsData = await res.json();
+        console.log(blogsData);
         setBlogs(blogsData.postsData);
       } catch (error) {
         console.error("Error fetching blogs:", error);

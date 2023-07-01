@@ -417,7 +417,9 @@ const AdminRFP = () => {
                         </span>
                       )}
                     </Td>
-                    <Td className="divider">{proposal.company_name}</Td>
+                    <Td className="divider">
+                      {proposal.company_name ?? "-----"}
+                    </Td>
                     <Td>
                       <IconButton
                         aria-label="View proposal"
