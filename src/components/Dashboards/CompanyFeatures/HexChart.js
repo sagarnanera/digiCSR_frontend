@@ -6,14 +6,39 @@ const PieChartComponent = ({ userType }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    var options;
+    if (userType === "company" || userType === "beneficiary") {
+      const token =
+        userType === "company"
+          ? localStorage.getItem("CompanyAuthToken")
+          : localStorage.getItem("BeneficiaryAuthToken");
+
+      options = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: token,
+        },
+      };
+    } else {
+      const token =
+        userType === "ngo"
+          ? localStorage.getItem("NgoAuthToken")
+          : localStorage.getItem("AdminAuthToken");
+
+      options = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: token,
+        },
+      };
+    }
     if (userType === "company") {
       const fetchData = async () => {
         try {
-          const response = await fetch("http://localhost:4000/charts/sector", {
-            headers: {
-              authorization: localStorage.getItem("CompanyAuthToken"),
-            },
-          });
+          const response = await fetch(
+            "http://localhost:4000/charts/sector",
+            options
+          );
           const data = await response.json();
           if (data.success) {
             setData(data.result);
@@ -25,16 +50,12 @@ const PieChartComponent = ({ userType }) => {
         }
       };
       fetchData();
-    } else if (userType === "ngo") {
+    } else if (userType !== "company") {
       const fetchData = async () => {
         try {
           const response = await fetch(
             "http://localhost:4000/charts/ngo/sector",
-            {
-              headers: {
-                authorization: localStorage.getItem("NgoAuthToken"),
-              },
-            }
+            options
           );
           const data = await response.json();
           if (data.success) {

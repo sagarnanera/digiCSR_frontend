@@ -167,7 +167,7 @@ const ReviewComponent = ({ ngoID, userType }) => {
         }),
       });
       if (!response.ok) {
-        throw new Error("Failed to submit the review.");
+        throw new Error("You can give review only one time.");
       }
       const data = await response.json();
       console.log("Review submitted:", data);
@@ -187,6 +187,14 @@ const ReviewComponent = ({ ngoID, userType }) => {
       handleCloseModal();
     } catch (error) {
       console.log(error);
+      toast({
+        title: "Error Occurred!",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
       // Handle the error (e.g., display an error message)
     }
   };

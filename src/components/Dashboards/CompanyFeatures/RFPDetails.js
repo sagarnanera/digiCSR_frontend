@@ -11,6 +11,13 @@ import {
   VStack,
   Wrap,
   Tooltip,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  Button,
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
@@ -21,7 +28,9 @@ const RFPCompanyDetails = () => {
   const rfpID = location.state?.rfpID;
   const [rfpDetails, setRfpDetails] = useState(null);
   const [initialFetchDone, setInitialFetchDone] = useState(false);
-
+  const [isAcceptDialogOpen, setIsAcceptDialogOpen] = useState(false);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
+  const [selectedDonationId, setSelectedDonationId] = useState(null);
   const fetchRFPDetails = useCallback(async () => {
     try {
       const response = await fetch(`http://localhost:4000/rfp/${rfpID}`, {
@@ -48,7 +57,6 @@ const RFPCompanyDetails = () => {
     }
   }, [rfpID, fetchRFPDetails, initialFetchDone]);
 
-
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = {
@@ -70,6 +78,32 @@ const RFPCompanyDetails = () => {
   };
 
   const handleManageDonation = async (donationId, action) => {
+    setSelectedDonationId(donationId);
+    if (action === "approve") {
+      setIsAcceptDialogOpen(true);
+    } else if (action === "reject") {
+      setIsRejectDialogOpen(true);
+    }
+  };
+
+ const handleAcceptDialogClose = async (isAccepted) => {
+   setIsAcceptDialogOpen(false);
+   if (selectedDonationId && isAccepted) {
+     await manageDonation(selectedDonationId, "approve");
+     setSelectedDonationId(null);
+   }
+ };
+
+ const handleRejectDialogClose = async (isRejected) => {
+   setIsRejectDialogOpen(false);
+   if (selectedDonationId && isRejected) {
+     await manageDonation(selectedDonationId, "reject");
+     setSelectedDonationId(null);
+   }
+ };
+
+
+  const manageDonation = async (donationId, action) => {
     try {
       const response = await fetch("http://localhost:4000/rfp/manage", {
         method: "PUT",
@@ -128,7 +162,7 @@ const RFPCompanyDetails = () => {
               bg="skyblue"
               w={{ base: "100%", md: "95vw" }}
               m="30px 0 0px 0"
-            // borderRadius="10px"
+              // borderRadius="10px"
             >
               <Text fontSize="3xl" fontFamily="Work sans">
                 RFP Details
@@ -140,7 +174,7 @@ const RFPCompanyDetails = () => {
               p={3}
               bg="#f2f2f2"
               w={{ base: "100%", md: "95vw" }}
-            // borderRadius="10px"
+              // borderRadius="10px"
             >
               {rfpDetails ? (
                 <>
@@ -448,6 +482,73 @@ const RFPCompanyDetails = () => {
                     ) : (
                       <Text fontSize="lg">No Donations Requested.</Text>
                     )}
+                    {/* Accept Dialog */}
+                    <AlertDialog
+                      isOpen={isAcceptDialogOpen}
+                      leastDestructiveRef={undefined}
+                      onClose={handleAcceptDialogClose}
+                    >
+                      <AlertDialogOverlay>
+                        <AlertDialogContent>
+                          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Accept Donation
+                          </AlertDialogHeader>
+
+                          <AlertDialogBody>
+                            Are you sure you want to accept this donation?
+                          </AlertDialogBody>
+
+                          <AlertDialogFooter>
+                            <Button
+                              onClick={() => handleAcceptDialogClose(false)}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              colorScheme="green"
+                              onClick={() => handleAcceptDialogClose(true)}
+                              ml={3}
+                            >
+                              Accept
+                            </Button>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialogOverlay>
+                    </AlertDialog>
+
+                    {/* Reject Dialog */}
+                    <AlertDialog
+                      isOpen={isRejectDialogOpen}
+                      leastDestructiveRef={undefined}
+                      onClose={handleRejectDialogClose}
+                    >
+                      <AlertDialogOverlay>
+                        <AlertDialogContent>
+                          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Reject Donation
+                          </AlertDialogHeader>
+
+                          <AlertDialogBody>
+                            Are you sure you want to reject this donation?
+                          </AlertDialogBody>
+
+                          <AlertDialogFooter>
+                            <Button
+                              onClick={() => handleRejectDialogClose(false)}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              colorScheme="red"
+                              onClick={() => handleRejectDialogClose(true)}
+                              ml={3}
+                            >
+                              Reject
+                            </Button>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialogOverlay>
+                    </AlertDialog>
                   </Wrap>
                 </>
               ) : (

@@ -97,7 +97,7 @@ const Post = ({ userType }) => {
 
   var options;
 
-  if (userType === "company" || userType == "Beneficiary") {
+  if (userType === "company" || userType === "beneficiary") {
     const token =
       userType === "company"
         ? localStorage.getItem("CompanyAuthToken")
@@ -110,7 +110,10 @@ const Post = ({ userType }) => {
       },
     };
   } else {
-    const token = userType === "ngo" ? localStorage.getItem("NgoAuthToken") : localStorage.getItem("AdminAuthToken");
+    const token =
+      userType === "ngo"
+        ? localStorage.getItem("NgoAuthToken")
+        : localStorage.getItem("AdminAuthToken");
 
     options = {
       headers: {

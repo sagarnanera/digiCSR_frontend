@@ -6,7 +6,7 @@ const BeneficiaryDashboard = () => {
   return (
     <div>
       <BeneficiaryNavigation />
-      <Homepage userType={"company"} />
+      <Homepage userType={"beneficiary"} />
     </div>
   );
 };

@@ -4,17 +4,42 @@ import DatamapsIndia from "react-datamaps-india";
 import "../../../CSS/styles.css";
 
 function MapChart({ userType }) {
+  var options;
+  if (userType === "company" || userType === "beneficiary") {
+    const token =
+      userType === "company"
+        ? localStorage.getItem("CompanyAuthToken")
+        : localStorage.getItem("BeneficiaryAuthToken");
+
+    options = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: token,
+      },
+    };
+  } else {
+    const token =
+      userType === "ngo"
+        ? localStorage.getItem("NgoAuthToken")
+        : localStorage.getItem("AdminAuthToken");
+
+    options = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: token,
+      },
+    };
+  }
   console.log(userType);
   const [regionData, setRegionData] = useState(null);
   useEffect(() => {
     if (userType === "company") {
       const fetchStateChartData = async () => {
         try {
-          const response = await fetch("http://localhost:4000/charts/state", {
-            headers: {
-              authorization: localStorage.getItem("CompanyAuthToken"),
-            },
-          });
+          const response = await fetch(
+            "http://localhost:4000/charts/state",
+            options
+          );
           const data = await response.json();
           console.log(data);
           if (response.ok) {
@@ -34,16 +59,12 @@ function MapChart({ userType }) {
         }
       };
       fetchStateChartData();
-    } else if (userType === "ngo") {
+    } else if (userType !== "company") {
       const fetchStateChartData = async () => {
         try {
           const response = await fetch(
             "http://localhost:4000/charts/ngo/state",
-            {
-              headers: {
-                authorization: localStorage.getItem("NgoAuthToken"),
-              },
-            }
+            options
           );
           const data = await response.json();
           console.log(data);

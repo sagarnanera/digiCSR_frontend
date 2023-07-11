@@ -2,7 +2,7 @@ import { Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 
-const YearChart = ({userType}) => {
+const YearChart = ({ userType }) => {
   const [chartData, setChartData] = useState({
     options: {
       chart: {
@@ -17,15 +17,40 @@ const YearChart = ({userType}) => {
   });
 
   useEffect(() => {
+    var options;
+    if (userType === "company" || userType === "beneficiary") {
+      const token =
+        userType === "company"
+          ? localStorage.getItem("CompanyAuthToken")
+          : localStorage.getItem("BeneficiaryAuthToken");
+
+      options = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: token,
+        },
+      };
+    } else {
+      const token =
+        userType === "ngo"
+          ? localStorage.getItem("NgoAuthToken")
+          : localStorage.getItem("AdminAuthToken");
+
+      options = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: token,
+        },
+      };
+    }
     if (userType === "company") {
       console.log(userType);
       const fetchYearChartData = async () => {
         try {
-          const response = await fetch("http://localhost:4000/charts/year", {
-            headers: {
-              authorization: localStorage.getItem("CompanyAuthToken"),
-            },
-          });
+          const response = await fetch(
+            "http://localhost:4000/charts/year",
+            options
+          );
           const data = await response.json();
           if (response.ok) {
             const results = data.result;
@@ -34,9 +59,10 @@ const YearChart = ({userType}) => {
                 width: 600, // Specify the desired width of the chart
               },
               xaxis: {
-                categories: Object.keys(results), // Use the years as categories
+                categories: results.map((result) => result._id), // Use the years as categories
               },
             };
+            console.log(results);
             const barSeries = [
               {
                 name: "Total Amount",
@@ -55,16 +81,12 @@ const YearChart = ({userType}) => {
       };
 
       fetchYearChartData();
-    } else if (userType === "ngo") {
+    } else if (userType !== "company") {
       const fetchYearChartData = async () => {
         try {
           const response = await fetch(
             "http://localhost:4000/charts/ngo/year",
-            {
-              headers: {
-                authorization: localStorage.getItem("NgoAuthToken"),
-              },
-            }
+            options
           );
           const data = await response.json();
           if (response.ok) {
@@ -74,7 +96,7 @@ const YearChart = ({userType}) => {
                 width: 600, // Specify the desired width of the chart
               },
               xaxis: {
-                categories: Object.keys(results), // Use the years as categories
+                categories: results.map((result) => result._id), // Use the years as categories
               },
             };
             const barSeries = [

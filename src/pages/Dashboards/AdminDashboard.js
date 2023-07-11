@@ -6,7 +6,7 @@ const AdminDashboard = () => {
   return (
     <div>
       <AdminNavigation />
-      <Homepage userType={"company"} />
+      <Homepage userType={"beneficiary"} />
     </div>
   );
 };

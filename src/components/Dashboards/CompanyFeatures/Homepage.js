@@ -21,7 +21,6 @@ import {
 
 import Carousel from "react-elastic-carousel";
 import MapChart from "./MapChart";
-import HexGrid from "./HexChart";
 import YearChart from "./YearChart";
 import "../../../CSS/styles.css";
 import PieChartComponent from "./HexChart";
