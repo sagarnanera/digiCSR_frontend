@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 // import "../../../CSS/piechart.css";
+import jwt_decode from "jwt-decode";
 import DatamapsIndia from "react-datamaps-india";
 import "../../../CSS/styles.css";
 
 function MapChart({ userType }) {
+
   var options;
   if (userType === "company" || userType === "beneficiary") {
     const token =
@@ -30,7 +32,6 @@ function MapChart({ userType }) {
       },
     };
   }
-  console.log(userType);
   const [regionData, setRegionData] = useState(null);
   useEffect(() => {
     if (userType === "company") {

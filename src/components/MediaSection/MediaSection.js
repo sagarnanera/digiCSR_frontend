@@ -25,7 +25,7 @@ const MediaSection = ({ userType }) => {
     const fetchBlogs = async () => {
       const url = "http://localhost:4000/media/posts";
       var options;
-
+      console.log(userType);
       if (userType === "company" || userType === "beneficiary") {
         const token =
           userType === "company"
@@ -63,7 +63,7 @@ const MediaSection = ({ userType }) => {
     };
 
     fetchBlogs();
-  }, []);
+  }, [userType]);
 
   if (!blogs || blogs.length === 0) {
     return (

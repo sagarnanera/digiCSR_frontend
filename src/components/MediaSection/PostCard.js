@@ -47,7 +47,7 @@ const PostCard = ({ blog, userType, setBlogs }) => {
         const thumbimg = images.length > 0 ? images[0].src : null;
 
         setThumbnail(thumbimg);
-    }, []);
+    }, [blog]);
 
     const handleBlogClick = (blogId) => {
         console.log(userType === "company" || userType === "beneficiary");

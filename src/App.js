@@ -4,7 +4,6 @@ import ChooseUserComponent from "./components/chooseUserComponent";
 import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import CompanyDashboard from "./pages/Dashboards/CompanyDashboard";
 import TrackRFP from "./components/Dashboards/CompanyFeatures/TrackRFP";
-import FundingStats from "./components/Dashboards/CompanyFeatures/FundingStats";
 import NGOReviews from "./components/Dashboards/CompanyFeatures/NGOReviews";
 import RaiseRFP from "./components/Dashboards/CompanyFeatures/RaiseRFP";
 import AddProfile from "./components/Dashboards/CompanyFeatures/AddProfile";
@@ -82,7 +81,6 @@ function App() {
           <>
             <Route path="/Company/RaiseRFP" element={<RaiseRFP />} />
             <Route path="/Company/TrackRFP" element={<TrackRFP />} />
-            <Route path="/Company/FundingStats" element={<FundingStats />} />
             <Route path="/Company/NGOReviews" element={<NGOReviews />} />
             <Route path="/Company/addprofile" element={<AddProfile />} />
             <Route path="/Company/editprofile" element={<EditProfile />} />

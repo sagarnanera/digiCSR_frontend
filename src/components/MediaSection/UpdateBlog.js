@@ -47,7 +47,7 @@ const UpdateBlog = () => {
     };
 
     fetchBlog();
-  }, []);
+  }, [id]);
 
   const handleSubmit = async () => {
     let errorMessage = "";

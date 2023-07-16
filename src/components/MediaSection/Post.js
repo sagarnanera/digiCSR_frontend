@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import NgoNavigation from "../Navigation/NgoNavigation";
 import {
   Box,
   Heading,
@@ -10,7 +9,6 @@ import {
   Flex,
   IconButton,
   useToast,
-  background,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { extendTheme } from "@chakra-ui/react";
@@ -101,7 +99,7 @@ const Post = ({ userType }) => {
     const token =
       userType === "company"
         ? localStorage.getItem("CompanyAuthToken")
-        : localStorage.getItem("NgoAuthToken");
+        : localStorage.getItem("BeneficiaryAuthToken");
 
     options = {
       headers: {

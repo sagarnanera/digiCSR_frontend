@@ -11,7 +11,6 @@ import {
 } from "react-icons/bs";
 import {
   Box,
-  Divider,
   Flex,
   HStack,
   Icon,
