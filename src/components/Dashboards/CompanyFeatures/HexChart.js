@@ -81,23 +81,47 @@ const PieChartComponent = ({ userType }) => {
 
   return (
     <div style={{ marginLeft: "40vw", marginTop: "10vh" }}>
-      <Chart
-        options={chartOptions}
-        series={data.map((item) => item.totalAmount)}
-        type="pie"
-        width={"200%"}
-        height={"150%"}
-      />
-      <Text
-        display={"flex"}
-        justifyContent={"flex-start"}
-        ml={"8"}
-        pl={12}
-        mt={10}
-        width={"25vw"}
-      >
-        <strong>Donations in each Sectors</strong>
-      </Text>
+      {data.length > 0 ? (
+        <>
+          <Chart
+            options={chartOptions}
+            series={data.map((item) => item.totalAmount)}
+            type="pie"
+            width={"200%"}
+            height={"150%"}
+          />
+          <Text
+            display={"flex"}
+            justifyContent={"flex-start"}
+            ml={"8"}
+            pl={12}
+            mt={10}
+            width={"25vw"}
+          >
+            <strong>Donations in each Sectors</strong>
+          </Text>
+        </>
+      ) : (
+        <>
+          <Chart
+            options={chartOptions}
+            series={data.map((item) => item.totalAmount)}
+            type="pie"
+            width={"200%"}
+            height={"150%"}
+          />
+          <Text
+            display={"flex"}
+            justifyContent={"flex-start"}
+            ml={"8"}
+            pl={12}
+            mt={10}
+            width={"25vw"}
+          >
+            <br />
+          </Text>
+        </>
+      )}
     </div>
   );
 };

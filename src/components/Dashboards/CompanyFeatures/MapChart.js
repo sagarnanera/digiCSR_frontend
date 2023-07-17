@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 // import "../../../CSS/piechart.css";
-import jwt_decode from "jwt-decode";
+// import jwt_decode from "jwt-decode";
 import DatamapsIndia from "react-datamaps-india";
 import "../../../CSS/styles.css";
 
 function MapChart({ userType }) {
-
   var options;
   if (userType === "company" || userType === "beneficiary") {
     const token =
@@ -131,51 +130,59 @@ function MapChart({ userType }) {
             }}
           />
         ) : (
-          <div>Loading...</div>
+          <>
+            {/* <div className="no-data-message">No Data Available for chart</div>
+            <br />
+            <strong style={{ marginLeft: "15vw" }} className="no-data-message">
+              Donatoin per State
+            </strong> */}
+          </>
         )}
-        <div
-          style={{
-            marginLeft: "65vw",
-            marginTop: "-55vh",
-            marginBottom: "50vh",
-          }}
-        >
-          <div>
-            <span
-              className="color-box"
-              style={{ backgroundColor: "#b3d1ff" }}
-            />
-            <span>Lowest Donations</span>
+        {regionData && (
+          <div
+            style={{
+              marginLeft: "65vw",
+              marginTop: "-55vh",
+              marginBottom: "50vh",
+            }}
+          >
+            <div>
+              <span
+                className="color-box"
+                style={{ backgroundColor: "#b3d1ff" }}
+              />
+              <span>Lowest Donations</span>
+            </div>
+            <div>
+              <span
+                className="color-box"
+                style={{ backgroundColor: "#88a7f7" }}
+              />
+              <span>Less than Average Donations</span>
+            </div>
+            <div>
+              <span
+                className="color-box"
+                style={{ backgroundColor: "#5d86ef" }}
+              />
+              <span>Average Donations</span>
+            </div>
+            <div>
+              <span
+                className="color-box"
+                style={{ backgroundColor: "#1a7cfc" }}
+              />
+              <span>More than Average Donations</span>
+            </div>
+            <div>
+              <span
+                className="color-box"
+                style={{ backgroundColor: "#005ce6" }}
+              />
+              <span>Highest Donations</span>
+            </div>
           </div>
-          <div>
-            <span
-              className="color-box"
-              style={{ backgroundColor: "#88a7f7" }}
-            />
-            <span>Less than Average Donations</span>
-          </div>
-          <div>
-            <span
-              className="color-box"
-              style={{ backgroundColor: "#5d86ef" }}
-            />
-            <span>Average Donations</span>
-          </div>
-          <div>
-            <span
-              className="color-box"
-              style={{ backgroundColor: "#1a7cfc" }}
-            />
-            <span>More than Average Donations</span>
-          </div>
-          <div>
-            <span
-              className="color-box"
-              style={{ backgroundColor: "#005ce6" }}
-            />
-            <span>Highest Donations</span>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

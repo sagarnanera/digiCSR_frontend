@@ -122,15 +122,25 @@ const YearChart = ({ userType }) => {
 
   return (
     <VStack ml={"-900px"} mt={"-550px"}>
-      <Chart
-        options={chartData.options}
-        series={chartData.barSeries}
-        type="bar"
-        width={chartData.options.chart.width}
-      />
-      <Text pt={5}>
-        <strong>Donations per Year</strong>
-      </Text>
+      {chartData.barSeries.length > 0 ? (
+        <>
+          <Chart
+            options={chartData.options}
+            series={chartData.barSeries}
+            type="bar"
+            width={chartData.options.chart.width}
+          />
+          <Text pt={5}>
+            <strong>Donations per Year</strong>
+            <br />
+            <br />
+          </Text>
+        </>
+      ) : (
+        <Text style={{ marginLeft:"55vw" }}>
+          No Data Available for chart
+        </Text>
+      )}
     </VStack>
   );
 };
